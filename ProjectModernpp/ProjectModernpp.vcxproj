@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="GameMap.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
