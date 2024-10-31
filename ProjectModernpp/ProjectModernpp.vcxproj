@@ -132,6 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="CellType.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="GameMap.h" />
     <ClInclude Include="Weapon.h" />
