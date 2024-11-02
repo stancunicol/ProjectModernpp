@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include "Bullet.h"
 
-const float Bullet::speed = 0.25f;
+const float Bullet::speed = 0.25f;//viteza constantă a glonțului
