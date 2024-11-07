@@ -28,4 +28,15 @@ PlayWindow::PlayWindow(QWidget* parent)
 
     layout->addWidget(GenerateCode);
     layout->setAlignment(Qt::AlignCenter); 
+    // Creare buton de generare cod
+    GenerateButton = new QPushButton("Generate code", this);
+    GenerateButton->setStyleSheet("background-color: blue;"
+        "color: lightBlue;"
+        "font-weight: bold;"
+        "border-radius: 5px;"
+        "font-size: 15px;"
+        "padding: 10px; "
+        "border: 2px solid drakBlue; ");
+    layout->addWidget(GenerateButton);
+   
 }

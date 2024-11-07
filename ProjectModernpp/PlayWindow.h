@@ -12,5 +12,6 @@ public:
     PlayWindow(QWidget* parent = nullptr); // Constructor
 private:
     QLineEdit* GenerateCode; 
+    QPushButton* GenerateButton;
 };
 
