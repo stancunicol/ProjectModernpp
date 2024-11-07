@@ -13,5 +13,6 @@ public:
 private:
     QLineEdit* GenerateCode; 
     QPushButton* GenerateButton;
+    QPushButton* FowardButton;
 };
 
