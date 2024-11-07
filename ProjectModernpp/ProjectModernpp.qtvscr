@@ -1,0 +1,429 @@
+<FlowDocument xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Segoe UI" FontSize="12">
+  <FlowDocument.Tag><![CDATA[{
+  "timestamp": "2024-11-07 14:30:45",
+  "files": {
+    "D:\\facultate\\anul_2\\MC\\ProjectModernpp\\ProjectModernpp\\ProjectModernpp.vcxproj": {
+      "before": "7VlLb+M2EN5zgf6CXgQhhZODLSd2mqSRtdjIWcOo80Ccx6XAgpbGsbqUKFBUNmm3/71DiaIsP9Yx0ibbIDkEMDkcDj/OfDND+T+9e2e/vw+pcQc8CVjUMbcbTdOAyGN+EN12zFSM6/vme+fHH+xzzv4ATxhdGJOUikvCb0EkHfMoDahvGqglwl8TIeJfLSvxJhCSpBEGHmcJG4uGx0LLhzugLAZuhclILrN2ms2WidoNw+4LCHucpbExICOgHVNt6LJoHNymnAg0MMmFUXzRrNGPPJr60DG7MEpvv94EUWunWIFrKqqcTMa2qoPSFPlnn1MixoyHTqbEtvTvXAIHcjwWLV9h3AVQIAmsME9JvYSBOXr3v7Sfih2q+E+Q+5Zpj8ZtTeNsS3to7rDoAOjK4qHitD3KRoSWbnrtKj+5ziPM2d5rNG1rblh51W/w8IVxP3c6udK2iiElodT10sB3/oL2fmvX34U6HOy26+3d/XH9YG+nWW+1/b0W+M2D1vbB39pVszVKzQVj4pSEkMTEA0cpPWE+8CiObas6rdZgJPjsS5JHfhEP+lxNea5vikg1mTElbCr0w5hxYSgrOubG5rWr+OWciMnW7yeaRtw4bigGasR4AYlpWIuuA8PSDyRjdMzaxmYlSLe+bmwW1m/VOp3aFFnUzIJ9KkuKOKgyyOVDDM6HOKaBl5HTTKhm0wq6qwSyXQbBiBMeQOIInoJtzY+rBYWBl4zRBIRzt91ulaFUjCphd0I48QTwIUpeRQGyN+qujC7FHkEvr8NYB7YKjT0fcGMMr38NuZsJo4AQ3HISnsUiCIM/s6tU17N0+kWB1/T8fKC/Hm9F1n8+2F6Lr/bXI+gqMeeLK1ny+F5AJAtOJCyBhabKl5his40y2enUUFk8RLYDP6fkx60oOG44ASxZzbVYrpIcMpswic3jgUTOZdLsBnw2XU1lm0aKYkXemuJauA8SkWxiplpbT21Lp6wB8wjFfNQlghT5Q6fHR0H7FKBm0sEbVLppWVJwZEz0BtNymAqPen1AFXFW4TUZ+idE9ss6aGXHgdVuEGWlbC49RRvrVbaFq7nUZWEcUFADyGc3hEdIwwPZnzvZfyw2K4N5wYOiw+7AnYD3WVVI+qcWOOeA/O9BkjBe2p44N/3T1s7hp+7x0VXv8JN7djo8Gxwf/ry5RH5LdgqLNemtZI2OLTqJPJCtizJpdlTVatbsue1BEH0uMRimo+FDgoA7qCDBstC2yiG9ZQ8iwKeIvJrv59vLNkPtvXS6MELvmbeTJUDTOe+Jt17ETfZyUSt7lyfd+8c08uRBM++Qp0B/UYdeOKUR60eCB5jsvUKs6H0WTOhF2q3ywlP/1ALLfCP3stP/uZcdR2REwT076X64/MiofItTWC+a0aCoDgYuYAwcH/F0m7lgQi9a6rI59EuncwW29RwePdXxvDCLvfGX4sxn4K9K3p9l7/WyVsE93zl7vfHW98dbZWJGl9NeWH5qOEopBfy+EcdF2bZYroevrSckXi04ZCn3YFouj7XSkPJbScmG6tPHnF2TilVzUi5QKh8qG6vkiifGVYLymI+RkVCs2BN72Adsl1dI3QCJWVRKzYO13uOFyD9sFbCpXj+vvdWXKf18oR6pF79F6Hd35x8=",
+      "after": "7VltU9tGEM7nzvQ/KBo6xjPFMhhKCLIywQbK1ObNBL5khpGlNVYj6dTTieA2/e/d073YsmWMS0IyCfmQxHd7q729Z5/d2zt4+eKF/eYuCo1boGlA4qa5XqubBsQe8YP4pmlmbLD2ynzj/PyTfUrJn+Axow0DNwvZhUtvgKVNcy8LQt80UEuMv4aMJa8tK/WGELlpLQo8SlIyYDWPRJYPtxCSBKgVpX2+zNqo1xsmajcM+4hBdEhJlhgdtw9h05QfbJF4ENxk1GVoYCqEUbxs1jiKvTDzoWm2oZ/dfLoK4saGWoFrCqqcXMa2ioPcFP7HPg1dNiA0cnIltqV/CwkcEP4oW77AuHMIwU1hgXlS6msYKLx399vmY32HKr6I5+4z7cF+W9I429IIFYBFACCU2agA2sOQ9N1wDNPLlsTJpYgwZ327VretmWGJqj9g9JFQX4COr7QtNSQlpLrDLPCdf2DzVWPL34I12NnaXNvcejVY29neqK81Nv3tBvj1ncb6zr8aqvkaqeacEHbsRpAmrgeOVNolPtA4SWyrOC3XYCT45GMqIl/Fg95Xne/rXpGpPZ6xy971baOOEJna4xnrpjmtGBhdfsADv2lWVlb1eLXSbFYqxsm58XL/LkhZulqYff8XqzHBT5Wq6aysdnu5OrnNdkCRyAgdVd9rjbal/ytOl8f3+HglRUUJocyQaprmyuplS/LgqcuG1fddTXetJKlJpqwlqCk1DasMNsUNFsik+mllVXk53/AEqVVMxZKFJSpei0x3MUrAeZskYeDlJDpFKfm0PJt3KeRf6QR96tIAUofRDGxrdlwuUAZeEBKmwJzb9c3GOOTVqBRuDV3qegxoDyXfxQFmGdRdGOWSOWCnfV84jilcFHww47YC3T6d4wZIA5/Nc1dDEgK64Ia60UnCgij4Oz9KeTxzp7+q43UaeTqnfz9oxez0dG77XrB6tBxBF4l5drFOCVXMKNe+KHxTxecT1D0nCU0twVxUngRkwXvGkBcZ1t2YLCaUY2q7n+CKeaE0zTzyC9MU+iW+MckWX0K/2oMILPkFkb0NXgk1TX3cx4QdkCzGW80e4B0AZI5vmq0sZSTKa4ndVtgiURKEUDisxfXI/KrljAlo8ZpFEncX0tS9AUNg0409NPP34GZoGhdwxyZMfm14JAt9IybMCAnmeTDGRdCv/P852HcN/Ce/xkXuKBfO72G4mPKaKBzVNEQtsevJyqdQ6e7fMYj5pVGD1sESOQ/AXG7uwh5WAeCbD5TGpJeXAr0h4HWz4OvlAkO5dDbMsbihvODFunC6hJuowGoZipXEPugCdGk9nBBkZHbwzEKs0douc1VNpY4CK6JZozVYeRGrzJKoftAxPMaxKpbyu3FFo3XWyqVdUjjgH9G1EzT4jFhWYJzPgdic/X9oxyovFlzL47Tr8l6dIp28H4c32CDO799C+n9XJcrjOmnKAaS2K5fGWPN0eG/Qyf/GC2RhUORCFO21O60heB/krUf/1AKnFBJKPEyahI5tT52ro+PGxu51e3/v3eHudevkuHfS2d/9ZXWOfJXfQMs16U/xkgzbgzwl87aJNGl6VIt3sWUaoOuFbaJymLzBzZ8XKvCarOoN5ctOEH8Yu7GX9XujFHuoDtqQ4m3RtsZD2oxDiAE7qeKSfyR2wNsr0vy508oI/U3RDRv7eDLloxFTE0uVs3OSy/T+l4POQRZ7fKM5wPguEHJy06VT2mNHMaMB1jmeElMtkZIJvUgjU9xH9U8tMA9eAqjHz0Ddj91+CK2TbvvtxQEJ+WuEPK6yGe1X2RuBcxgAxWcM3cAqmdCL5qJenN7caaHAtp4iKErKgscFhMbkshB9ZlF7LiK+IcAoFi0UPI+DjGLAb5xDn9nTLuNIgc2yGU2EJSQpVpVM6EVPFQzjCgMzvwby+Ml3LwtDwHfmJFElbLncIfZ6um6yWLBHMurBpNzME2DxRTD/nnyCnrELWzbidl4u1YIw5A8xtUVy6gllkSDf5kNkuCsWfBP7ESNsfSyQugI3IfFYatZZyzVnmXjAU267vwUy7nUVGghz+rITj4OqITvRuFItGd3gku2/2Y6Vfll1/gM="
+    }
+  }
+}]]></FlowDocument.Tag>
+  <Section Margin="0,24" TextAlignment="Center">
+    <Paragraph FontSize="24" FontWeight="Bold" Margin="12,0">
+      <LineBreak />
+      <Span Foreground="Gray">Qt Visual Studio Tools</Span>
+    </Paragraph>
+    <Paragraph FontSize="42" Margin="12,0" FontWeight="Bold">
+      <Span TextDecorations="Underline">Project Format Conversion</Span>
+    </Paragraph>
+    <Paragraph Margin="12,8" FontSize="18">
+      <Span>Report generated on 2024-11-07 14:30:45</Span>
+    </Paragraph>
+  </Section>
+  <Section>
+    <Paragraph FontSize="32" FontWeight="Bold" Margin="12,0">
+      <Span>Files</Span>
+    </Paragraph>
+    <Paragraph Margin="24,12,0,0">
+      <Span FontFamily="Consolas" FontSize="14" Background="WhiteSmoke"><![CDATA[D:\facultate\anul_2\MC\ProjectModernpp\ProjectModernpp\ProjectModernpp.vcxproj]]></Span>
+      <LineBreak />
+      <Hyperlink NavigateUri="file://D:\facultate\anul_2\MC\ProjectModernpp\ProjectModernpp\ProjectModernpp.vcxproj?before">[Before]</Hyperlink>
+      <Hyperlink NavigateUri="file://D:\facultate\anul_2\MC\ProjectModernpp\ProjectModernpp\ProjectModernpp.vcxproj?after">[After]</Hyperlink>
+      <Hyperlink NavigateUri="file://D:\facultate\anul_2\MC\ProjectModernpp\ProjectModernpp\ProjectModernpp.vcxproj?diff&amp;before&amp;after">
+                        [Diff before/after]
+                    </Hyperlink>
+      <Hyperlink NavigateUri="file://D:\facultate\anul_2\MC\ProjectModernpp\ProjectModernpp\ProjectModernpp.vcxproj?diff&amp;before&amp;current">
+                        [Diff before/current]
+                    </Hyperlink>
+      <Hyperlink NavigateUri="file://D:\facultate\anul_2\MC\ProjectModernpp\ProjectModernpp\ProjectModernpp.vcxproj?diff&amp;after&amp;current">
+                        [Diff after/current]
+                    </Hyperlink>
+      <LineBreak />
+    </Paragraph>
+  </Section>
+  <Section>
+    <Paragraph FontSize="32" FontWeight="Bold" Margin="12,0">
+      <Span>Changes</Span>
+    </Paragraph>
+    <Paragraph FontSize="20" FontWeight="Bold" Margin="12">
+      <Span><![CDATA[🡺 Enabling multi-processor compilation]]></Span>
+    </Paragraph>
+    <Table CellSpacing="0" BorderBrush="Gray" BorderThickness="0.5">
+      <Table.Columns>
+        <TableColumn />
+        <TableColumn />
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow Background="Orange">
+          <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
+            <Paragraph Margin="10,5" FontWeight="Bold">
+              <Span><![CDATA[D:\facultate\anul_2\MC\ProjectModernpp\ProjectModernpp\ProjectModernpp.vcxproj]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell ColumnSpan="2" Background="WhiteSmoke" BorderBrush="Gray" BorderThickness="0.5" />
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[      <MultiProcessorCompilation>true</MultiProcessorCompilation>]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell ColumnSpan="2" Background="WhiteSmoke" BorderBrush="Gray" BorderThickness="0.5" />
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[      <MultiProcessorCompilation>true</MultiProcessorCompilation>]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell ColumnSpan="2" Background="WhiteSmoke" BorderBrush="Gray" BorderThickness="0.5" />
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[      <MultiProcessorCompilation>true</MultiProcessorCompilation>]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell ColumnSpan="2" Background="WhiteSmoke" BorderBrush="Gray" BorderThickness="0.5" />
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[      <MultiProcessorCompilation>true</MultiProcessorCompilation>]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph FontSize="20" FontWeight="Bold" Margin="12">
+      <Span><![CDATA[🡺 Project format version]]></Span>
+    </Paragraph>
+    <Table CellSpacing="0" BorderBrush="Gray" BorderThickness="0.5">
+      <Table.Columns>
+        <TableColumn />
+        <TableColumn />
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow Background="Orange">
+          <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
+            <Paragraph Margin="10,5" FontWeight="Bold">
+              <Span><![CDATA[D:\facultate\anul_2\MC\ProjectModernpp\ProjectModernpp\ProjectModernpp.vcxproj]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell ColumnSpan="2" Background="WhiteSmoke" BorderBrush="Gray" BorderThickness="0.5" />
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[    <Keyword>QtVS_v304</Keyword>]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph FontSize="20" FontWeight="Bold" Margin="12">
+      <Span><![CDATA[🡺 Fallback for QTMSBUILD environment variable]]></Span>
+    </Paragraph>
+    <Table CellSpacing="0" BorderBrush="Gray" BorderThickness="0.5">
+      <Table.Columns>
+        <TableColumn />
+        <TableColumn />
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow Background="Orange">
+          <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
+            <Paragraph Margin="10,5" FontWeight="Bold">
+              <Span><![CDATA[D:\facultate\anul_2\MC\ProjectModernpp\ProjectModernpp\ProjectModernpp.vcxproj]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell ColumnSpan="2" Background="WhiteSmoke" BorderBrush="Gray" BorderThickness="0.5" />
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph FontSize="20" FontWeight="Bold" Margin="12">
+      <Span><![CDATA[🡺 Default Qt properties]]></Span>
+    </Paragraph>
+    <Table CellSpacing="0" BorderBrush="Gray" BorderThickness="0.5">
+      <Table.Columns>
+        <TableColumn />
+        <TableColumn />
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow Background="Orange">
+          <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
+            <Paragraph Margin="10,5" FontWeight="Bold">
+              <Span><![CDATA[D:\facultate\anul_2\MC\ProjectModernpp\ProjectModernpp\ProjectModernpp.vcxproj]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell ColumnSpan="2" Background="WhiteSmoke" BorderBrush="Gray" BorderThickness="0.5" />
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[  <Import Project="$(QtMsBuild)\qt_defaults.props" Condition="Exists('$(QtMsBuild)\qt_defaults.props')" />]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph FontSize="20" FontWeight="Bold" Margin="12">
+      <Span><![CDATA[🡺 Qt build settings]]></Span>
+    </Paragraph>
+    <Table CellSpacing="0" BorderBrush="Gray" BorderThickness="0.5">
+      <Table.Columns>
+        <TableColumn />
+        <TableColumn />
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow Background="Orange">
+          <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
+            <Paragraph Margin="10,5" FontWeight="Bold">
+              <Span><![CDATA[D:\facultate\anul_2\MC\ProjectModernpp\ProjectModernpp\ProjectModernpp.vcxproj]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell ColumnSpan="2" Background="WhiteSmoke" BorderBrush="Gray" BorderThickness="0.5" />
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph FontSize="20" FontWeight="Bold" Margin="12">
+      <Span><![CDATA[🡺 Warn if Qt/MSBuild is not found]]></Span>
+    </Paragraph>
+    <Table CellSpacing="0" BorderBrush="Gray" BorderThickness="0.5">
+      <Table.Columns>
+        <TableColumn />
+        <TableColumn />
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow Background="Orange">
+          <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
+            <Paragraph Margin="10,5" FontWeight="Bold">
+              <Span><![CDATA[D:\facultate\anul_2\MC\ProjectModernpp\ProjectModernpp\ProjectModernpp.vcxproj]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell ColumnSpan="2" Background="WhiteSmoke" BorderBrush="Gray" BorderThickness="0.5" />
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') OR !Exists('$(QtMsBuild)\Qt.props')">]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[  </Target>]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph FontSize="20" FontWeight="Bold" Margin="12">
+      <Span><![CDATA[🡺 Qt property sheet]]></Span>
+    </Paragraph>
+    <Table CellSpacing="0" BorderBrush="Gray" BorderThickness="0.5">
+      <Table.Columns>
+        <TableColumn />
+        <TableColumn />
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow Background="Orange">
+          <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
+            <Paragraph Margin="10,5" FontWeight="Bold">
+              <Span><![CDATA[D:\facultate\anul_2\MC\ProjectModernpp\ProjectModernpp\ProjectModernpp.vcxproj]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell ColumnSpan="2" Background="WhiteSmoke" BorderBrush="Gray" BorderThickness="0.5" />
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[    <Import Project="$(QtMsBuild)\Qt.props" />]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell ColumnSpan="2" Background="WhiteSmoke" BorderBrush="Gray" BorderThickness="0.5" />
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[    <Import Project="$(QtMsBuild)\Qt.props" />]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell ColumnSpan="2" Background="WhiteSmoke" BorderBrush="Gray" BorderThickness="0.5" />
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[    <Import Project="$(QtMsBuild)\Qt.props" />]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell ColumnSpan="2" Background="WhiteSmoke" BorderBrush="Gray" BorderThickness="0.5" />
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[    <Import Project="$(QtMsBuild)\Qt.props" />]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph FontSize="20" FontWeight="Bold" Margin="12">
+      <Span><![CDATA[🡺 Qt targets]]></Span>
+    </Paragraph>
+    <Table CellSpacing="0" BorderBrush="Gray" BorderThickness="0.5">
+      <Table.Columns>
+        <TableColumn />
+        <TableColumn />
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow Background="Orange">
+          <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
+            <Paragraph Margin="10,5" FontWeight="Bold">
+              <Span><![CDATA[D:\facultate\anul_2\MC\ProjectModernpp\ProjectModernpp\ProjectModernpp.vcxproj]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell ColumnSpan="2" Background="WhiteSmoke" BorderBrush="Gray" BorderThickness="0.5" />
+        </TableRow>
+        <TableRow>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0" />
+          </TableCell>
+          <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
+            <Paragraph FontFamily="Consolas" Margin="4, 0">
+              <Span Background="LightGreen"><![CDATA[  <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />]]></Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+  </Section>
+  <Section>
+    <Paragraph />
+  </Section>
+</FlowDocument>
+<!--rv0S6QQqDK3jHytz6Ud0U2CtAUNn15Fw2m+kvyCpDvU=-->
