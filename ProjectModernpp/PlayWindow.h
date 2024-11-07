@@ -4,12 +4,13 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QVBoxLayout>
-#include <QMessageBox> // Pentru afișarea mesajelor de eroare
+#include <QMessageBox> 
 class PlayWindow : public QWidget {
     Q_OBJECT
 
 public:
     PlayWindow(QWidget* parent = nullptr); // Constructor
-
+private:
+    QLineEdit* GenerateCode; 
 };
 
