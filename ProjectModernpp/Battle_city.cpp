@@ -20,10 +20,18 @@ Battle_city::Battle_city(QWidget* parent)
 	playButton = new QPushButton("Play", this);//Play button
 	connectButton = new QPushButton("Connect", this);//Connect button
 	controlsButton = new QPushButton("Controls", this);//Controls button
+	
+	playButton->setFixedSize(270, 40);
+	connectButton->setFixedSize(270, 40);
+	controlsButton->setFixedSize(270, 40);
+	
 	layout->addWidget(playButton);
 	layout->addWidget(connectButton);
 	layout->addWidget(controlsButton);
 
+	connect(playButton, &QPushButton::clicked, this, &Battle_city::onPlayButtonClicked);//connect the button to His use
+	connect(connectButton, &QPushButton::clicked, this, &Battle_city::onConnectButtonClicked);
+	connect(controlsButton, &QPushButton::clicked, this, &Battle_city::onControlsButtonClicked);
 }
 
 Battle_city::~Battle_city()
@@ -31,12 +39,15 @@ Battle_city::~Battle_city()
 
 void Battle_city::onPlayButtonClicked()
 {
+	QMessageBox::information(this, "Play", "The Play button has been pressed!");
 }
 
 void Battle_city::onConnectButtonClicked()
 {
+	QMessageBox::information(this, "Connect", "The connect button has been pressed!");
 }
 
 void Battle_city::onControlsButtonClicked()
 {
+	QMessageBox::information(this, "Controls", "The controls button has been pressed!");
 }

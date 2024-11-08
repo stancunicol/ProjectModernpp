@@ -6,6 +6,7 @@
 #include <QPixmap>//to manage and manipulate images
 #include <QDebug>//debug in console
 #include <QVBoxLayout>//for vertical layout
+#include <QMessageBox>//to create dialogs that can inform the user or reguest a decision
 
 class Battle_city : public QMainWindow
 {
