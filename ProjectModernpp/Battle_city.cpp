@@ -24,7 +24,16 @@ Battle_city::Battle_city(QWidget* parent)
 	playButton->setFixedSize(270, 40);
 	connectButton->setFixedSize(270, 40);
 	controlsButton->setFixedSize(270, 40);
-	
+    
+    QFont buttonFont("Arial", 12, QFont::Bold);
+    QFont buttonFontPlay("Arial", 18, QFont::Bold);
+    playButton->setFont(buttonFontPlay);
+    connectButton->setFont(buttonFont);
+    controlsButton->setFont(buttonFont);
+
+    playButton->setStyleSheet("background-color: rgba(50, 50, 50, 0.7); color: white;border: 1px solid black;border - radius: 5px;");
+    connectButton->setStyleSheet("background-color: rgba(50, 50, 50, 0.7);color: white;border: 1px solid black;border - radius: 5px;");
+	controlsButton->setStyleSheet("background-color: rgba(50, 50, 50, 0.7);color: white;border: 1px solid black;border - radius: 5px;");
 	layout->addWidget(playButton);
 	layout->addWidget(connectButton);
 	layout->addWidget(controlsButton);

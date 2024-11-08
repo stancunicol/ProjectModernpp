@@ -7,6 +7,7 @@
 #include <QDebug>//debug in console
 #include <QVBoxLayout>//for vertical layout
 #include <QMessageBox>//to create dialogs that can inform the user or reguest a decision
+#include <QFont>//font buttons
 
 class Battle_city : public QMainWindow
 {
