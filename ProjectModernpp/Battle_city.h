@@ -12,6 +12,10 @@ public:
 	Battle_city(QWidget *parent = nullptr);
 	~Battle_city();
 private:
+	void onPlayButtonClicked();
+	void onConnectButtonClicked();
+	void onControlsButtonClicked();
+private:
 	QLabel* background = nullptr;//Background picure
 	QPushButton* playButton = nullptr;//Button for Play
 	QPushButton* connectButton = nullptr;//Button for Connect
