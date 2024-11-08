@@ -5,6 +5,7 @@
 #include <QPushButton>//create buttons
 #include <QPixmap>//to manage and manipulate images
 #include <QDebug>//debug in console
+#include <QVBoxLayout>//for vertical layout
 
 class Battle_city : public QMainWindow
 {

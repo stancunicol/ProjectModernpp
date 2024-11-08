@@ -15,6 +15,15 @@ Battle_city::Battle_city(QWidget* parent)
 	background->setScaledContents(true);//Scale the image to occupy the entire widget
 	background->setGeometry(this->rect());//Set the geometry of the QLabel to occupy the entire window
 	setCentralWidget(background);//Set the QLabel as the center widget
+
+	QVBoxLayout* layout = new QVBoxLayout(background);//vertical layout
+	playButton = new QPushButton("Play", this);//Play button
+	connectButton = new QPushButton("Connect", this);//Connect button
+	controlsButton = new QPushButton("Controls", this);//Controls button
+	layout->addWidget(playButton);
+	layout->addWidget(connectButton);
+	layout->addWidget(controlsButton);
+
 }
 
 Battle_city::~Battle_city()
