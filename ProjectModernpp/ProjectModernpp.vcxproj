@@ -153,12 +153,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Battle_city.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="GameMap.cpp" />
     <ClCompile Include="PlayWindow.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="Battle_city.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="CellType.h" />
     <ClInclude Include="Character.h" />
@@ -167,6 +169,12 @@
     <ClInclude Include="Player.h" />
     <QtMoc Include="PlayWindow.h" />
     <ClInclude Include="Weapon.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="Battle_city.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Battle_city.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />
