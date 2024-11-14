@@ -1,11 +1,10 @@
 #pragma once
 #include "CellType.h"
-#include <cstdint>
 #include <vector>
 #include <ctime>
+#include <iostream>
 
-class GameMap
-{
+class GameMap {
 private:
     uint32_t m_width;
     uint32_t m_height;
@@ -14,16 +13,15 @@ private:
     // 2D grid representing the map layout
     std::vector<std::vector<CellType>> m_grid;
 
+
 public:
     // Constructor
-    GameMap(uint32_t width, uint32_t height);
-
+    GameMap(uint32_t width, uint32_t height, uint8_t level);
 
     // Initializes the grid with random cell types; default - Empty
-    void initialize(uint8_t level);
+    void initialize();
+    void createWallCluster(int startX, int startY, CellType wallType);
 
     // Display the map
     void display() const;
-
-
 };
