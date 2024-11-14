@@ -41,3 +41,23 @@ void GameMap::initialize(uint8_t level) {
         }
     }
 }
+
+void GameMap::display() const {
+
+    for (int i = 0; i < m_height; ++i) {
+        for (int j = 0; j < m_width; ++j) {
+            switch (m_grid[i][j]) {
+            case CellType::EMPTY:
+                std::cout << " . ";
+                break;
+            case CellType::BREAKABLE_WALL:
+                std::cout << " * ";
+                break;
+            case CellType::UNBREAKABLE_WALL:
+                std::cout << " # ";
+                break;
+            }
+        }
+        std::cout << '\n';
+    }
+}

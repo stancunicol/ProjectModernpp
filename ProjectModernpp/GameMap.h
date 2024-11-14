@@ -22,5 +22,8 @@ public:
     // Initializes the grid with random cell types; default - Empty
     void initialize(uint8_t level);
 
+    // Display the map
+    void display() const;
+
 
 };
