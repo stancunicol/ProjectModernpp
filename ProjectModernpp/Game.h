@@ -1,4 +1,10 @@
 #pragma once
+#include "CellType.h"
+#include "Player.h"
+#include "GameMap.h"
+#include <vector>
+#include <ctime>
+#include <iostream>
 
 class Game {
 public:
@@ -9,4 +15,6 @@ public:
         : map(width, height, level), player(name) {
         map.placePlayer(&player);
     }
+
+    void movePlayer(char direction);
 };

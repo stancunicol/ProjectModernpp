@@ -114,3 +114,6 @@ void GameMap::display() const {
     }
 }
 
+std::vector<std::vector<CellType>> GameMap::GetMap() const {
+    return m_grid;
+}

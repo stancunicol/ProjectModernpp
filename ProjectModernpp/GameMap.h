@@ -29,4 +29,7 @@ public:
 
     // Display the map
     void display() const;
+
+    std::vector<std::vector<CellType>> GetMap() const;
+
 };
