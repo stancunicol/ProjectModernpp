@@ -24,6 +24,9 @@ public:
     void initialize();
     void createWallCluster(int startX, int startY, CellType wallType);
 
+    bool isPositionFree(int x, int y);
+    void placePlayer(Player* p);
+
     // Display the map
     void display() const;
 };

@@ -1,4 +1,4 @@
-#include "GameMap.h"
+﻿#include "GameMap.h"
 
 GameMap::GameMap(uint32_t width, uint32_t height, uint8_t level)
     : m_width(width),
@@ -69,22 +69,48 @@ void GameMap::createWallCluster(int startX, int startY, CellType wallType) {
     }
 }
 
+// Function to check if a position is free
+bool GameMap::isPositionFree(int x, int y) {
+    return x >= 0 && x < m_height && y >= 0 && y < m_width && m_grid[x][y] == CellType::EMPTY;
+}
+
+void GameMap::placePlayer(Player* p) {
+    int startX, startY;
+    do {
+        // Generate random positions between 0 and m_height/m_width - 1
+        startX = rand() % m_height;
+        startY = rand() % m_width;
+    } while (m_grid[startX][startY] != CellType::EMPTY); // Look for an EMPTY cell
+
+    // Place the player at the selected position
+    player = p;
+
+    /*
+    player->MoveCharacter();  // Dacă ai nevoie de această funcție pentru mișcare, las-o
+    */
+
+    player->SetPosition(static_cast<uint32_t>(startX), static_cast<uint32_t>(startY));
+    // Mark the cell on the map as occupied by the player
+    m_grid[startX][startY] = CellType::PLAYER;
+}
+
+// Function to display the map with the player
 void GameMap::display() const {
-    // Display the game map in the console
     for (int i = 0; i < m_height; ++i) {
         for (int j = 0; j < m_width; ++j) {
-            switch (m_grid[i][j]) {
-            case CellType::EMPTY:
-                std::cout << " . ";  // Empty cells represented by "."
-                break;
-            case CellType::BREAKABLE_WALL:
-                std::cout << " * ";  // Breakable walls represented by "*"
-                break;
-            case CellType::UNBREAKABLE_WALL:
-                std::cout << " # ";  // Unbreakable walls represented by "#"
-                break;
+            if (player != nullptr && i == player->GetPosition().m_x && j == player->GetPosition().m_y) {
+                std::cout << " P ";
+            }
+            else {
+                switch (m_grid[i][j]) {
+                case CellType::EMPTY: std::cout << " . "; break; // Empty cells represented by "."
+                case CellType::BREAKABLE_WALL: std::cout << " * "; break; // Breakable walls represented by "*"
+                case CellType::UNBREAKABLE_WALL: std::cout << " # "; break; // Unbreakable walls represented by "#"
+                case CellType::PLAYER: std::cout << " P "; break; // Player
+                }
             }
         }
         std::cout << '\n'; // New line after each row
     }
 }
+
