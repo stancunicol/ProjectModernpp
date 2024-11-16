@@ -11,8 +11,9 @@ private:
 	//(1,0) - the bullet is going right, (-1,0) - the bullet is going left.
 public:
 	//Default constructor.
-	Bullet() : m_active{ false }, m_direction{ 0, 0 }, m_speed{ 0.25f } {}
+	Bullet();
 	//Constructor.
-	Bullet(const bool& active, const float& speed, const Point& direction)
-		: m_active{ active }, m_speed{ speed }, m_direction{ direction } {}
+	Bullet(const bool& active, const float& speed, const Point& direction);
+	//"Shoot" creates a bullet in the direction the character shoots.
+	Bullet Shoot(const Point& direction);
 };

@@ -16,5 +16,28 @@ public:
         map.placePlayer(&player);
     }
 
-    void movePlayer(char direction);
+    void movePlayer(char direction) {
+        switch (direction)
+        {
+        case 'w':
+            player.MoveCharacter({ uint8_t(-1), uint8_t(0) });
+            break;
+        case 'a':
+            player.MoveCharacter({ uint8_t(0), uint8_t(-1) });
+            break;
+        case 's':
+            player.MoveCharacter({ uint8_t(1), uint8_t(0) });
+            break;
+        case 'd':
+            player.MoveCharacter({ uint8_t(0), uint8_t(1) });
+            break;
+        case 'q':
+            std::cout << "Iesire din joc." << '\n';
+            exit(0);
+            break;
+        default:
+            std::cout << "Directie invalida." << '\n';
+            return;
+        }
+    }
 };

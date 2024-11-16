@@ -7,8 +7,6 @@ class Character {
 protected:
 
 	Point m_direction;//The coordonates represent the direction of movement of the character.
-	//(first, second) can be (0,1) - the character is going up, (0,-1) - the character is going down
-	//(1,0) - the character is going right, (-1,0) - the character is going left.
 	uint8_t m_numberOfBulletsReceived;//Counts the number of bullet received.
 	//If the number is equal to three, the character is eliminated from the game.
 	uint8_t m_shotEnemies;//Counts the enemies that were shot.
@@ -17,39 +15,29 @@ protected:
 
 public:
 	//Default constructor.
-	Character() : m_direction{ 0, 0 }, m_numberOfBulletsReceived{ 0 },
-		m_shotEnemies{ 0 }, m_position{ 0,0 } {}
+	Character();
+
 	//Constructor.
-	Character(const Point& direction, const Point& position)
-		: m_direction{ direction }, m_numberOfBulletsReceived{ 0 },
-		m_shotEnemies{ 0 }, m_position{ position } {}
+	Character(const Point& direction, const Point& position);
 
 	//"MoveCharacter" moves the character in the specified direction.
-	void MoveCharacter() {
-		m_position += m_direction;
-	}
+	void MoveCharacter(const Point& direction);
+
 	//"ReceivedBullet" counts the received bullets.
-	void ReceivedBullet() {
-		m_numberOfBulletsReceived++;
-	}
+	void ReceivedBullet();
+
 	//"ShotEnemy" counts the enemies that were shot.
-	void ShotEnemy() {
-		m_shotEnemies++;
-	}
+	void ShotEnemy();
+
 	//"SetPosition" sets the position of the character.
-	void SetPosition(const Point& position) {
-		m_position = position;
-	}
+	void SetPosition(const Point& position);
+
 	//"GetPosition" returns the current position.
-	Point GetPosition() const {
-		return m_position;
-	}
+	Point GetPosition() const;
+
 	//"GetCoordonateX" returns the x coordonate of the current position.
-	uint8_t GetCoordonateX() {
-		return m_position.GetX();
-	}
+	uint8_t GetCoordonateX();
+
 	//"GetY" returns the y coordonate of the current position.
-	uint8_t GetCoordonateY() {
-		return m_position.GetY();
-	}
+	uint8_t GetCoordonateY();
 };

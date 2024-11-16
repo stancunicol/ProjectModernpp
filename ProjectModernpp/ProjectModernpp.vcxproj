@@ -155,9 +155,13 @@
   <ItemGroup>
     <ClCompile Include="Battle_city.cpp" />
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Character.cpp" />
     <ClCompile Include="GameMap.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayWindow.cpp" />
+    <ClCompile Include="Point.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Battle_city.h" />
