@@ -8,7 +8,7 @@ Point::Point()
 }
 
 //Copy constructor.
-Point::Point(const uint8_t& x, const uint8_t& y)
+Point::Point(const uint16_t& x, const uint16_t& y)
 	: m_x{ x }, m_y{ y }
 {
 }
@@ -45,11 +45,11 @@ Point Point::operator+=(const Point& position) {
 }
 
 //"GetX" returns the x coordonate.
-uint8_t Point::GetX() {
+uint16_t Point::GetX() {
 	return m_x;
 }
 
 //"GetY" returns the y coordonate.
-uint8_t Point::GetY() {
+uint16_t Point::GetY() {
 	return m_y;
 }

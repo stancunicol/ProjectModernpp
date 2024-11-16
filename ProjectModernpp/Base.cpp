@@ -1,10 +1,11 @@
 #include "Base.h"
+#include "GameMap.h"
 
 Base::Base()
 	: m_destroyed(false)
 {
-	uint8_t x = gameMap.GetWidth() / 2;
-	uint8_t y = gameMap.GetHeight();
+	uint8_t x = m_gameMap->GetWidth() / 2;
+	uint8_t y = m_gameMap->GetHeight();
 	m_position = Point(x, y);
 }
 

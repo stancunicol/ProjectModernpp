@@ -11,8 +11,8 @@ int main() {
     std::cin >> level;
     Game game(15, 15, level, "John");
     game.map.AddEnemy(new Enemy(Point(3, 3)));
-    game.map.AddEnemy(new Enemy(Point(7, 4)));
-    game.map.AddEnemy(new Enemy(Point(5, 9)));
+    //game.map.AddEnemy(new Enemy(Point(7, 4)));
+    //game.map.AddEnemy(new Enemy(Point(5, 9)));
     auto lastMoveTime = std::chrono::steady_clock::now();
     while (true) {
         auto currentTime = std::chrono::steady_clock::now();
@@ -21,13 +21,13 @@ int main() {
             game.map.MoveEnemies();
             lastMoveTime = currentTime;
         }
-        game.map.display();
+        game.map.Display();
         std::cout << "Introduceti o comanda (w/a/s/d pentru miscare, q pentru a iesi): ";
         char command;
         std::cin >> command;
         if (command == 'q')
             break;
-        game.movePlayer(command);
+        game.MovePlayer(command);
     }
     
     return 0;

@@ -1,14 +1,7 @@
 #pragma once
-
 #include "CellType.h"
-#ifndef PLAYER_H
 #include "Player.h"
-#endif 
-
-#ifndef GAMEMAP_H
 #include "GameMap.h"
-#endif 
-
 #include <vector>
 #include <ctime>
 #include <iostream>
@@ -20,10 +13,10 @@ public:
 
     Game(uint32_t width, uint32_t height, uint16_t level, const std::string& name)
         : map(width, height, level), player(name) {
-        map.placePlayer(&player);
+        map.PlacePlayer(&player);
     }
 
-    void movePlayer(char direction) {
+    void MovePlayer(char direction) {
         switch (direction)
         {
         case 'w':

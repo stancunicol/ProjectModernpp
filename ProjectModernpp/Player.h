@@ -1,16 +1,7 @@
 ﻿#pragma once
-
-#ifndef BULLET_H
 #include "Bullet.h"
-#endif 
-
-#ifndef CHARACTER_H
 #include "Character.h"
-#endif 
-
-#ifndef WEAPON_H
 #include "Weapon.h"
-#endif 
 
 class Player : public Character {
 	int m_points;//Counts the points received for the winned games.

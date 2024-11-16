@@ -6,16 +6,18 @@
 #include <vector>
 #include <ctime>
 #include <iostream>
+#include "Base.h"
 
 class Enemy;
 
 class GameMap {
 private:
-    uint32_t m_width;
-    uint32_t m_height;
+    uint8_t m_width;
+    uint8_t m_height;
     uint8_t m_level; // easy = 1, medium = 2, hard = 3
     std::vector<Enemy*> enemies;
     Player* player;
+    Base* m_base;
 
     // 2D grid representing the map layout
     std::vector<std::vector<CellType>> m_grid;
@@ -30,14 +32,14 @@ public:
     ~GameMap();
 
     // Initializes the grid with random cell types; default - Empty
-    void initialize();
-    void createWallCluster(int startX, int startY, CellType wallType);
+    void Initialize();
+    void CreateWallCluster(int startX, int startY, CellType wallType);
 
-    bool isPositionFree(int x, int y);
-    void placePlayer(Player* p);
+    bool IsPositionFree(int x, int y);
+    void PlacePlayer(Player* p);
 
     // Display the map
-    void display() const;
+    void Display() const;
 
     std::vector<std::vector<CellType>> GetMap() const;
 

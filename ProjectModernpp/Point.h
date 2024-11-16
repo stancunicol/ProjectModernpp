@@ -2,13 +2,13 @@
 #include <iostream>
 
 class Point {
-	uint8_t m_x, m_y;
+	uint16_t m_x, m_y;
 public:
 	//Default constructor.
 	Point();
 
 	//Copy constructor.
-	Point(const uint8_t& x, const uint8_t& y);
+	Point(const uint16_t& x, const uint16_t& y);
 
 	//"SetPosition" sets the position.
 	void SetPosition(const Point& position);
@@ -24,8 +24,8 @@ public:
 	Point operator+=(const Point& position);
 
 	//"GetX" returns the x coordonate.
-	uint8_t GetX();
+	uint16_t GetX();
 
 	//"GetY" returns the y coordonate.
-	uint8_t GetY();
+	uint16_t GetY();
 };

@@ -13,7 +13,7 @@ GameMap::GameMap(uint32_t width, uint32_t height, uint8_t level)
 {
     // Initialize the grid with empty cells
     m_grid.resize(height, std::vector<CellType>(width, CellType::EMPTY));
-    initialize();  // Call the initialize function to set up the map based on difficulty
+    Initialize();  // Call the initialize function to set up the map based on difficulty
 }
 
 GameMap::~GameMap() {
@@ -22,7 +22,7 @@ GameMap::~GameMap() {
     }
 }
 
-void GameMap::initialize() {
+void GameMap::Initialize() {
 
     srand(static_cast<unsigned>(time(0)));
 
@@ -54,18 +54,18 @@ void GameMap::initialize() {
             int randVal = rand() % 100; // Generate a random number between 0 and 99
             if (randVal < breakableWallChance) {
                 // Create a cluster for breakable walls
-                createWallCluster(i, j, CellType::BREAKABLE_WALL);
+                CreateWallCluster(i, j, CellType::BREAKABLE_WALL);
             }
             else if (randVal < breakableWallChance + unbreakableWallChance) {
                 // Create a cluster for unbreakable walls
-                createWallCluster(i, j, CellType::UNBREAKABLE_WALL);
+                CreateWallCluster(i, j, CellType::UNBREAKABLE_WALL);
             }
             // Otherwise, leave the cell empty (default)
         }
     }
 }
 
-void GameMap::createWallCluster(int startX, int startY, CellType wallType) {
+void GameMap::CreateWallCluster(int startX, int startY, CellType wallType) {
     int clusterSize = rand() % 3 + 1; // Cluster size: between 1 and 3 cells
 
     for (int i = 0; i < clusterSize; ++i) {
@@ -82,11 +82,11 @@ void GameMap::createWallCluster(int startX, int startY, CellType wallType) {
 }
 
 // Function to check if a position is free
-bool GameMap::isPositionFree(int x, int y) {
+bool GameMap::IsPositionFree(int x, int y) {
     return x >= 0 && x < m_height && y >= 0 && y < m_width && m_grid[x][y] == CellType::EMPTY;
 }
 
-void GameMap::placePlayer(Player* p) {
+void GameMap::PlacePlayer(Player* p) {
     int startX, startY;
     do {
         // Generate random positions between 0 and m_height/m_width - 1
@@ -108,7 +108,7 @@ void GameMap::placePlayer(Player* p) {
 }
 
 // Function to display the map with the player
-void GameMap::display() const {
+void GameMap::Display() const {
     for (int i = 0; i < m_height; ++i) {
         for (int j = 0; j < m_width; ++j) {
             bool ok = false;
@@ -117,7 +117,7 @@ void GameMap::display() const {
                 ok = true;
             }
             for (const auto& enemy : enemies) {
-                if (i == enemy->GetCoordonateY() && j == enemy->GetCoordonateX()) {
+                if (i == enemy->GetCoordonateX() && j == enemy->GetCoordonateY()) {
                     std::cout << " I ";
                     ok = true;
                     break;

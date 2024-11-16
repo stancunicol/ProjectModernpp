@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Point.h"
 #include "Character.h"
 #include "Bullet.h"

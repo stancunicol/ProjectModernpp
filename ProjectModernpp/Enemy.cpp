@@ -1,4 +1,4 @@
-#include "Enemy.h"
+﻿#include "Enemy.h"
 #include "Point.h"
 
 Enemy::Enemy()
@@ -35,11 +35,30 @@ void Enemy::RandomMovement() {
 		break;
 	}
 	Point newPosition = m_position + direction;//The position the enemy will move to.
-	if (newPosition.GetX() >=0 && newPosition.GetX() < m_gameMap.GetHeight() && newPosition.GetY() >= 0 && newPosition.GetY() < m_gameMap.GetWidth() && m_gameMap.isPositionFree(newPosition.GetX(), newPosition.GetY())) {
-		m_position = newPosition;
-		m_direction = direction;
+	std::cout << static_cast<int>(newPosition.GetX()) << " "
+		<< static_cast<int>(newPosition.GetY()) << " "
+		<< static_cast<int>(m_position.GetX()) << " "
+		<< static_cast<int>(m_position.GetY()) << '\n';
+	if (newPosition.GetX() >= 0 && newPosition.GetX() < m_gameMap.GetHeight() && newPosition.GetY() >= 0 && 
+		newPosition.GetY() < m_gameMap.GetWidth()){
+		if (m_gameMap.IsPositionFree(newPosition.GetX(), newPosition.GetY())) {
+			m_position = newPosition;
+			m_direction = direction;
+		}
+		else {
+			// Dacă nu este liberă, nu mutăm inamicul
+			std::cout << "Poziția nu este liberă pentru inamic la: "
+				<< static_cast<int>(newPosition.GetX()) << ", "
+				<< static_cast<int>(newPosition.GetY()) << "\n";
+		}
 	}
-}
+	else {
+		// Dacă inamicul iese în afacerea hărții
+		std::cout << "Inamic ieșit din harta la: "
+			<< static_cast<int>(newPosition.GetX()) << ", "
+			<< static_cast<int>(newPosition.GetY()) << "\n";
+	}
+} 
 
 Bullet Enemy::Shoot() {
 	if(!m_active)
