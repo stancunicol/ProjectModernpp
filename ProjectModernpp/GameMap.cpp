@@ -88,17 +88,18 @@ void GameMap::placePlayer(Player* p) {
     /*
     player->MoveCharacter();  // Dacă ai nevoie de această funcție pentru mișcare, las-o
     */
-
-    player->SetPosition(static_cast<uint32_t>(startX), static_cast<uint32_t>(startY));
+    uint8_t sX = static_cast<uint8_t>(startX);
+    uint8_t sY = static_cast<uint8_t>(startY);
+    player->SetPosition({sX, sY});
     // Mark the cell on the map as occupied by the player
-    m_grid[startX][startY] = CellType::PLAYER;
+    m_grid[sX][sY] = CellType::PLAYER;
 }
 
 // Function to display the map with the player
 void GameMap::display() const {
     for (int i = 0; i < m_height; ++i) {
         for (int j = 0; j < m_width; ++j) {
-            if (player != nullptr && i == player->GetPosition().m_x && j == player->GetPosition().m_y) {
+            if (player != nullptr && i == player->GetCoordonateX() && j == player->GetCoordonateY()) {
                 std::cout << " P ";
             }
             else {
