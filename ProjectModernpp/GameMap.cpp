@@ -123,3 +123,12 @@ void GameMap::display() const {
 std::vector<std::vector<CellType>> GameMap::GetMap() const {
     return m_grid;
 }
+
+uint32_t GameMap::GetWidth() {
+    return m_width;
+}
+
+uint32_t GameMap::GetHeight()
+{
+    return m_height;
+}

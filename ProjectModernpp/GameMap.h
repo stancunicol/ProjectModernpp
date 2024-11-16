@@ -35,4 +35,7 @@ public:
 
     std::vector<std::vector<CellType>> GetMap() const;
 
+    uint32_t GetWidth();
+
+    uint32_t GetHeight();
 };

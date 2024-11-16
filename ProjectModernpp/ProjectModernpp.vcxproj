@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Base.cpp" />
     <ClCompile Include="Battle_city.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Character.cpp" />
@@ -166,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Battle_city.h" />
+    <ClInclude Include="Base.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="CellType.h" />
     <ClInclude Include="Character.h" />
