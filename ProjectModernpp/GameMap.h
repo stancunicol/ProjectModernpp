@@ -17,6 +17,9 @@ private:
     // 2D grid representing the map layout
     std::vector<std::vector<CellType>> m_grid;
 public:
+    //Default constructor.
+    GameMap();
+
     // Constructor
     GameMap(uint32_t width, uint32_t height, uint8_t level);
 

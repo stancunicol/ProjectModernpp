@@ -156,6 +156,7 @@
     <ClCompile Include="Battle_city.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Character.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GameMap.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayWindow.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="CellType.h" />
     <ClInclude Include="Character.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameMap.h" />
     <ClInclude Include="Player.h" />

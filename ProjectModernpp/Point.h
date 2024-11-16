@@ -19,6 +19,8 @@ public:
 	//Copies an object in the current object.
 	Point operator=(const Point& position);
 
+	Point operator+(const Point& position);
+
 	Point operator+=(const Point& position);
 
 	//"GetX" returns the x coordonate.

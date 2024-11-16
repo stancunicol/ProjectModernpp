@@ -1,5 +1,10 @@
 ﻿#include "GameMap.h"
 
+GameMap::GameMap()
+    : m_width(0), m_height(0), m_level(0)
+{
+}
+
 GameMap::GameMap(uint32_t width, uint32_t height, uint8_t level)
     : m_width(width),
     m_height(height),
