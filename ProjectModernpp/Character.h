@@ -1,7 +1,13 @@
 ﻿#pragma once
+
 #include <iostream>
+#ifndef BULLET_H
 #include "Bullet.h"
+#endif 
+
+#ifndef POINT_H
 #include "Point.h"
+#endif 
 
 class Character {
 protected:

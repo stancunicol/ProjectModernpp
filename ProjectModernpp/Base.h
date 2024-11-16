@@ -1,6 +1,12 @@
 #pragma once
+
+#ifndef POINT_H
 #include "Point.h"
+#endif 
+
+#ifndef GAMEMAP_H
 #include "GameMap.h"
+#endif 
 
 class Base
 {

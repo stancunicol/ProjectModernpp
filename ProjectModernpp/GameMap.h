@@ -1,4 +1,5 @@
 #pragma once
+
 #include "CellType.h"
 #include "Character.h"
 #include "Player.h"
@@ -6,12 +7,14 @@
 #include <ctime>
 #include <iostream>
 
+class Enemy;
+
 class GameMap {
 private:
     uint32_t m_width;
     uint32_t m_height;
     uint8_t m_level; // easy = 1, medium = 2, hard = 3
-
+    std::vector<Enemy*> enemies;
     Player* player;
 
     // 2D grid representing the map layout
@@ -22,6 +25,9 @@ public:
 
     // Constructor
     GameMap(uint32_t width, uint32_t height, uint8_t level);
+
+    //Destructor.
+    ~GameMap();
 
     // Initializes the grid with random cell types; default - Empty
     void initialize();
@@ -38,4 +44,8 @@ public:
     uint32_t GetWidth();
 
     uint32_t GetHeight();
+
+    void AddEnemy(Enemy* enemy);
+
+    void MoveEnemies();
 };

@@ -1,4 +1,5 @@
 ﻿#include "GameMap.h"
+#include "Enemy.h"
 
 GameMap::GameMap()
     : m_width(0), m_height(0), m_level(0)
@@ -13,6 +14,12 @@ GameMap::GameMap(uint32_t width, uint32_t height, uint8_t level)
     // Initialize the grid with empty cells
     m_grid.resize(height, std::vector<CellType>(width, CellType::EMPTY));
     initialize();  // Call the initialize function to set up the map based on difficulty
+}
+
+GameMap::~GameMap() {
+    for (Enemy* enemy : enemies) {
+        delete enemy;
+    }
 }
 
 void GameMap::initialize() {
@@ -104,10 +111,20 @@ void GameMap::placePlayer(Player* p) {
 void GameMap::display() const {
     for (int i = 0; i < m_height; ++i) {
         for (int j = 0; j < m_width; ++j) {
+            bool ok = false;
             if (player != nullptr && i == player->GetCoordonateX() && j == player->GetCoordonateY()) {
                 std::cout << " P ";
+                ok = true;
             }
-            else {
+            for (const auto& enemy : enemies) {
+                if (i == enemy->GetCoordonateY() && j == enemy->GetCoordonateX()) {
+                    std::cout << " I ";
+                    ok = true;
+                    break;
+                }
+            }
+            if(!ok) 
+            {
                 switch (m_grid[i][j]) {
                 case CellType::EMPTY: std::cout << " . "; break; // Empty cells represented by "."
                 case CellType::BREAKABLE_WALL: std::cout << " * "; break; // Breakable walls represented by "*"
@@ -131,4 +148,13 @@ uint32_t GameMap::GetWidth() {
 uint32_t GameMap::GetHeight()
 {
     return m_height;
+}
+
+void GameMap::AddEnemy(Enemy* enemy) {
+    enemies.push_back(enemy);
+}
+
+void GameMap::MoveEnemies(){
+    for (Enemy* enemy : enemies)
+        enemy->RandomMovement();
 }

@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include <iostream>
+#ifndef POINT_H
 #include "Point.h"
+#endif 
 
 class Bullet {
 private:

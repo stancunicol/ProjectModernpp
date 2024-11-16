@@ -1,9 +1,19 @@
 #include "Enemy.h"
+#include "Point.h"
+
+Enemy::Enemy()
+{
+}
+
+Enemy::Enemy(const Point& position)
+{
+}
 
 //Constructor.
-Enemy::Enemy(const Point& position)
-	: Character({ 0, 0 }, position), m_active(true)
+Enemy::Enemy(const Point& position, GameMap gameMap)
+	: Character(Point(0, 0), position), m_gameMap(gameMap), m_active{true}
 {
+	srand(time(NULL));
 }
 
 void Enemy::RandomMovement() {
@@ -12,20 +22,20 @@ void Enemy::RandomMovement() {
 	switch (generate)
 	{
 	case 0:
-		generate = ( uint8_t(0), uint8_t(-1) );//Up.
+		direction = Point(0, -1);//Up.
 		break;
 	case 1:
-		generate = (uint8_t(0), uint8_t(1));//Down.
+		direction = Point(0, 1);//Down.
 		break;
 	case 2:
-		generate = (uint8_t(-1), uint8_t(0));//Left.
+		direction = Point(-1, 0);//Left.
 		break;
 	case 3:
-		generate = (uint8_t(1), uint8_t(0));//Right.
+		direction = Point(1, 0);//Right.
 		break;
 	}
 	Point newPosition = m_position + direction;//The position the enemy will move to.
-	if (gameMap.isPositionFree(newPosition.GetX(), newPosition.GetY())) {
+	if (newPosition.GetX() >=0 && newPosition.GetX() < m_gameMap.GetHeight() && newPosition.GetY() >= 0 && newPosition.GetY() < m_gameMap.GetWidth() && m_gameMap.isPositionFree(newPosition.GetX(), newPosition.GetY())) {
 		m_position = newPosition;
 		m_direction = direction;
 	}
@@ -43,4 +53,8 @@ void Enemy::IsShot() {
 
 void Enemy::IsActive() {
 	m_active = true;
+}
+
+Point Enemy::GetPosition() const {
+	return m_position;
 }

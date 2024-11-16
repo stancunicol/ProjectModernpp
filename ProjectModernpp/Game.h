@@ -1,7 +1,14 @@
 #pragma once
+
 #include "CellType.h"
+#ifndef PLAYER_H
 #include "Player.h"
+#endif 
+
+#ifndef GAMEMAP_H
 #include "GameMap.h"
+#endif 
+
 #include <vector>
 #include <ctime>
 #include <iostream>
