@@ -1,35 +1,40 @@
-#pragma once
-#include "Point.h"
+﻿#pragma once
+#include <cstdlib>
 #include "Character.h"
-#include "Bullet.h"
 #include "GameMap.h"
-#include "Player.h"
-#include "CellType.h"
-#include <ctime>
-#include "Weapon.h"
 
-class Enemy : public Character {
-	bool m_active;
-	GameMap m_gameMap;
+class Enemy : virtual public Character {
+private:
+    GameMap& m_map; // Referință la harta jocului
+
 public:
-	//Constructor.
-	Enemy();
-	Enemy(const Point& position);
-	Enemy(const Point& position, GameMap gameMap);
+    Enemy(GameMap& map) : Character(Point(0, 0), Point(0, 0)), m_map(map) {}
 
-	//"Move" determina miscarea inamicului.
-	void RandomMovement();
+    void PlaceCharacter() override {
+        uint16_t startX, startY;
+        do {
+            startX = rand() % m_map.GetHeight();
+            startY = rand() % m_map.GetWidth();
+        } while (m_map.GetMap()[startX][startY] != CellType::EMPTY);
 
-	//The enemy shoots a bullet.
-	Bullet Shoot();
+        m_position = Point(startX, startY);
+        m_map.GetMap()[startX][startY] = CellType::ENEMY;
+    }
 
-	//The enemy is shot.
-	void IsShot();
+    void MoveRandom() {
+        int dx = rand() % 3 - 1;
+        int dy = rand() % 3 - 1;
+        Point newPos = Point(m_position.GetX() + dx, m_position.GetY() + dy);
 
-	//The enemy is active.
-	void IsActive();
+        // Validare mutare
+        if (newPos.GetX() >= 0 && newPos.GetX() < m_map.GetHeight() &&
+            newPos.GetY() >= 0 && newPos.GetY() < m_map.GetWidth() &&
+            m_map.GetMap()[newPos.GetX()][newPos.GetY()] == CellType::EMPTY) {
+            m_map.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::EMPTY;
+            m_position = newPos;
+            m_map.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::ENEMY;
+        }
+    }
 
-	//Returns the current position.
-	Point GetPosition() const;
+    const Point& GetPosition() const { return m_position; }
 };
-

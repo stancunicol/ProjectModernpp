@@ -1,11 +1,15 @@
 #pragma once
 #include "Bullet.h"
 #include <vector>
-#include "Point.h"
 
 class Weapon {
-	std::vector<Bullet> m_bullets;//Containes the list of active/shooted bullets.
+private:
+    std::vector<Bullet> m_bullets;
+
 public:
-	//Shoots and memories the bullet.
-	Bullet Shoot(const Point& direction);
+    Bullet Shoot(const Point& direction) {
+        Bullet bullet(true, 0.25f, direction);
+        m_bullets.push_back(bullet);
+        return bullet;
+    }
 };

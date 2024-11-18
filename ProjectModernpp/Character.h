@@ -1,43 +1,23 @@
-﻿#pragma once
-#include <iostream>
-#include "Bullet.h"
+#pragma once
 #include "Point.h"
 
 class Character {
 protected:
-
-	Point m_direction;//The coordonates represent the direction of movement of the character.
-	uint8_t m_numberOfBulletsReceived;//Counts the number of bullet received.
-	//If the number is equal to three, the character is eliminated from the game.
-	uint8_t m_shotEnemies;//Counts the enemies that were shot.
-	//At every enemy shot, the player receives 100 points.
-	Point m_position;//Represents the current position of the character.
+    Point m_position;
+    Point m_direction;
 
 public:
-	//Default constructor.
-	Character();
+    Character(const Point& direction = Point(0, 0), const Point& position = Point(0, 0))
+        : m_position(position), m_direction(direction) {}
 
-	//Constructor.
-	Character(const Point& direction, const Point& position);
+    virtual void PlaceCharacter() = 0;
 
-	//"MoveCharacter" moves the character in the specified direction.
-	void MoveCharacter(const Point& direction);
+    virtual void MoveCharacter(const Point& direction) {
+        m_position = m_position + direction;
+    }
 
-	//"ReceivedBullet" counts the received bullets.
-	void ReceivedBullet();
+    Point GetPosition() const { return m_position; }
+    Point GetDirection() const { return m_direction; }
 
-	//"ShotEnemy" counts the enemies that were shot.
-	void ShotEnemy();
-
-	//"SetPosition" sets the position of the character.
-	void SetPosition(const Point& position);
-
-	//"GetPosition" returns the current position.
-	Point GetPosition() const;
-
-	//"GetCoordonateX" returns the x coordonate of the current position.
-	uint8_t GetCoordonateX();
-
-	//"GetY" returns the y coordonate of the current position.
-	uint8_t GetCoordonateY();
+    void SetPosition(const Point& point) { m_position = point; }
 };

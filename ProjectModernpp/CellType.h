@@ -3,7 +3,8 @@
 enum class CellType : uint8_t
 {
 	EMPTY,
+	PLAYER,
+	ENEMY,
 	BREAKABLE_WALL,
-	UNBREAKABLE_WALL,
-	PLAYER
+	UNBREAKABLE_WALL
 };

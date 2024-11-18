@@ -1,19 +1,22 @@
-﻿#pragma once
-#include <iostream>
+#pragma once
 #include "Point.h"
 
 class Bullet {
 private:
-	bool m_active = false;//Specifies if the bullet is activated (if the character is going to shoot).
-	float m_speed = 0.25f;//The bullet's speed.
-	Point m_direction;//first și second represent the direction the bullet is going.
-	//(first, second) can be (0,1) - the bullet is going up, (0,-1) - the bullet is going down
-	//(1,0) - the bullet is going right, (-1,0) - the bullet is going left.
+    bool m_active;
+    Point m_direction;
+    float m_speed;
+
 public:
-	//Default constructor.
-	Bullet();
-	//Constructor.
-	Bullet(const bool& active, const float& speed, const Point& direction);
-	//"Shoot" creates a bullet in the direction the character shoots.
-	Bullet Shoot(const Point& direction);
+    Bullet(bool active = false, float speed = 0.25f, const Point& direction = Point(0, 0))
+        : m_active(active), m_speed(speed), m_direction(direction) {}
+
+    bool IsActive() const { return m_active; }
+    void SetActive(bool active) { m_active = active; }
+
+    Point GetDirection() const { return m_direction; }
+
+    Bullet Shoot(const Point& direction) {
+        return Bullet(true, 0.25f, direction);
+    }
 };

@@ -1,21 +1,14 @@
 #pragma once
-#include "Point.h"
+#include "GameMap.h"
 
-class GameMap;
+class Base : public GameMap {
+private:
+    bool m_destroyed;
 
-class Base
-{
-	Point m_position;//The position of the base, which is at the middle of the last row.
-	bool m_destroyed;//The base is destroyed or not.
-	GameMap* m_gameMap;
 public:
-	//Constructor.
-	Base();
+    Base( const GameMap& gameMap)
+        : GameMap(gameMap),m_destroyed{ false } {}
 
-	//The base is destroyed.
-    void Destroyed();
-
-	//Returns the state of the map.
-	bool IsDestroyed();
+    void Destroyed() { m_destroyed = true; }
+    bool IsDestroyed() const { return m_destroyed; }
 };
-
