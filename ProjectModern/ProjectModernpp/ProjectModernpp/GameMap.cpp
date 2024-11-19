@@ -80,13 +80,13 @@ void GameMap::Display() const {
 }
 
 std::vector<std::vector<CellType>>& GameMap::GetMap() {
-    return m_grid; 
+    return m_grid;
 }
 
-uint32_t GameMap::GetWidth() const{
+uint32_t GameMap::GetWidth() const {
     return m_width;
 }
 
-uint32_t GameMap::GetHeight() const{
+uint32_t GameMap::GetHeight() const {
     return m_height;
 }

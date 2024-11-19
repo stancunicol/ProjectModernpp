@@ -2,7 +2,7 @@
 #include "Bullet.h"
 #include <vector>
 
-class Weapon {
+class __declspec(dllexport) Weapon {
 private:
     std::vector<Bullet> m_bullets;//lists of bullets
 

@@ -3,7 +3,7 @@
 #include "Character.h"
 #include "GameMap.h"
 
-class Enemy : virtual public Character {
+class __declspec(dllexport) Enemy : virtual public Character {
 private:
     GameMap& m_map; //references the game map
 

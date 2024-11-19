@@ -5,7 +5,7 @@
 #include "Enemy.h"
 #include "Base.h"
 
-class Game {
+class __declspec(dllexport) Game {
 private:
     GameMap m_map;//the game map
     Player m_player;//the current player

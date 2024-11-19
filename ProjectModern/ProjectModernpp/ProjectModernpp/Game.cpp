@@ -1,7 +1,7 @@
 ﻿#include "Game.h"
 
-Game::Game(uint32_t width, uint32_t height, uint8_t level) 
-	: m_map(width, height, level), m_player("Player", m_map) {
+Game::Game(uint32_t width, uint32_t height, uint8_t level)
+    : m_map(width, height, level), m_player("Player", m_map) {
 }
 
 void Game::InitializeGame() {
@@ -12,7 +12,7 @@ void Game::InitializeGame() {
     }
 }
 
-const std::vector<Enemy>& Game::GetEnemies() const{
+const std::vector<Enemy>& Game::GetEnemies() const {
     return m_enemies;
 }
 

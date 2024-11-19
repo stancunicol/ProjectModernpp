@@ -4,26 +4,26 @@
 class Point {
 	size_t m_x, m_y;
 public:
-	//default constructor.
+	//Default constructor.
 	Point() = default;
 
-	//copy constructor
+	//Copy constructor.
 	Point(const size_t& x, const size_t& y)
 		: m_x{ x }, m_y{ y }
 	{}
 
-	//sets the position.
+	//"SetPosition" sets the position.
 	void SetPosition(const Point& position) {
 		m_x = position.m_x;
 		m_y = position.m_y;
 	}
 
-	//gets the current position.
+	//"GetPosition" gets the current position.
 	Point GetPosition() const {
 		return { m_x, m_y };
 	}
 
-	//copies an object in the current object
+	//Copies an object in the current object.
 	Point operator=(const Point& position) {
 		m_x = position.m_x;
 		m_y = position.m_y;
@@ -42,12 +42,12 @@ public:
 		return *this;
 	}
 
-	//returns the x coordonate
+	//"GetX" returns the x coordonate.
 	size_t GetX() const {
 		return m_x;
 	}
 
-	//returns the y coordonate
+	//"GetY" returns the y coordonate.
 	size_t GetY() const {
 		return m_y;
 	}

@@ -1,7 +1,7 @@
 #include "Enemy.h"
 
 Enemy::Enemy(GameMap& map)
-	: Character(Point(0, 0), Point(0, 0)), m_map(map) {}
+    : Character(Point(0, 0), Point(0, 0)), m_map(map) {}
 
 void Enemy::PlaceCharacter() {
     uint16_t startX, startY;
@@ -29,6 +29,6 @@ void Enemy::MoveRandom() {
     }
 }
 
-const Point& Enemy::GetPosition() const { 
-    return m_position; 
+const Point& Enemy::GetPosition() const {
+    return m_position;
 }

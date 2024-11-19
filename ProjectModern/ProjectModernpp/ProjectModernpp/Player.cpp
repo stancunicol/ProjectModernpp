@@ -1,9 +1,9 @@
 ﻿#include "Player.h"
 
 Player::Player(const std::string& name, GameMap& grid)
-	: m_name(name), m_grid(grid) {}
+    : m_name(name), m_grid(grid) {}
 
-void Player::PlaceCharacter(){
+void Player::PlaceCharacter() {
     uint16_t startX, startY;
     do {
         startX = rand() % m_grid.GetHeight();
@@ -14,7 +14,7 @@ void Player::PlaceCharacter(){
     m_grid.GetMap()[startX][startY] = CellType::PLAYER; // Plasează jucătorul pe hartă
 }
 
-void Player::MoveCharacter(const Point& direction){
+void Player::MoveCharacter(const Point& direction) {
     Point newPos = m_position + direction;
     if (newPos.GetX() >= 0 && newPos.GetX() < m_grid.GetHeight() &&
         newPos.GetY() >= 0 && newPos.GetY() < m_grid.GetWidth() &&

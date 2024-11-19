@@ -1,7 +1,7 @@
 #pragma once
 #include "Point.h"
 
-class Character {
+class __declspec(dllexport) Character {
 protected:
     Point m_position;//the position of the character
     Point m_direction;//the direction the character is moving to

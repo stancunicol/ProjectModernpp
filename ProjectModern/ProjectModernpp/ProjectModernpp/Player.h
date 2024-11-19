@@ -1,8 +1,8 @@
-﻿#pragma once
+#pragma once
 #include "Character.h"
 #include "GameMap.h"
 
-class Player : virtual public Character {
+class __declspec(dllexport) Player : virtual public Character {
 private:
     std::string m_name;//the name of the player, that the player will write in the log in window
     GameMap& m_grid;//the map of the ga,e

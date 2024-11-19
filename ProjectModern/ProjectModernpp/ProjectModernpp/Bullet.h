@@ -1,7 +1,7 @@
 #pragma once
 #include "Point.h"
 
-class Bullet {
+class __declspec(dllexport) Bullet {
 private:
     bool m_active;//the bullet is activated or not
     Point m_direction;//the direction of the bullet

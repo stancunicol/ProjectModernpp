@@ -1,9 +1,9 @@
-﻿#pragma once
+#pragma once
 #include <vector>
 #include <iostream>
 #include "CellType.h"
 
-class GameMap {
+class __declspec(dllexport) GameMap {
 private:
     uint32_t m_width;//the width of the game map
     uint32_t m_height;//the height of the game map
