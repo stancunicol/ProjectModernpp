@@ -79,12 +79,8 @@ void GameMap::Display() const {
     }
 }
 
-std::vector<std::vector<CellType>>& GameMap::GetMap() { 
+std::vector<std::vector<CellType>>& GameMap::GetMap() {
     return m_grid; 
-}
-
-const std::vector<std::vector<CellType>>& GameMap::GetMap() const{
-    return m_grid;
 }
 
 uint32_t GameMap::GetWidth() const{

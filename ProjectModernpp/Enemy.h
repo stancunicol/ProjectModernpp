@@ -5,14 +5,14 @@
 
 class Enemy : virtual public Character {
 private:
-    GameMap& m_map; // Referință la harta jocului
+    GameMap& m_map; //references the game map
 
 public:
-    Enemy(GameMap& map);
+    Enemy(GameMap& map);//"puts" the enemies in the game map
 
-    void PlaceCharacter() override;
+    void PlaceCharacter() override;//function from "Character.h"; places the character at a position
 
-    void MoveRandom();
+    void MoveRandom();//moves the enemies in random movements
 
-    const Point& GetPosition() const;
+    const Point& GetPosition() const;//return the current position
 };

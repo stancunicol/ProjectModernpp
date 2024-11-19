@@ -3,12 +3,12 @@
 
 class Base : public GameMap {
 private:
-    bool m_destroyed;
+    bool m_destroyed;//checks if the base is destroyed
 
 public:
-    Base( const GameMap& gameMap)
-        : GameMap(gameMap),m_destroyed{ false } {}
+    Base( const GameMap& gameMap)//constructor
+        : GameMap{ gameMap }, m_destroyed{ false } {}
 
-    void Destroyed() { m_destroyed = true; }
-    bool IsDestroyed() const { return m_destroyed; }
+    void Destroyed() { m_destroyed = true; }//the base is destroyed
+    bool IsDestroyed() const { return m_destroyed; }//returns if the base is destroyed
 };

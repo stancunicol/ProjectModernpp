@@ -7,19 +7,18 @@
 
 class Game {
 private:
-    GameMap m_map;
-    Player m_player;
-    std::vector<Enemy> m_enemies;
+    GameMap m_map;//the game map
+    Player m_player;//the current player
+    std::vector<Enemy> m_enemies;//the enemies
 
 public:
-    Game(uint32_t width, uint32_t height, uint8_t level);
+    Game(uint32_t width, uint32_t height, uint8_t level);//constructor
 
-    void InitializeGame();
+    void InitializeGame();//the game is initialed
 
-    // Obține lista de inamici // nefolosita inca
-    const std::vector<Enemy>& GetEnemies() const;
+    const std::vector<Enemy>& GetEnemies() const;//returns the list of enemies; unused for now
 
-    void MovePlayer(const Point& direction);
+    void MovePlayer(const Point& direction);//moves the player in the mentioned direction
 
-    void Run();
+    void Run();//runs the game
 };
