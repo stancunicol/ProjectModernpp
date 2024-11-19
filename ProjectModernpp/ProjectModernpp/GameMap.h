@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include "CellType.h"
+#include "Character.h"
 
 class __declspec(dllexport) GameMap {
 private:
@@ -14,8 +15,10 @@ public:
     GameMap(uint32_t width, uint32_t height, uint8_t level);//constructor
 
     void Initialize();//initialize the map based on the level
-
-    void CreateWallCluster(int startX, int startY, CellType wallType);//creates clusters for the cell type
+    bool IsInSafeZone(int x, int y, int safeZoneSize);
+    bool HasEmptyNeighbors(int x, int y);
+    
+    //void CreateWallCluster(int startX, int startY, CellType wallType);//creates clusters for the cell type
 
     void Display() const;//displays the map
 
