@@ -105,6 +105,7 @@ void GameMap::Display() const {
             case CellType::BREAKABLE_WALL: std::cout << "\033[35m" << " * " << "\033[0m"; break;
             case CellType::UNBREAKABLE_WALL: std::cout << "\033[33m" << " # " << "\033[0m"; break;
             case CellType::ENEMY: std::cout << "\033[31m" << " E " << "\033[0m"; break;
+            case CellType::BASE: std::cout  << " B "; break;
             }
         }
         std::cout << '\n';

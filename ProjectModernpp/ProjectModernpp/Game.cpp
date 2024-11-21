@@ -5,6 +5,8 @@ Game::Game(uint32_t width, uint32_t height, uint8_t level)
 }
 
 void Game::InitializeGame() {
+    Base base(m_map);
+    base.PlaceBase();
     m_player.PlaceCharacter();
     for (int i = 0; i < 3; ++i) {
         m_enemies.emplace_back(m_map);

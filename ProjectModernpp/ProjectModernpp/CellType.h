@@ -6,5 +6,6 @@ enum class __declspec(dllexport) CellType : uint8_t
 	PLAYER,
 	ENEMY,
 	BREAKABLE_WALL,
-	UNBREAKABLE_WALL
+	UNBREAKABLE_WALL,
+	BASE
 };
