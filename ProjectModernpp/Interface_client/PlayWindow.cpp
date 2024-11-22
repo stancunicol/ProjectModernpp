@@ -13,10 +13,10 @@ PlayWindow::PlayWindow(QWidget* parent)
     palette.setColor(QPalette::Window, Qt::black); // Background
     palette.setColor(QPalette::WindowText, Qt::white); // Text 
     setPalette(palette);
-    setAutoFillBackground(true); 
+    setAutoFillBackground(true);
 
     // Creating  layout
-    QVBoxLayout* layout = new QVBoxLayout(this); 
+    QVBoxLayout* layout = new QVBoxLayout(this);
     GenerateCode = new QLineEdit(this);
     GenerateCode->setPlaceholderText("CODE");
     GenerateCode->setAlignment(Qt::AlignCenter);
@@ -26,7 +26,7 @@ PlayWindow::PlayWindow(QWidget* parent)
     GenerateCode->setFixedSize(240, 50);
 
     layout->addWidget(GenerateCode);
-    layout->setAlignment(Qt::AlignCenter); 
+    layout->setAlignment(Qt::AlignCenter);
 
 
     // Create generate code button
@@ -53,9 +53,6 @@ PlayWindow::PlayWindow(QWidget* parent)
     layout->addWidget(FowardButton);
     connect(GenerateButton, &QPushButton::clicked, this, &PlayWindow::onGenerateClicked);
     connect(FowardButton, &QPushButton::clicked, this, &PlayWindow::onGenerateClicked);
-   
-
-
 
 }
 

@@ -1,10 +1,10 @@
 <FlowDocument xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Segoe UI" FontSize="12">
   <FlowDocument.Tag><![CDATA[{
-  "timestamp": "2024-11-19 14:51:22",
+  "timestamp": "2024-11-22 18:00:03",
   "files": {
-    "C:\\Users\\Plesu\\Desktop\\ProjectModern_2\\ProjectModernpp\\Interface\\Interface.vcxproj": {
-      "before": "7VlbU9s4FO7zzvQf7EPGww7JA3ESKC3FcYcmlMk0XIZweckMo9gnxItteSSZwm73v++RJctxSCgZWtpl4SGDpaMj+dM537n49e+vXjkfbqKwcg2MBzRuW816w6pA7FE/iC/bVirGa++sD+7r35wjRv8ET1S6MCZpKE4IuwTB29bHNAh9q4JaYnyaCJG8t23uTSAivB4FHqOcjkXdo5HtwzWENAFmR3wkl9mtRmPdQu2VitMTEO0xmiaVPhlB2Lb0hh0aj4PLlBGBB+RKGMXnzVZ6sRemPrStLozSy6/nQbzeylfgmpIqN5Nx7PKgPIr8c45CIsaURW6mxLHNs5LAAYXHvOXfONwxhEA4fON4WupnHFChd7O58VjsUMUPQe6+oz0YtyUP59jGQpXBogGgKYvbktHuhXREwsJMzzraTs6Uh7nNt/WGY98Z1lb1GW6/UOYro5MrHTsf0hJa3V4a+O7f/pbvj1uN5tp46w2sbYyguba1+ebdWmOr+RZafmO86Xv/GFPN1mg1x5SKAxIBT4gHbi8WwMb4n2OXJ7Q0+oBPv3Dl87knmDdqyDe6V0SqyY5RAKadPkooExX9Um1rpXrW0cxyRMSkNtw3BNJJkrrmnnqC0HOrYs+7CHRIP5Bc0bZWV6ol96x9Xanmp6+ttturUzSxauW8U1qSe0CZO05uE3B3kiQMvIyWZpw0m9bQnXLIdukHI0ZYANwVLEWc747rBfkBTygNOQj3urmxXjhRPqqFOxPCiIeXN0DJ0zhA3kbdpdGF2CPoxXVUloGtRGBPB9wYHeu7IXc+oSEgBJeMRIeJCKLgr+wq9fUsnP6pwBtifjrQn4+1It8/HWzPxVZ7yxF0mZjV4lJ83L0REMtUEwlLYIqpIyUG12yjTHY6NJQWD5DtwFeU/LAVOccNJoDJqrUUy5WCQ3YmDGJ38UAiZzJodgM2G66mok09RbE8bk1xLdwEXPAqRqql9azWTMjqU4+EGI+6RJA8fpjw+CBoHwPUTDh4gcqUKwsSjoyJXmBaDFNuUc8PqNzPSrwmXX+fyErZOG1ZboowHpjTlpFTZbHMqF2ZYV/oOjlLsbdXqjp3H3Q/z84MaJjKXFqSGx5JNgD2McVkcZIgAU+p1WmRynJvi52mBi7wTLXybndmO++HEgw+PAqBp8Mu8CtBk2Fp64tW+TlJhqgZZbHkd+wplSqOyEK9yHPVmKzksJYI4qxQUHexPMZZZ2C1qBDCDo2SIATt2RgtzgmLMcj1Zd/DzX4xlS8NKtxQdNDtdybgXen80zwagSMGCaMecE5ZcXbunvcO1lvbF93dj6d72xedw4PBYX93+4/qAvmarMPmazJbIRSy9UFiD+Rt6yPNjuortzsz7+30g/iqwGCQjga3HAF3UQHHpNuxiyGz5R7EgC0eVSv11PbS8PTeC6fzQ5g9VZleADSdUTzy1nNW+q73/imNPfmimXXIt0B70S89d8oghjU7CzCV8nKxvLKcM2EWGbNSab15NAKLbENZ2cF/3Mp2YzIKoXO43905+URD2ePUWM+bMaDo+hCOYQwMm6OmiJ8zYRYtNFkF/cJppUASmfaiH2jRU/Wkdlhn1pufiMX+3/yFIO/4qmtFQh3BMORitKVZy+jxYfFe9cZmC6kuJBD7aOuyY1UKv9iGC4ORYy+QfUrzzQm5lOw8zoBzMv3F6fiFiH89Ii4yDXRnY4XFN6mIBHHdSxKT489+ULjbW7i3GS7UFzijbqqDkreyTbdF99Tnt07MBwL3Xw==",
-      "after": "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"
+    "C:\\Users\\Plesu\\Desktop\\ProjectModernpp\\Interface_client\\Interface_client.vcxproj": {
+      "before": "7Vlfb9s2EO/zgH2AvQlCBjsPsZw4S9JFVtHaaWDU+YM4f14GFDR9jrVKokBSabJ2n3VfZSeSoizHTmqsc7YgeQgi8u54/PH4uzvmr59evfLf3MaRcwNchCxpu5uNputAQtkoTK7bbibHG3vum+DHH/xTzn4HKp0ujEkWyXPCr0GKtvsuC6OR66CVBL8mUqa/ep6gE4iJaMQh5UywsWxQFnsjuIGIpcC9WAxzNW+r2Wy5aN1x/J6E+JCzLHX6ZAhR2zULdlgyDq8zTiQ6KLQwis+bdXoJjbIRtN0uDLPrr1dh0toqNFCnYipQMr5XHcxdyX/804jIMeNxoIz4nv3WEjig8Zin/ohzZxABEfCIe0bqKRzU6N3ubP9T7NDEv4LcQ659M25LOadC1LMxqkMWQwCDWd5VwvYwYkMSlYF62TGRcqnvWLC522j63r1hE1cf4O4z4yMddrmm7xVDRsKYO8zCUfBlp0WB7u3sbNDW5tbG9uvm6429X8Z7GzukORzt7o0pbe3+aYNV6RgzZ4zJYxKDSAmFoJdI4GP8i0YhJNL3qtNGB+/CiH0W+u4XN8Luq5nv60GR3IxypoTNXP44ZVw6Zmttd61+2TEMc0rkZP23I0sknTRtGA5qpHgAwnW8eceBF3MU5pzRdmtr9co1Xf+6Vi+8X6+127Upuqi5Bf9UVIqbUOWQ87sUgrdpGoVU0dPMZVXTBroLAWqVfjjkhIcgAskz8L3740ahcPCcsUiADG42t1vlZSpGjXBnQjiheIQDlLxIQuRvtF0ZXYg9gl4eh7MMbBUiWx1wY7xe3w25qwmLACG45iQ+SWUYh3+oozTHs3D6SYG3BL060J9PtCLvrw62ZxGrijp6y1F0lZq1ciVPHtxKSPKiEylLYrFpMqbvTclOJ4eK8gD5DrDq1AL3VDDLTFkpCL0gusEEsHJ1l6K6SoZQq6oq8T4oyOc8z53dkM9mramk08hQrEhfU5QLt6GQoo4Ja2k7tXWbufqMkgjTUpdIUqSRIkvmCXgKG7OV7w3XTGZ4AezbKhBFTS9gPQZWEV3PEC5FtQVRVSgvJ4QjkrfT+iprUsamGYvhMFGVrpafopPlCt+CCzpRh8VpGEEZiVeEJ8jR/byBD9RvrEUrg7oeQnYZdPudCdBPpoCyn1bglAMmBwpCMF76LoKr3nFra/9j9+DdxeH+x87J8eCkf7D/c32B/HreSMy3ZJfKS3js4UlC4QgrYuPS7KgWx3J5Zt9+P0w+lRgMsuHgTiDgARoQWDX6XjlklzyEBPCtQhf7Pb183oWYtRdOF07YNZGm7x+u8kY9lZTILX/qxf1RTxu1srWZ2T8eZuWIHz7391lC840qqXwXGC9m03OnLGLYevIQKwFaiBWt0ZwJq2TDStel9tMKLIoNHWXH//MoO0jIMILOyVH37fl7FuWPdQbreTMWFNPgwBmMgeMrn+1C50xYpYUhq6FfOK0N+N4qInqqIXpiFnvhL8OZK+Cv6fzvz7L3s2SvF976D/FWTnDlvy0CHfAqG5s0vVzHLPV/VIpGbV5LZntm8zaqU/dsQ2efe9GNvwE=",
+      "after": "7VlbU9tGFM5zZ/obqmroGM8Uy+CUkCArE2xCmdrczOWFGUaW17YSSauuVgS36T/pj+3Zq722BLgkJJOQB2Ltnl2dPfud71z070/Pnrmvb+LIukYkC3HStNdrddtCSYAHYTJq2jkdrm3Zr70ff3CPCH6HAmq10dDPI3rqkxGiWdPeycNoYFuwSwJPY0rTV46TBWMU+1ktDgOCMzyktQDHzgBdowiniDhx1mfLnI16vWHD7pbl7lMU7xGcp1bH76OoacsXtnAyDEc58SkomAlhEC+atfaTIMoHqGm3UT8ffbwIk8aGWgFrjK08LuM65iBThf1zjyKfDjGJPb6J6+hnIQEDwh5Fy+9Q7gRFyM/QHepJqS+hoLDezebzh9oOtvgslrtNtXvbbUnlXEcjVAAWAABQphMDtHsR7vvRFKbnLYmTc+Fh3vqLWt11FoYlqv5Akw+YDATo2ErXUUNSQm63l4cD7+/NRoCCrc3NtaCxvrH2/GX95drWb8OttU2/3h+82BoGQePFPxqqfI3c5gRjeuDHKEv9AHn7CUVkCL+CKEQJdR1zWq4BTxjgD5nwfOUP+lx1dq5bRebOeEzPe1fXjTpAZO6Mx7SbcVqxwLsGIXP8pl1ZWdXj1UqzWalYhyfWz7s3YUazVWP28k9ao4KfKlXbW1nt9vh20nbtkACRYTKpXuodXUf/FLfL/Ht6vZKi4hQTasltmvbK6nlL8uCRT8fVy66mu1aa1iRT1lLYKbMtpwg25gENMql+XFlVVuYHniG1iq1Y0lii/NVkutNJirw3aRqFASfROUrh0/JuzjLE39IJ+8QnIco8SnLkOovjcoFS8BTjKEPUu15/3pi6vBqVwq2xT/wAoNYDybMkhCgDexujTJIDdt72xnXM4cKwwYLZDLp9PMMNgQY+meUuxjhCYIIR8ePDlIZx+Be/Snk9pdNf1PA6jDye0b8dtEJ0ejyzfStY3V+OoE1iXlysQ0IVIsrVQCS+meLzGeouCUJzSyAWFQcBmfAeU+BFCnk3BIuZzSG03U5wZlwoDDMPfMM8hX6Od8yyxefYX51BOJZ8g4jeFsuEmra+7gNM3+I8gapmB0ENgGSMb9qtPKM45rnEditq4TgNI2Rc1t35SHnWckwFtFjOIom7i7LMHyFLYNNPAlDz93A0tq1TdENnVH5lBTiPBlaCqRVhiPPImiZBv7LfHOzbFvzHy7jYn3BhXofBYsJyomhS0xB1xKlnMx8j0929oShhRaMGrQcpMndALle6sAdZABrY95SGoMdTgd4YQblp2Ho5x1AmXXRzSG4IS3ghL5xP4WYysFoOYgW+j3QCuvQ+jBCkZ3bgziLI0do+9VVOpa4CMqJFpTVYWRKr1JKovtc1PMSwypd4bVzRaF3UcmmTGBf8PZp2hgafEEsNxvkUiOXs/10bVlnRMC3z067PenWKdHg/DirYMOH1t5D+31mJsrgOmnIAqO3CJwnkPB3WG/T4XyggjUERC0G01+60xih4L6se/agFjghKCQ4gaGIy1T3zLvYPGhvbV+3dnbO97avW4UHvsLO7/ctqiXyVVaDFO+lXsZQM2oMsJHehjJUqzY9q8S60TEMwvdBNZA6zFVz5vNgCymSVbyhbdsLk/dSMvbzfm2TQQ/VAhwyqRdeZDmk19lCCoJMqivx9cQLWXpHql04rJfQ7RTdsauPZkA9KzE0slc6WBJf58y8Hnbd5ErCDcoCxUwDk5KELp7TFoDVGQshzAiWmWiIFE3qRRqaoR/WjFiiDlwDqwRNQdxO/H6HWYbf95vQtjtjXCHldRTParrI3gk7QEBH4jKEbWAUTelEp6sXtlU6LDVznMZyiIC14mENoTC4L0ScWdUsR8RUBRrGokfA8DDKKAb9yDn1iT7eIIwU2i2Y0ERaQpFhVMKEXPZYziAxj4SvcYs156zcZKj4LTbPchY7hTGE97aAYZWlJt2/mk5Nq8wnljExbt01kU2mxD6K/13n/AQ=="
     }
   }
 }]]></FlowDocument.Tag>
@@ -17,7 +17,7 @@
       <Span TextDecorations="Underline">Project Format Conversion</Span>
     </Paragraph>
     <Paragraph Margin="12,8" FontSize="18">
-      <Span>Report generated on 2024-11-19 14:51:22</Span>
+      <Span>Report generated on 2024-11-22 18:00:03</Span>
     </Paragraph>
   </Section>
   <Section>
@@ -25,17 +25,17 @@
       <Span>Files</Span>
     </Paragraph>
     <Paragraph Margin="24,12,0,0">
-      <Span FontFamily="Consolas" FontSize="14" Background="WhiteSmoke"><![CDATA[C:\Users\Plesu\Desktop\ProjectModern_2\ProjectModernpp\Interface\Interface.vcxproj]]></Span>
+      <Span FontFamily="Consolas" FontSize="14" Background="WhiteSmoke"><![CDATA[C:\Users\Plesu\Desktop\ProjectModernpp\Interface_client\Interface_client.vcxproj]]></Span>
       <LineBreak />
-      <Hyperlink NavigateUri="file://C:\Users\Plesu\Desktop\ProjectModern_2\ProjectModernpp\Interface\Interface.vcxproj?before">[Before]</Hyperlink>
-      <Hyperlink NavigateUri="file://C:\Users\Plesu\Desktop\ProjectModern_2\ProjectModernpp\Interface\Interface.vcxproj?after">[After]</Hyperlink>
-      <Hyperlink NavigateUri="file://C:\Users\Plesu\Desktop\ProjectModern_2\ProjectModernpp\Interface\Interface.vcxproj?diff&amp;before&amp;after">
+      <Hyperlink NavigateUri="file://C:\Users\Plesu\Desktop\ProjectModernpp\Interface_client\Interface_client.vcxproj?before">[Before]</Hyperlink>
+      <Hyperlink NavigateUri="file://C:\Users\Plesu\Desktop\ProjectModernpp\Interface_client\Interface_client.vcxproj?after">[After]</Hyperlink>
+      <Hyperlink NavigateUri="file://C:\Users\Plesu\Desktop\ProjectModernpp\Interface_client\Interface_client.vcxproj?diff&amp;before&amp;after">
                         [Diff before/after]
                     </Hyperlink>
-      <Hyperlink NavigateUri="file://C:\Users\Plesu\Desktop\ProjectModern_2\ProjectModernpp\Interface\Interface.vcxproj?diff&amp;before&amp;current">
+      <Hyperlink NavigateUri="file://C:\Users\Plesu\Desktop\ProjectModernpp\Interface_client\Interface_client.vcxproj?diff&amp;before&amp;current">
                         [Diff before/current]
                     </Hyperlink>
-      <Hyperlink NavigateUri="file://C:\Users\Plesu\Desktop\ProjectModern_2\ProjectModernpp\Interface\Interface.vcxproj?diff&amp;after&amp;current">
+      <Hyperlink NavigateUri="file://C:\Users\Plesu\Desktop\ProjectModernpp\Interface_client\Interface_client.vcxproj?diff&amp;after&amp;current">
                         [Diff after/current]
                     </Hyperlink>
       <LineBreak />
@@ -57,7 +57,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\Plesu\Desktop\ProjectModern_2\ProjectModernpp\Interface\Interface.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\Plesu\Desktop\ProjectModernpp\Interface_client\Interface_client.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -127,7 +127,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\Plesu\Desktop\ProjectModern_2\ProjectModernpp\Interface\Interface.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\Plesu\Desktop\ProjectModernpp\Interface_client\Interface_client.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -158,7 +158,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\Plesu\Desktop\ProjectModern_2\ProjectModernpp\Interface\Interface.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\Plesu\Desktop\ProjectModernpp\Interface_client\Interface_client.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -189,7 +189,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\Plesu\Desktop\ProjectModern_2\ProjectModernpp\Interface\Interface.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\Plesu\Desktop\ProjectModernpp\Interface_client\Interface_client.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -220,7 +220,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\Plesu\Desktop\ProjectModern_2\ProjectModernpp\Interface\Interface.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\Plesu\Desktop\ProjectModernpp\Interface_client\Interface_client.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -281,7 +281,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\Plesu\Desktop\ProjectModern_2\ProjectModernpp\Interface\Interface.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\Plesu\Desktop\ProjectModernpp\Interface_client\Interface_client.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -332,7 +332,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\Plesu\Desktop\ProjectModern_2\ProjectModernpp\Interface\Interface.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\Plesu\Desktop\ProjectModernpp\Interface_client\Interface_client.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -402,7 +402,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\Plesu\Desktop\ProjectModern_2\ProjectModernpp\Interface\Interface.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\Plesu\Desktop\ProjectModernpp\Interface_client\Interface_client.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -426,4 +426,4 @@
     <Paragraph />
   </Section>
 </FlowDocument>
-<!--qC0IDpoiMl7V1mWiNVr2fR0g4n1sIThIPnC45KW8HAw=-->
+<!--impueaN8urF5pfQlij7KYdo/5sdyt2QTNxDHsADVk10=-->

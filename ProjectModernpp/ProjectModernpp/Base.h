@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "GameMap.h"
 #include "CellType.h"
 
@@ -23,11 +23,11 @@ public:
         // Access the map grid directly
         auto& map = m_gameMap.GetMap();
         map[centerX][centerY] = CellType::BASE;
-        map[centerX][centerY - 1] = CellType::UNBREAKABLE_WALL;
-        map[centerX][centerY + 1] = CellType::UNBREAKABLE_WALL;
-        map[centerX - 1][centerY - 1] = CellType::UNBREAKABLE_WALL;
-        map[centerX - 1][centerY] = CellType::UNBREAKABLE_WALL;
-        map[centerX - 1][centerY + 1] = CellType::UNBREAKABLE_WALL;
+        map[centerX][centerY - 1] = CellType::BREAKABLE_WALL;
+        map[centerX][centerY + 1] = CellType::BREAKABLE_WALL;
+        map[centerX - 1][centerY - 1] = CellType::BREAKABLE_WALL;
+        map[centerX - 1][centerY] = CellType::BREAKABLE_WALL;
+        map[centerX - 1][centerY + 1] = CellType::BREAKABLE_WALL;
     }
 
     // Marks the base as destroyed

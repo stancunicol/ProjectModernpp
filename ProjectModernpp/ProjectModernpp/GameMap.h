@@ -17,7 +17,7 @@ public:
     void Initialize();//initialize the map based on the level
     bool IsInSafeZone(int x, int y, int safeZoneSize);
     bool HasEmptyNeighbors(int x, int y);
-    
+
     //void CreateWallCluster(int startX, int startY, CellType wallType);//creates clusters for the cell type
 
     void Display() const;//displays the map

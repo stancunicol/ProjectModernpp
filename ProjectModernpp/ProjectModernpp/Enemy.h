@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <cstdlib>
 #include "Character.h"
 #include "GameMap.h"
