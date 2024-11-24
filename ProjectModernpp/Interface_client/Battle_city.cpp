@@ -17,11 +17,13 @@ Battle_city::Battle_city(QWidget* parent)
 	setCentralWidget(background);//Set the QLabel as the centre widget
 
 	QVBoxLayout* layout = new QVBoxLayout(background);//vertical layout
-	playButton = new QPushButton("Play", this);//Play button
-	connectButton = new QPushButton("Connect", this);//Connect button
-	controlsButton = new QPushButton("Controls", this);//Controls button
+	QHBoxLayout* otherLayout = new QHBoxLayout;// horizontal layout
 
-	playButton->setFixedSize(270, 40);
+	playButton = new QPushButton("Play", this);//play button
+	connectButton = new QPushButton("Connect", this);//connect button
+	controlsButton = new QPushButton("Controls", this);//controls button
+
+	playButton->setFixedSize(320, 55);
 	connectButton->setFixedSize(270, 40);
 	controlsButton->setFixedSize(270, 40);
 
@@ -34,9 +36,28 @@ Battle_city::Battle_city(QWidget* parent)
 	playButton->setStyleSheet("background-color: rgba(50, 50, 50, 0.7); color: white;border: 1px solid black;border - radius: 5px;");
 	connectButton->setStyleSheet("background-color: rgba(50, 50, 50, 0.7);color: white;border: 1px solid black;border - radius: 5px;");
 	controlsButton->setStyleSheet("background-color: rgba(50, 50, 50, 0.7);color: white;border: 1px solid black;border - radius: 5px;");
-	layout->addWidget(playButton);
-	layout->addWidget(connectButton);
-	layout->addWidget(controlsButton);
+	
+	layout->addSpacerItem(new QSpacerItem(0, 200, QSizePolicy::Minimum, QSizePolicy::Fixed));//spacer
+	/*   2: The width of the spacer in pixels
+
+		 0: The height of the spacer in pixels
+
+		 QSizePolicy::Minimum : This is the size policy on the width direction. Minimum indicates that the spacer will not try to expand, but will only occupy the specified width (which is 0 in this case).
+
+		 QSizePolicy::Expanding: The vertical/horizontal size policy, which indicates that this spacer will occupy as much vertical space as possible.
+
+		 *QSizePolicy::Fixed : This is the size policy in the direction of height/width. Fixed indicates that the height of the spacer will remain constant (10 pixels) and will not adapt to the size of the layout
+	*/
+	layout->addWidget(playButton, 0, Qt::AlignCenter);//0-place at the beggining of the layout, aligned in the center of te page
+
+	otherLayout->addWidget(connectButton);
+	otherLayout->addSpacerItem(new QSpacerItem(350, 0, QSizePolicy::Fixed, QSizePolicy::Minimum));//spacer
+
+	otherLayout->addWidget(controlsButton);
+
+	otherLayout->setAlignment(Qt::AlignBottom | Qt::AlignCenter);// Center the buttons
+
+	layout->addLayout(otherLayout);//combine the other layout in the main one
 
 	connect(playButton, &QPushButton::clicked, this, &Battle_city::onPlayButtonClicked);//connect the button to His use
 	connect(connectButton, &QPushButton::clicked, this, &Battle_city::onConnectButtonClicked);
@@ -44,7 +65,8 @@ Battle_city::Battle_city(QWidget* parent)
 }
 
 Battle_city::~Battle_city()
-{}
+{
+}
 
 void Battle_city::onPlayButtonClicked()
 {
