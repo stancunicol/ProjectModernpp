@@ -114,12 +114,14 @@ Battle_city::~Battle_city()
 
 void Battle_city::onPlayButtonClicked()
 {
-	QMessageBox::information(this, "Play", "The play button has been pressed!");
+	LoginWindow* login = new LoginWindow(this);//associates the login window with the current window
+	int result = login->exec();//opens the login window as a modal dialog, meaning the user cannot interact with the parent window until the login window is closed
 }
 
 void Battle_city::onConnectButtonClicked()
 {
-	QMessageBox::information(this, "Connect", "The connect button has been pressed!");
+	LoginWindow* login = new LoginWindow(this);
+	int result = login->exec();
 }
 
 void Battle_city::onControlsButtonClicked()

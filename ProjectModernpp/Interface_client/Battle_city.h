@@ -9,6 +9,7 @@
 #include <QMessageBox>//to create dialogs that can inform the user or reguest a decision
 #include <QFont>//font buttons
 #include <QHBoxLayout>//for horizontal layout
+#include "LoginWindow.h"
 
 class Battle_city : public QMainWindow
 {
