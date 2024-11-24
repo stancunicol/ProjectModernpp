@@ -1,4 +1,5 @@
 ﻿#include "Player.h"
+#include <fstream>
 
 Player::Player(const std::string& name, GameMap& grid)
     : m_name(name), m_grid(grid) {}
@@ -16,15 +17,20 @@ void Player::PlaceCharacter() {
 
 void Player::MoveCharacter(const Point& direction) {
     Point newPos = m_position + direction;
+    auto& map = m_grid.GetMap();
     if (newPos.GetX() >= 0 && newPos.GetX() < m_grid.GetHeight() &&
         newPos.GetY() >= 0 && newPos.GetY() < m_grid.GetWidth() &&
-        m_grid.GetMap()[newPos.GetX()][newPos.GetY()] == CellType::EMPTY) {
-        // Golire poziție veche
-        auto& map = m_grid.GetMap();
-        map[m_position.GetX() - direction.GetX()][m_position.GetY() - direction.GetY()] = CellType::EMPTY;
+        map[newPos.GetX()][newPos.GetY()] == CellType::EMPTY) {
 
-        // Setează noua poziție
+        map[m_position.GetX()][m_position.GetY()] = CellType::EMPTY;
+
         m_position = newPos;
-        map[newPos.GetX()][newPos.GetY()] = CellType::PLAYER; // Plasează jucătorul pe noua poziție
+
+        map[newPos.GetX()][newPos.GetY()] = CellType::PLAYER;
+
+        m_direction = direction;
+    }
+    else {
+        m_direction = Point(0, 0);
     }
 }

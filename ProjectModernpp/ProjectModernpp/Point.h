@@ -30,9 +30,13 @@ public:
 		return *this;
 	}
 
-	Point operator+(const Point& position) {
-		m_x = m_x + position.m_x;
-		m_y = m_y + position.m_y;
+	Point operator+(const Point& position) const {
+		return Point(m_x + position.m_x, m_y + position.m_y);
+	}
+
+	Point operator-(const Point& position) {
+		m_x = m_x - position.m_x;
+		m_y = m_y - position.m_y;
 		return *this;
 	}
 

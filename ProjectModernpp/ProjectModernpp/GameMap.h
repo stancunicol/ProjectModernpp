@@ -14,6 +14,8 @@ private:
 public:
     GameMap(uint32_t width, uint32_t height, uint8_t level);//constructor
 
+    GameMap(uint32_t width, uint32_t height);
+
     void Initialize();//initialize the map based on the level
     bool IsInSafeZone(int x, int y, int safeZoneSize);
     bool HasEmptyNeighbors(int x, int y);

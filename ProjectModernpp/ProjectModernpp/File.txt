@@ -1,0 +1,2 @@
+Pozitia curenta: (8, 11)
+Mutare de la (8, 11) la (8, 11)

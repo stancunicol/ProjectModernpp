@@ -5,6 +5,9 @@ GameMap::GameMap(uint32_t width, uint32_t height, uint8_t level)
     m_grid.resize(height, std::vector<CellType>(width, CellType::EMPTY));
     Initialize();
 }
+GameMap::GameMap(uint32_t width, uint32_t height) {
+    m_grid.resize(height, std::vector<CellType>(width, CellType::EMPTY));
+}
 void GameMap::Initialize() {
     int breakableWallChance;
     int unbreakableWallChance;
@@ -106,6 +109,7 @@ void GameMap::Display() const {
             case CellType::UNBREAKABLE_WALL: std::cout << "\033[33m" << " # " << "\033[0m"; break;
             case CellType::ENEMY: std::cout << "\033[31m" << " E " << "\033[0m"; break;
             case CellType::BASE: std::cout << " B "; break;
+            case CellType::BULLET: std::cout << "\033[34m" << " o " << "\033[0m"; break;
             }
         }
         std::cout << '\n';
