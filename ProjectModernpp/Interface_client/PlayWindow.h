@@ -6,7 +6,7 @@
 #include <QVBoxLayout>
 #include <QMessageBox> // Pentru afișarea mesajelor de eroare
 
-class PlayWindow : public QWidget {
+class PlayWindow : public QDialog {
     Q_OBJECT
 
 public:
@@ -15,6 +15,7 @@ public:
 
 protected:
     void onGenerateClicked(); // Slot pentru gestionarea click-ului pe butonul de generare cod
+    void OnFowardClicked();
     QString GenerateRandomNumber();// functie pentru generare random de cod
 
 private:
