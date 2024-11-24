@@ -157,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Battle_city.cpp" />
+    <ClCompile Include="LoginWindow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlayWindow.cpp" />
   </ItemGroup>
@@ -165,9 +166,13 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="Battle_city.ui" />
+    <QtUic Include="LoginWindow.ui" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Battle_city.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="LoginWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />

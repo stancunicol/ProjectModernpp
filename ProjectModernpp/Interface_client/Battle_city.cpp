@@ -33,9 +33,53 @@ Battle_city::Battle_city(QWidget* parent)
 	connectButton->setFont(buttonFont);
 	controlsButton->setFont(buttonFont);
 
-	playButton->setStyleSheet("background-color: rgba(50, 50, 50, 0.7); color: white;border: 1px solid black;border - radius: 5px;");
-	connectButton->setStyleSheet("background-color: rgba(50, 50, 50, 0.7);color: white;border: 1px solid black;border - radius: 5px;");
-	controlsButton->setStyleSheet("background-color: rgba(50, 50, 50, 0.7);color: white;border: 1px solid black;border - radius: 5px;");
+	playButton->setStyleSheet(
+		"QPushButton {"
+		"background-color: rgba(50, 50, 50, 0.7);"
+		"color: white;"
+		"border: 1px solid black;"
+		"border - radius: 5px;"
+		"}"
+		"QPushButton:hover {"
+		"background-color: rgba(30, 30, 30, 0.7);"
+		"color: rgba(255, 255, 0,0.7);"//yellow
+		"}"
+		"QPushButton:pressed {"
+		"background-color: rgba(20, 20, 20, 0.7);"
+		"color: rgba(0, 0, 0,0.5);"//black
+		"}");
+
+	connectButton->setStyleSheet(
+		"QPushButton {"
+		"background-color: rgba(50, 50, 50, 0.7);"
+		"color: white;"
+		"border: 1px solid black;"
+		"border - radius: 5px;"
+		"}"
+		"QPushButton:hover {"
+		"background-color: rgba(30, 30, 30, 0.7);"
+		"color: rgba(255, 255, 0,0.7);"//yellow
+		"}"
+		"QPushButton:pressed {"
+		"background-color: rgba(20, 20, 20, 0.7);"
+		"color: rgba(0, 0, 0,0.5);"//black
+		"}");
+
+	controlsButton->setStyleSheet(
+		"QPushButton {"
+		"background-color: rgba(50, 50, 50, 0.7);"
+		"color: white;"
+		"border: 1px solid black;"
+		"border - radius: 5px;"
+		"}"
+		"QPushButton:hover {"
+		"background-color: rgba(30, 30, 30, 0.7);"
+		"color: rgba(255, 255, 0,0.7);"//yellow
+		"}"
+		"QPushButton:pressed {"
+		"background-color: rgba(20, 20, 20, 0.7);"
+		"color: rgba(0, 0, 0,0.5);"//black
+		"}");
 	
 	layout->addSpacerItem(new QSpacerItem(0, 200, QSizePolicy::Minimum, QSizePolicy::Fixed));//spacer
 	/*   2: The width of the spacer in pixels
@@ -70,7 +114,7 @@ Battle_city::~Battle_city()
 
 void Battle_city::onPlayButtonClicked()
 {
-	QMessageBox::information(this, "Play", "The Play button has been pressed!");
+	QMessageBox::information(this, "Play", "The play button has been pressed!");
 }
 
 void Battle_city::onConnectButtonClicked()
