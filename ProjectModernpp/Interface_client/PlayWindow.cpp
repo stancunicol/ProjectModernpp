@@ -2,12 +2,13 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include<qpalette>
+
 PlayWindow::PlayWindow(QWidget* parent)
-    : QDialog(parent) {
+    : QDialog(parent) 
+{
     // Set title and size for window
     setWindowTitle("Generate Code");
     setFixedSize(300, 200);
-
 
     QPalette palette;
     palette.setColor(QPalette::Window, Qt::black); // Background
@@ -17,21 +18,19 @@ PlayWindow::PlayWindow(QWidget* parent)
 
     // Creating  layout
     QVBoxLayout* layout = new QVBoxLayout(this);
-    GenerateCode = new QLineEdit(this);
-    GenerateCode->setPlaceholderText("CODE");
-    GenerateCode->setAlignment(Qt::AlignCenter);
-    GenerateCode->setEnabled(false);
-    GenerateCode->setStyleSheet("color: lightBlue;background-color: darkBlue;font-size: 20px;border: 2px solid lightBlue");
+    generateCode = new QLineEdit(this);
+    generateCode->setPlaceholderText("CODE");
+    generateCode->setAlignment(Qt::AlignCenter);
+    generateCode->setEnabled(false);
+    generateCode->setStyleSheet("color: lightBlue;background-color: darkBlue;font-size: 20px;border: 2px solid lightBlue");
+    generateCode->setFixedSize(240, 50);
 
-    GenerateCode->setFixedSize(240, 50);
-
-    layout->addWidget(GenerateCode);
+    layout->addWidget(generateCode);
     layout->setAlignment(Qt::AlignCenter);
 
-
     // Create generate code button
-    GenerateButton = new QPushButton("Generate code", this);
-    GenerateButton->setStyleSheet("QPushButton {"
+    generateButton = new QPushButton("Generate code", this);
+    generateButton->setStyleSheet("QPushButton {"
         "background-color: rgba(0, 191, 255, 0.7);" // light blue
         "color: white;" // text alb
         "border: none;"
@@ -47,12 +46,10 @@ PlayWindow::PlayWindow(QWidget* parent)
         "background-color: rgba(0, 0, 139, 0.7);" // even darker blue (dark blue shade)
         "color: rgba(255, 255, 255, 0.7);" // alb transparent
         "}");
-    layout->addWidget(GenerateButton);
+    layout->addWidget(generateButton);
 
-
-
-    FowardButton = new QPushButton("Start game", this);
-    FowardButton->setStyleSheet("QPushButton {"
+    fowardButton = new QPushButton("Start game", this);
+    fowardButton->setStyleSheet("QPushButton {"
         "background-color: rgba(144, 238, 144, 0.7);" // light green
         "color: white;" // text alb
         "border: none;"
@@ -68,13 +65,13 @@ PlayWindow::PlayWindow(QWidget* parent)
         "background-color: rgba(0, 100, 0, 0.7);" // even darker green (dark green shade)
         "color: rgba(255, 255, 255, 0.7);" // alb transparent
         "}");
-    layout->addWidget(FowardButton);
-    connect(GenerateButton, &QPushButton::clicked, this, &PlayWindow::onGenerateClicked);
-    connect(FowardButton, &QPushButton::clicked, this, &PlayWindow::onGenerateClicked);
-
+    layout->addWidget(fowardButton);
+    connect(generateButton, &QPushButton::clicked, this, &PlayWindow::OnGenerateClicked);
+    connect(fowardButton, &QPushButton::clicked, this, &PlayWindow::OnForwardClicked);
 }
 
-PlayWindow::~PlayWindow() {
+PlayWindow::~PlayWindow() 
+{
     // Destructor (nimic special de curățat aici)
 }
 QString PlayWindow::GenerateRandomNumber()
@@ -92,12 +89,14 @@ QString PlayWindow::GenerateRandomNumber()
 
 }
 
-void PlayWindow::OnFowardClicked()
+void PlayWindow::OnForwardClicked()
 {
+
 }
 
-void PlayWindow::onGenerateClicked() {
+void PlayWindow::OnGenerateClicked() 
+{
     QString randomNumber = GenerateRandomNumber();
-    GenerateCode->setText(randomNumber);
+    generateCode->setText(randomNumber);
 }
 

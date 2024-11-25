@@ -6,7 +6,8 @@
 #include <QVBoxLayout>
 #include <QMessageBox> // Pentru afișarea mesajelor de eroare
 
-class PlayWindow : public QDialog {
+class PlayWindow : public QDialog
+{
     Q_OBJECT
 
 public:
@@ -14,13 +15,14 @@ public:
     ~PlayWindow(); // Destructor
 
 protected:
-    void onGenerateClicked(); // Slot pentru gestionarea click-ului pe butonul de generare cod
+    void OnGenerateClicked(); // Slot pentru gestionarea click-ului pe butonul de generare cod
     QString GenerateRandomNumber();// functie pentru generare random de cod
-    void OnFowardClicked();
+    void OnForwardClicked();
+
 private:
-    QLineEdit* GenerateCode; // Câmp pentru numele de utilizator
-    QPushButton* GenerateButton; // Buton pentru logare
-    QPushButton* FowardButton; //Buton pentru mers mai departe
+    QLineEdit* generateCode; // Câmp pentru numele de utilizator
+    QPushButton* generateButton; // Buton pentru logare
+    QPushButton* fowardButton; //Buton pentru mers mai departe
     QLabel* messageLabel; // Etichetă pentru mesajele de feedback
 };
 

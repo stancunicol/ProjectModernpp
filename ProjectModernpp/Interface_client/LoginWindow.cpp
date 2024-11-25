@@ -79,8 +79,8 @@ LoginWindow::LoginWindow(QWidget* parent)
     layout->addWidget(messageLabel);
 
     //Connect signals to slots(function that conects a signal emitted by another object)
-    connect(loginButton, &QPushButton::clicked, this, &LoginWindow::onLoginClicked);
-    connect(registerButton, &QPushButton::clicked, this, &LoginWindow::onRegisterClicked);
+    connect(loginButton, &QPushButton::clicked, this, &LoginWindow::OnLoginClicked);
+    connect(registerButton, &QPushButton::clicked, this, &LoginWindow::OnRegisterClicked);
     connect(cancelButton, &QPushButton::clicked, this, &LoginWindow::close);
 }
 
@@ -89,7 +89,7 @@ LoginWindow::~LoginWindow()
 
 }
 
-void LoginWindow::onLoginClicked()
+void LoginWindow::OnLoginClicked()
 {
 	QString username = usernameLineEdit->text();//get your username and password
 
@@ -105,7 +105,7 @@ void LoginWindow::onLoginClicked()
 	usernameLineEdit->clear();//reset fields after registration
 }
 
-void LoginWindow::onRegisterClicked()
+void LoginWindow::OnRegisterClicked()
 {
 	QString username = usernameLineEdit->text();//get your username and password
 

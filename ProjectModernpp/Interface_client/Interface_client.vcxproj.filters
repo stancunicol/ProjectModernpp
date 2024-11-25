@@ -27,6 +27,9 @@
     <ClCompile Include="LoginWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ControlsWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="PlayWindow.h">
@@ -38,12 +41,18 @@
     <QtMoc Include="Battle_city.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="ControlsWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="Battle_city.ui">
       <Filter>Resource Files</Filter>
     </QtUic>
     <QtUic Include="LoginWindow.ui">
+      <Filter>Resource Files</Filter>
+    </QtUic>
+    <QtUic Include="ControlsWindow.ui">
       <Filter>Resource Files</Filter>
     </QtUic>
   </ItemGroup>

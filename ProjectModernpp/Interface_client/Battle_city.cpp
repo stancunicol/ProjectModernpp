@@ -103,28 +103,34 @@ Battle_city::Battle_city(QWidget* parent)
 
 	layout->addLayout(otherLayout);//combine the other layout in the main one
 
-	connect(playButton, &QPushButton::clicked, this, &Battle_city::onPlayButtonClicked);//connect the button to His use
-	connect(connectButton, &QPushButton::clicked, this, &Battle_city::onConnectButtonClicked);
-	connect(controlsButton, &QPushButton::clicked, this, &Battle_city::onControlsButtonClicked);
+	connect(playButton, &QPushButton::clicked, this, &Battle_city::OnPlayButtonClicked);//connect the button to His use
+	connect(connectButton, &QPushButton::clicked, this, &Battle_city::OnConnectButtonClicked);
+	connect(controlsButton, &QPushButton::clicked, this, &Battle_city::OnControlsButtonClicked);
 }
 
 Battle_city::~Battle_city()
 {
+
 }
 
-void Battle_city::onPlayButtonClicked()
+void Battle_city::OnPlayButtonClicked()
 {
 	LoginWindow* login = new LoginWindow(this);//associates the login window with the current window
 	int result = login->exec();//opens the login window as a modal dialog, meaning the user cannot interact with the parent window until the login window is closed
+	if (result == QDialog::Accepted)
+	{
+		PlayWindow* playWindow = new PlayWindow(this);
+		playWindow->exec();
+	}
 }
 
-void Battle_city::onConnectButtonClicked()
+void Battle_city::OnConnectButtonClicked()
 {
 	LoginWindow* login = new LoginWindow(this);
 	int result = login->exec();
 }
 
-void Battle_city::onControlsButtonClicked()
+void Battle_city::OnControlsButtonClicked()
 {
 	QMessageBox::information(this, "Controls", "The controls button has been pressed!");
 }

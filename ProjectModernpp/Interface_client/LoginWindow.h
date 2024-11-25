@@ -17,8 +17,9 @@ public:
 	~LoginWindow();
 
 protected:
-	void onLoginClicked(); // slot for managing the click on the login button
-	void onRegisterClicked(); // slot for managing the click on the registration button
+	void OnLoginClicked(); // slot for managing the click on the login button
+	void OnRegisterClicked(); // slot for managing the click on the registration button
+
 private:
 	QPushButton* loginButton = nullptr; // Login button
 	QPushButton* registerButton = nullptr; // Registration button
