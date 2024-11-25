@@ -12,6 +12,7 @@ private:
     GameMap m_map;//the game map
     Player m_player;//the current player
     std::vector<Enemy*> m_enemies;//the enemies
+    std::vector<Player*> m_players;//the players
     std::vector<Bullet> m_bullets;//the bullets from the enemies
 
 public:
