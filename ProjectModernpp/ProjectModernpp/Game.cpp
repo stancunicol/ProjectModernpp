@@ -27,10 +27,8 @@ void Game::InitializeGame() {
     m_players.back()->PlaceCharacter();
     m_players.push_back(new Player("David", m_map));
     m_players.back()->PlaceCharacter();
-    m_players.push_back(new Player("Me", m_map));
-    m_players.back()->PlaceCharacter();
 
-    
+    m_player.PlaceCharacter();
 }
 
 const std::vector<Enemy*> Game::GetEnemies() const {
@@ -41,7 +39,7 @@ void Game::MovePlayer(const Point& direction) {
     for (int i = 0; i < 3; ++i) {
         m_players[i]->MoveCharacter(Point(0, 0));
     }
-    m_players[4]->MoveCharacter(direction);
+    m_player.MoveCharacter(direction);
 }
 
 void Game::Run() {

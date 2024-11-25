@@ -24,6 +24,7 @@ void Player::PlaceCharacter() {
             // Plasăm jucătorul pe hartă
             m_grid.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::PLAYER;
 
+
             gasit = true;  // Am găsit o poziție liberă și am plasat jucătorul
         }
     } while (!gasit);
