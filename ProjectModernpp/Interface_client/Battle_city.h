@@ -16,7 +16,7 @@ class Battle_city : public QMainWindow
 	Q_OBJECT
 
 public:
-	Battle_city(QWidget* parent = nullptr);
+	Battle_city(QWidget * parent = nullptr);
 	~Battle_city();
 private:
 	void onPlayButtonClicked();

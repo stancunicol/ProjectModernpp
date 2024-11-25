@@ -3,7 +3,7 @@
 #include <QPushButton>
 #include<qpalette>
 PlayWindow::PlayWindow(QWidget* parent)
-    : QWidget(parent) {
+    : QDialog(parent) {
     // Set title and size for window
     setWindowTitle("Generate Code");
     setFixedSize(300, 200);
@@ -72,6 +72,10 @@ QString PlayWindow::GenerateRandomNumber()
     }
     return number;
 
+}
+
+void PlayWindow::OnFowardClicked()
+{
 }
 
 void PlayWindow::onGenerateClicked() {

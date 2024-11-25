@@ -80,7 +80,7 @@ Battle_city::Battle_city(QWidget* parent)
 		"background-color: rgba(20, 20, 20, 0.7);"
 		"color: rgba(0, 0, 0,0.5);"//black
 		"}");
-	
+
 	layout->addSpacerItem(new QSpacerItem(0, 200, QSizePolicy::Minimum, QSizePolicy::Fixed));//spacer
 	/*   2: The width of the spacer in pixels
 
