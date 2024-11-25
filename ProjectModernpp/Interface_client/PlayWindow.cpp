@@ -31,25 +31,43 @@ PlayWindow::PlayWindow(QWidget* parent)
 
     // Create generate code button
     GenerateButton = new QPushButton("Generate code", this);
-    GenerateButton->setStyleSheet("background-color: blue;"
-        "color: lightBlue;"
-        "font-weight: bold;"
+    GenerateButton->setStyleSheet("QPushButton {"
+        "background-color: rgba(0, 191, 255, 0.7);" // light blue
+        "color: white;" // text alb
+        "border: none;"
+        "padding: 10px;" // spațiul interior dintre conținutul widget-ului și limitele acestuia
         "border-radius: 5px;"
-        "font-size: 15px;"
-        "padding: 10px; "
-        "border: 2px solid drakBlue; ");
+        "font-size: 16px;"
+        "}"
+        "QPushButton:hover {"
+        "background-color: rgba(0, 0, 255, 0.7);" // dark blue
+        "color: rgba(255, 255, 255, 0.5);" // alb transparent
+        "}"
+        "QPushButton:pressed {"
+        "background-color: rgba(0, 0, 139, 0.7);" // even darker blue (dark blue shade)
+        "color: rgba(255, 255, 255, 0.7);" // alb transparent
+        "}");
     layout->addWidget(GenerateButton);
 
 
 
     FowardButton = new QPushButton("Start game", this);
-    FowardButton->setStyleSheet("background-color:green;"
-        "color:lightGreen;"
-        "font-weight: bold;"
+    FowardButton->setStyleSheet("QPushButton {"
+        "background-color: rgba(144, 238, 144, 0.7);" // light green
+        "color: white;" // text alb
+        "border: none;"
+        "padding: 10px;" // spațiul interior dintre conținutul widget-ului și limitele acestuia
         "border-radius: 5px;"
-        "font-size: 15px;"
-        "padding: 10px;"
-        "border: 2px solid darkGreen; ");
+        "font-size: 16px;"
+        "}"
+        "QPushButton:hover {"
+        "background-color: rgba(34, 139, 34, 0.7);" // dark green
+        "color: rgba(255, 255, 255, 0.5);" // alb transparent
+        "}"
+        "QPushButton:pressed {"
+        "background-color: rgba(0, 100, 0, 0.7);" // even darker green (dark green shade)
+        "color: rgba(255, 255, 255, 0.7);" // alb transparent
+        "}");
     layout->addWidget(FowardButton);
     connect(GenerateButton, &QPushButton::clicked, this, &PlayWindow::onGenerateClicked);
     connect(FowardButton, &QPushButton::clicked, this, &PlayWindow::onGenerateClicked);
