@@ -5,6 +5,8 @@
 #include <QVBoxLayout>//for vertical layout
 #include < QMessageBox>
 #include <QLineEdit>//to create a text input field
+#include <QLabel>//to display images or text
+
 
 class LoginWindow : public QDialog
 {
@@ -22,4 +24,5 @@ private:
 	QPushButton* registerButton = nullptr; // Registration button
 	QPushButton* cancelButton = nullptr;// Cancel button
 	QLineEdit* usernameLineEdit = nullptr; // Username field
+	QLabel* messageLabel = nullptr; // Label for feedback messages
 };

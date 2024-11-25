@@ -22,6 +22,9 @@ LoginWindow::LoginWindow(QWidget* parent)
 	layout->addWidget(cancelButton);
 	layout->setAlignment(Qt::AlignCenter);
 
+	messageLabel = new QLabel(this);//label for messages
+	layout->addWidget(messageLabel);
+
 	//Connect signals to slots(function that conects a signal emitted by another object)
 	connect(loginButton, &QPushButton::clicked, this, &LoginWindow::onLoginClicked);
 	connect(registerButton, &QPushButton::clicked, this, &LoginWindow::onRegisterClicked);
@@ -35,11 +38,31 @@ LoginWindow::~LoginWindow()
 
 void LoginWindow::onLoginClicked()
 {
-	QMessageBox::information(this, "Login", "The Login button has been pressed!");
+	QString username = usernameLineEdit->text();//get your username and password
+
+	if (username.isEmpty()) {
+		QMessageBox::warning(this, "Login Failed", "Please enter username.");
+		return;
+	}
+	else
+	{
+		QMessageBox::information(this, "Login Successful", "User " + username + " login successfully!");
+	}
+	usernameLineEdit->clear();//reset fields after registration
 }
 
 void LoginWindow::onRegisterClicked()
 {
-	QMessageBox::information(this, "Register", "The Register button has been pressed!");
+	QString username = usernameLineEdit->text();//get your username and password
+
+	if (username.isEmpty()) {
+		QMessageBox::warning(this, "Registration Failed", "Please enter username.");
+		return;
+	}
+	else
+	{
+		QMessageBox::information(this, "Registration Successful", "User " + username + " registered successfully!");
+	}
+	usernameLineEdit->clear();//reset fields after registration
 }
 
