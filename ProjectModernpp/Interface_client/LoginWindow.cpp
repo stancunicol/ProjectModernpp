@@ -3,32 +3,57 @@
 LoginWindow::LoginWindow(QWidget* parent)
 	: QDialog(parent)
 {
-	setWindowTitle("Login");//title
-	setFixedSize(400, 300);//400X300
-	QVBoxLayout* layout = new QVBoxLayout(this);//create layout
-	
-	usernameLineEdit = new QLineEdit(this);//create username
-	usernameLineEdit->setPlaceholderText("Username");//used to set a placeholder text in the username input field
-	usernameLineEdit->setFixedSize(400, 50);//size
+    setWindowTitle("Login");//title
+    setFixedSize(400, 300);//400X300
 
-	layout->addWidget(usernameLineEdit);
+    QVBoxLayout* layout = new QVBoxLayout(this);//create layout
+    usernameLineEdit = new QLineEdit(this);//create username
+    usernameLineEdit->setPlaceholderText("Username");//used to set a placeholder text in the username input field
+    usernameLineEdit->setFixedSize(400, 50);//size
 
-	loginButton = new QPushButton("Login", this);//create login button
-	registerButton = new QPushButton("Register", this);//create register button
-	cancelButton = new QPushButton("Cancel", this);
+    layout->addWidget(usernameLineEdit);
 
-	layout->addWidget(loginButton);
-	layout->addWidget(registerButton);
-	layout->addWidget(cancelButton);
-	layout->setAlignment(Qt::AlignCenter);
+    loginButton = new QPushButton("Login", this);//create login button
+    loginButton->setStyleSheet("QPushButton {"
+        "background-color: rgba(0,255,0,0.7);" // green
+        "color: white;"
+        "border: none;"
+        "padding: 10px;"// the inner space of a widget between the widget's content and it's bounds
+        "border-radius: 5px;"
+        "font-size: 16px;"
+        "}");
+    layout->addWidget(loginButton);
 
-	messageLabel = new QLabel(this);//label for messages
-	layout->addWidget(messageLabel);
+    registerButton = new QPushButton("Register", this);//create register button
+    registerButton->setStyleSheet("QPushButton {"
+        "background-color: rgba(0,255,0,0.7);" // green
+        "color: white;"
+        "border: none;"
+        "padding: 10px;"
+        "border-radius: 5px;"
+        "font-size: 16px;"
+        "}");
+    layout->addWidget(registerButton);
 
-	//Connect signals to slots(function that conects a signal emitted by another object)
-	connect(loginButton, &QPushButton::clicked, this, &LoginWindow::onLoginClicked);
-	connect(registerButton, &QPushButton::clicked, this, &LoginWindow::onRegisterClicked);
-	connect(cancelButton, &QPushButton::clicked, this, &LoginWindow::close);
+    cancelButton = new QPushButton("Cancel", this);
+    cancelButton->setStyleSheet("QPushButton {"
+        "background-color: rgba(255,127,127,0.7);" // red
+        "color: white;"
+        "border: none;"
+        "padding: 10px;"
+        "border-radius: 5px;"
+        "font-size: 16px;"
+        "}");
+    layout->addWidget(cancelButton);
+    layout->setAlignment(Qt::AlignCenter);
+
+    messageLabel = new QLabel(this);//label for messages
+    layout->addWidget(messageLabel);
+
+    //Connect signals to slots(function that conects a signal emitted by another object)
+    connect(loginButton, &QPushButton::clicked, this, &LoginWindow::onLoginClicked);
+    connect(registerButton, &QPushButton::clicked, this, &LoginWindow::onRegisterClicked);
+    connect(cancelButton, &QPushButton::clicked, this, &LoginWindow::close);
 }
 
 LoginWindow::~LoginWindow()
@@ -47,6 +72,7 @@ void LoginWindow::onLoginClicked()
 	else
 	{
 		QMessageBox::information(this, "Login Successful", "User " + username + " login successfully!");
+		accept();
 	}
 	usernameLineEdit->clear();//reset fields after registration
 }
@@ -62,6 +88,7 @@ void LoginWindow::onRegisterClicked()
 	else
 	{
 		QMessageBox::information(this, "Registration Successful", "User " + username + " registered successfully!");
+		accept();
 	}
 	usernameLineEdit->clear();//reset fields after registration
 }
