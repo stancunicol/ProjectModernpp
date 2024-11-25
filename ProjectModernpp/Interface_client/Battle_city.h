@@ -11,6 +11,7 @@
 #include <QHBoxLayout>//for horizontal layout
 #include "LoginWindow.h"
 #include "PlayWindow.h"
+#include "ControlsWindow.h"
 
 class Battle_city : public QMainWindow
 {

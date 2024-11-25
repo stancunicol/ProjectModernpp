@@ -132,5 +132,6 @@ void Battle_city::OnConnectButtonClicked()
 
 void Battle_city::OnControlsButtonClicked()
 {
-	QMessageBox::information(this, "Controls", "The controls button has been pressed!");
+	ControlsWindow* controls = new ControlsWindow(this);
+	controls->exec();
 }

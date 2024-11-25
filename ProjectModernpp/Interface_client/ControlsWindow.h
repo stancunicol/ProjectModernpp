@@ -1,6 +1,10 @@
 #pragma once
 
 #include <QDialog>
+#include <QPushButton>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 
 class ControlsWindow : public QDialog
 {
@@ -11,5 +15,6 @@ public:
 	~ControlsWindow();
 
 private:
-
+	QLabel* controlLabel;
+	QPushButton* closeButton;
 };
