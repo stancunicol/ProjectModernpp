@@ -12,13 +12,23 @@ Game::~Game() {
 }
 
 void Game::InitializeGame() {
+    srand(time(NULL));
     Base base(m_map);
     base.PlaceBase();
-    m_player.PlaceCharacter();
+    
     for (int i = 0; i < 3; ++i) {
         m_enemies.push_back(new Enemy(*this, m_map));
         m_enemies.back()->PlaceCharacter();
     }
+    //3 playeri ce nu se misca
+    m_players.push_back(new Player("Johnny", m_map));
+    m_players.back()->PlaceCharacter();
+    m_players.push_back(new Player("John", m_map));
+    m_players.back()->PlaceCharacter();
+    m_players.push_back(new Player("David", m_map));
+    m_players.back()->PlaceCharacter();
+
+    m_player.PlaceCharacter();
 }
 
 const std::vector<Enemy*> Game::GetEnemies() const {
@@ -26,6 +36,9 @@ const std::vector<Enemy*> Game::GetEnemies() const {
 }
 
 void Game::MovePlayer(const Point& direction) {
+    for (int i = 0; i < 3; ++i) {
+        m_players[i]->MoveCharacter(Point(0, 0));
+    }
     m_player.MoveCharacter(direction);
 }
 
@@ -51,7 +64,7 @@ void Game::Run() {
         for (auto* enemy : m_enemies) {
             enemy->MoveRandom();
         }
-        UpdateBullets(m_bullets, m_map);
+        //UpdateBullets(m_bullets, m_map);
 
         // Renderizăm harta
         m_map.Display();

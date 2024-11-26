@@ -2,17 +2,32 @@
 #include <fstream>
 
 Player::Player(const std::string& name, GameMap& grid)
-    : m_name(name), m_grid(grid) {}
+    : m_name(name), m_grid(grid) {
+    m_positions.push_back({ Point(0, 0), false });                                 // Colțul stânga-sus
+    m_positions.push_back({ Point(0, grid.GetWidth() - 1), false });               // Colțul dreapta-sus
+    m_positions.push_back({ Point(grid.GetHeight() - 1, 0), false });             // Colțul stânga-jos
+    m_positions.push_back({ Point(grid.GetHeight() - 1, grid.GetWidth() - 1), false }); // Colțul dreapta-jos
+}
 
 void Player::PlaceCharacter() {
-    uint16_t startX, startY;
-    do {
-        startX = rand() % m_grid.GetHeight();
-        startY = rand() % m_grid.GetWidth();
-    } while (m_grid.GetMap()[startX][startY] != CellType::EMPTY); // Verifică dacă locul este liber
+    bool gasit = false;
 
-    m_position = Point(startX, startY);
-    m_grid.GetMap()[startX][startY] = CellType::PLAYER; // Plasează jucătorul pe hartă
+    // Bucla care continuă până când găsim o poziție liberă
+    do {
+        size_t randomIndex = rand() % 4; // Generăm un index aleatoriu între 0 și 3
+
+        // Verificăm dacă poziția aleasă nu este ocupată
+        if (!m_positions[randomIndex].second) {
+            m_position = m_positions[randomIndex].first;  // Setăm poziția jucătorului
+            m_positions[randomIndex].second = true;        // Marcăm poziția ca ocupată
+
+            // Plasăm jucătorul pe hartă
+            m_grid.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::PLAYER;
+
+
+            gasit = true;  // Am găsit o poziție liberă și am plasat jucătorul
+        }
+    } while (!gasit);
 }
 
 void Player::MoveCharacter(const Point& direction) {
