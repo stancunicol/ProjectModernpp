@@ -1,6 +1,6 @@
 #pragma once
 #include <cstdint>
-enum class __declspec(dllexport) CellType : uint8_t
+enum class CellType : uint8_t
 {
 	EMPTY,
 	PLAYER,

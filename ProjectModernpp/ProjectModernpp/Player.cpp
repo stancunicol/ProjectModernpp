@@ -1,5 +1,5 @@
 ﻿#include "Player.h"
-#include <fstream>
+#include <cstdlib>
 
 Player::Player(const std::string& name, GameMap& grid)
     : m_name(name), m_grid(grid) {
@@ -12,20 +12,14 @@ Player::Player(const std::string& name, GameMap& grid)
 void Player::PlaceCharacter() {
     bool gasit = false;
 
-    // Bucla care continuă până când găsim o poziție liberă
     do {
         size_t randomIndex = rand() % 4; // Generăm un index aleatoriu între 0 și 3
 
-        // Verificăm dacă poziția aleasă nu este ocupată
         if (!m_positions[randomIndex].second) {
             m_position = m_positions[randomIndex].first;  // Setăm poziția jucătorului
             m_positions[randomIndex].second = true;        // Marcăm poziția ca ocupată
-
-            // Plasăm jucătorul pe hartă
             m_grid.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::PLAYER;
-
-
-            gasit = true;  // Am găsit o poziție liberă și am plasat jucătorul
+            gasit = true;
         }
     } while (!gasit);
 }
@@ -33,19 +27,33 @@ void Player::PlaceCharacter() {
 void Player::MoveCharacter(const Point& direction) {
     Point newPos = m_position + direction;
     auto& map = m_grid.GetMap();
+
     if (newPos.GetX() >= 0 && newPos.GetX() < m_grid.GetHeight() &&
         newPos.GetY() >= 0 && newPos.GetY() < m_grid.GetWidth() &&
         map[newPos.GetX()][newPos.GetY()] == CellType::EMPTY) {
 
-        map[m_position.GetX()][m_position.GetY()] = CellType::EMPTY;
-
+        map[m_position.GetX()][m_position.GetY()] = CellType::EMPTY; // Curățăm poziția anterioară
         m_position = newPos;
-
-        map[newPos.GetX()][newPos.GetY()] = CellType::PLAYER;
-
+        map[newPos.GetX()][newPos.GetY()] = CellType::PLAYER; // Actualizăm noua poziție
         m_direction = direction;
     }
     else {
-        m_direction = Point(0, 0);
+        m_direction = Point(0, 0); // Resetăm direcția dacă mutarea nu e validă
     }
+}
+
+void Player::Shot() {
+    if (m_direction.GetX() == 0 && m_direction.GetY() == 0) {
+        m_direction = Point(0, 1); // Spre dreapta, implicit
+    }
+
+    // Cream glonțul și îl adăugăm direct
+    Bullet bullet(true, 1.0f, m_direction, m_position);
+
+    // Adăugăm glonțul în hartă
+    m_grid.AddBullet(bullet);
+}
+
+Bullet Player::GetBullet() {
+    return m_bullet;
 }

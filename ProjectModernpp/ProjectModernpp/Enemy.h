@@ -6,7 +6,7 @@
 #include "Bullet.h"
 #include "Game.h"
 
-class __declspec(dllexport) Enemy : virtual public Character {
+class Enemy : virtual public Character {
 private:
     GameMap& m_map; //references the game map
     Weapon m_weapon; //the enemy's weapon to shoot

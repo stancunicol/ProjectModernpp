@@ -5,7 +5,7 @@
 // Forward declaration of GameMap to avoid circular dependency
 class GameMap;
 
-class __declspec(dllexport) Base {
+class  Base {
 private:
     bool m_destroyed;   // Checks if the base is destroyed
     GameMap& m_gameMap; // Reference to the game map
