@@ -26,3 +26,40 @@ ConnectWindow::ConnectWindow(QWidget* parent)
 
     label->setFont(font);
     layout->addWidget(label);
+    // Câmp pentru codul camerei
+    insertCode = new QLineEdit(this);
+    layout->addWidget(insertCode);
+    insertCode->setAlignment(Qt::AlignCenter);
+    insertCode->setStyleSheet("color: lightBlue;background-color: darkBlue;font-size: 20px;border: 2px solid lightBlue");
+    insertCode->setFixedSize(240, 50);
+    layout->setAlignment(Qt::AlignCenter); // Centrarea layout-ului
+
+
+    startButton = new QPushButton("START GAME", this);
+    startButton->setStyleSheet("background-color:green;"
+        "color:lightGreen;"
+        "font-weight: bold;"
+        "border-radius: 5px;"
+        "font-size: 15px;"
+        "padding: 10px;"
+        "border: 2px solid darkGreen; ");
+    layout->addWidget(startButton);
+    connect(startButton, &QPushButton::clicked, this, &ConnectWindow::OnGenerateClicked);
+}
+
+void ConnectWindow::OnGenerateClicked()
+{
+    QString roomCode = insertCode->text();
+
+    if (roomCode.isEmpty()) {
+        QMessageBox::warning(this, "Error", "The code field is empty!");
+    }
+    else {
+        QMessageBox::information(this, "Success", "You have joined the room: " + roomCode);
+    }
+
+}
+
+ConnectWindow::~ConnectWindow() {
+    // Destructor 
+}
