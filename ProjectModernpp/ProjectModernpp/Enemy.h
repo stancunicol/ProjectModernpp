@@ -11,6 +11,7 @@ private:
     GameMap& m_map; //references the game map
     Weapon m_weapon; //the enemy's weapon to shoot
     Game& m_game;
+    bool m_active = false;
 
 public:
     Enemy(Game& game, GameMap& map);//"puts" the enemies in the game map
@@ -21,5 +22,7 @@ public:
 
     const Point& GetPosition() const;//return the current position
 
-    void Shoot(Game& game);
+    void Shoot(const Point& direction);
+
+    void SetActive(const bool& active);
 };

@@ -70,7 +70,7 @@ void Game::Run() {
         // Renderizăm harta
         m_map.Display();
 
-        Sleep(200);
+        Sleep(600);
 
     }
 

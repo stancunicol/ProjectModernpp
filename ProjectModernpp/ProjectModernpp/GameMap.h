@@ -3,7 +3,8 @@
 #include <iostream>
 #include "CellType.h"
 #include "Character.h"
-#include "Bullet.h"
+
+class Bullet;
 
 class  GameMap {
 private:

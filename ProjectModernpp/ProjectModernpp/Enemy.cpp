@@ -37,10 +37,11 @@ void Enemy::MoveRandom() {
         int randomIndex = rand() % validPositions.size();
         Point randomFreePos = validPositions[randomIndex];
 
+        Point directionToShoot = m_position;
         m_map.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::EMPTY;
         m_position = randomFreePos;
         m_map.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::ENEMY; // Plasăm jucătorul pe noua poziție
-        Shoot(m_game);
+        Shoot(directionToShoot);
     }
 }
 
@@ -48,14 +49,14 @@ const Point& Enemy::GetPosition() const {
     return m_position;
 }
 
-void Enemy::Shoot(Game& game) {
-    std::vector<Point> directions{
-        Point(-1, 0), //up
-        Point(1, 0), //down
-        Point(0, -1), //left
-        Point(0, 1) };//right
-    std::random_shuffle(directions.begin(), directions.end());
+void Enemy::Shoot(const Point& direction) {
+    Bullet bullet = m_weapon.Shoot(direction);
+    bullet.SetPosition(m_position);
+    m_game.AddBullet(bullet);
+}
 
-    Bullet bullet = m_weapon.Shoot(directions[0]);
-    game.AddBullet(bullet);
+void Enemy::SetActive(const bool& active) {
+    if (m_active == active)
+        return;
+    m_active = active;
 }

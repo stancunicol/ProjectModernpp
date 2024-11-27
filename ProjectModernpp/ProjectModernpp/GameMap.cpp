@@ -1,6 +1,7 @@
 ﻿#include "GameMap.h"
 #include <cstdlib>
 #include <iostream>
+#include "Bullet.h"
 
 GameMap::GameMap(uint32_t width, uint32_t height, uint8_t level)
     : m_width(width), m_height(height), m_level(level) {

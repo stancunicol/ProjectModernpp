@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Point.h"
 #include <chrono>
+#include "GameMap.h"
 
 class Bullet {
 private:
@@ -24,14 +25,34 @@ public:
     void SetPosition(const Point& position) { m_position = position; }
 
     // Actualizează poziția pe baza timpului
-    bool CanMove() {
-        auto now = std::chrono::steady_clock::now();
-        std::chrono::duration<float> elapsed = now - m_lastMoveTime;
-
-        if (elapsed.count() >= (1.0f / m_speed)) {
-            m_lastMoveTime = now;
-            return true;
+    void Move(GameMap& map) {
+        if (!m_active)
+            return;
+        if (m_position.GetX() >= 0 && m_position.GetX() < map.GetHeight() &&
+            m_position.GetY() >= 0 && m_position.GetY() < map.GetWidth()) {
+            if (map.GetMap()[m_position.GetX()][m_position.GetY()] == CellType::BULLET) {
+                map.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::EMPTY;
+            }
         }
-        return false;
+
+        Point newPos = m_position + m_direction;
+
+        if (newPos.GetX() >= 0 && newPos.GetX() < map.GetHeight() &&
+            newPos.GetY() >= 0 && newPos.GetY() < map.GetWidth()) {
+            map.GetMap()[newPos.GetX()][newPos.GetY()] = CellType::BULLET;
+        }
+
+        if (map.GetMap()[newPos.GetX()][newPos.GetY()] == CellType::BREAKABLE_WALL) {
+            map.GetMap()[newPos.GetX()][newPos.GetY()] = CellType::EMPTY;
+            m_active = false;
+            return;
+        }
+        if (map.GetMap()[newPos.GetX()][newPos.GetY()] == CellType::UNBREAKABLE_WALL) {
+            m_active = false;
+            return;
+        }
+
+        m_position = newPos;
+        map.GetMap()[newPos.GetX()][newPos.GetY()] = CellType::BULLET;
     }
 };
