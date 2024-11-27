@@ -150,8 +150,12 @@
     <QtMoc Include="PlayWindow.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Battle_city.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlayWindow.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Battle_city.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />
