@@ -1,56 +1,37 @@
 ﻿#pragma once
 #include "Point.h"
+#include <chrono>
 
-class __declspec(dllexport) Bullet {
+class Bullet {
 private:
-    bool m_active;//the bullet is activated or not
-    Point m_direction;//the direction of the bullet
-    float m_speed;//the speed of the bullet
-    Point m_position;//the current position of the bullet
+    bool m_active;                // Glonțul este activ sau nu
+    Point m_direction;            // Direcția glonțului
+    float m_speed;                // Viteza glonțului (celule pe secundă)
+    Point m_position;             // Poziția curentă a glonțului
+    std::chrono::steady_clock::time_point m_lastMoveTime; // Ultima actualizare
 
 public:
-    Bullet(bool active = false, float speed = 0.25f, const Point& direction = Point(0, 0), const Point& position = Point(0, 0))//constructor
-        : m_active(active), m_speed(speed), m_direction(direction), m_position(position) {}
-
-    bool IsActive() const { return m_active; }//returns if the bullet is activated or not
-    void SetActive(bool active) { m_active = active; }//activates the bullet
-
-    Point GetDirection() const { return m_direction; }//returns the direction of the bullet
-
-    Bullet Shoot(const Point& direction) {//shoots in the mentioned direction
-        return Bullet(true, 0.25f, direction);
+    Bullet(bool active = false, float speed = 0.25f, const Point& direction = Point(0, 0), const Point& position = Point(0, 0))
+        : m_active(active), m_speed(speed), m_direction(direction), m_position(position) {
+        m_lastMoveTime = std::chrono::steady_clock::now(); // Inițializare timp
     }
 
+    bool IsActive() const { return m_active; }
+    void SetActive(bool active) { m_active = active; }
+
     Point GetPosition() const { return m_position; }
+    Point GetDirection() const { return m_direction; }
+    void SetPosition(const Point& position) { m_position = position; }
 
-    void Move(GameMap& map) {
-        if (!m_active)
-            return;
-        if (m_position.GetX() >= 0 && m_position.GetX() < map.GetHeight() &&
-            m_position.GetY() >= 0 && m_position.GetY() < map.GetWidth()) {
-            if (map.GetMap()[m_position.GetX()][m_position.GetY()] == CellType::BULLET)
-                map.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::EMPTY;
+    // Actualizează poziția pe baza timpului
+    bool CanMove() {
+        auto now = std::chrono::steady_clock::now();
+        std::chrono::duration<float> elapsed = now - m_lastMoveTime;
+
+        if (elapsed.count() >= (1.0f / m_speed)) {
+            m_lastMoveTime = now;
+            return true;
         }
-
-        Point newPos = m_position + m_direction;
-
-        if (newPos.GetX() < 0 || newPos.GetX() >= map.GetHeight() ||
-            newPos.GetY() < 0 || newPos.GetY() >= map.GetWidth()) {
-            m_active = false;
-            return;
-        }
-
-        if (map.GetMap()[newPos.GetX()][newPos.GetY()] == CellType::BREAKABLE_WALL) {
-            map.GetMap()[newPos.GetX()][newPos.GetY()] = CellType::EMPTY;
-            m_active = false;
-            return;
-        }
-        if (map.GetMap()[newPos.GetX()][newPos.GetY()] == CellType::UNBREAKABLE_WALL) {
-            m_active = false;
-            return;
-        }
-
-        m_position = newPos;
-        map.GetMap()[newPos.GetX()][newPos.GetY()] = CellType::BULLET;
+        return false;
     }
 };

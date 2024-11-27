@@ -10,18 +10,20 @@
 #include <QFont>//font buttons
 #include <QHBoxLayout>//for horizontal layout
 #include "LoginWindow.h"
+#include "PlayWindow.h"
+#include "ControlsWindow.h"
 
 class Battle_city : public QMainWindow
 {
 	Q_OBJECT
 
 public:
-	Battle_city(QWidget* parent = nullptr);
+	Battle_city(QWidget * parent = nullptr);
 	~Battle_city();
 private:
-	void onPlayButtonClicked();
-	void onConnectButtonClicked();
-	void onControlsButtonClicked();
+	void OnPlayButtonClicked();
+	void OnConnectButtonClicked();
+	void OnControlsButtonClicked();
 private:
 	QLabel* background = nullptr;//Background picture
 	QPushButton* playButton = nullptr;//Button for Play

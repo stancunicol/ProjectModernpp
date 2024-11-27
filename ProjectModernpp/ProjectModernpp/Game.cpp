@@ -12,13 +12,23 @@ Game::~Game() {
 }
 
 void Game::InitializeGame() {
+    srand(time(NULL));
     Base base(m_map);
     base.PlaceBase();
-    m_player.PlaceCharacter();
+    
     for (int i = 0; i < 3; ++i) {
         m_enemies.push_back(new Enemy(*this, m_map));
         m_enemies.back()->PlaceCharacter();
     }
+    //3 playeri ce nu se misca
+    m_players.push_back(new Player("Johnny", m_map));
+    m_players.back()->PlaceCharacter();
+    m_players.push_back(new Player("John", m_map));
+    m_players.back()->PlaceCharacter();
+    m_players.push_back(new Player("David", m_map));
+    m_players.back()->PlaceCharacter();
+
+    m_player.PlaceCharacter();
 }
 
 const std::vector<Enemy*> Game::GetEnemies() const {
@@ -26,6 +36,9 @@ const std::vector<Enemy*> Game::GetEnemies() const {
 }
 
 void Game::MovePlayer(const Point& direction) {
+    for (int i = 0; i < 3; ++i) {
+        m_players[i]->MoveCharacter(Point(0, 0));
+    }
     m_player.MoveCharacter(direction);
 }
 
@@ -47,11 +60,12 @@ void Game::Run() {
             MovePlayer(direction); // Mutăm jucătorul
         }
 
-
+        m_player.Shot();
+        m_map.UpdateBullets();
         for (auto* enemy : m_enemies) {
             enemy->MoveRandom();
         }
-        UpdateBullets(m_bullets, m_map);
+        //UpdateBullets(m_bullets, m_map);
 
         // Renderizăm harta
         m_map.Display();
@@ -65,21 +79,21 @@ void Game::Run() {
 void Game::AddBullet(const Bullet& bullet) {
     m_bullets.emplace_back(bullet);
 }
-
-void Game::UpdateBullets(std::vector<Bullet>& bullets, GameMap& map) {
-    for (auto& bullet : bullets) {
-        if (bullet.IsActive())
-            bullet.Move(map);
-        else {
-            Point position = bullet.GetPosition();
-            if (position.GetX() >= 0 && position.GetX() < map.GetHeight() &&
-                position.GetY() >= 0 && position.GetY() < map.GetWidth()) {
-                if (map.GetMap()[position.GetX()][position.GetY()] == CellType::BULLET) {
-                    map.GetMap()[position.GetX()][position.GetY()] = CellType::EMPTY;
-                }
-            }
-        }
-    }
-    bullets.erase(std::remove_if(bullets.begin(), bullets.end(),
-        [](const Bullet& bullet) { return !bullet.IsActive(); }), bullets.end());
-}
+//
+//void Game::UpdateBullets(std::vector<Bullet>& bullets, GameMap& map) {
+//    for (auto& bullet : bullets) {
+//        if (bullet.IsActive())
+//            bullet.Move(map);
+//        else {
+//            Point position = bullet.GetPosition();
+//            if (position.GetX() >= 0 && position.GetX() < map.GetHeight() &&
+//                position.GetY() >= 0 && position.GetY() < map.GetWidth()) {
+//                if (map.GetMap()[position.GetX()][position.GetY()] == CellType::BULLET) {
+//                    map.GetMap()[position.GetX()][position.GetY()] = CellType::EMPTY;
+//                }
+//            }
+//        }
+//    }
+//    bullets.erase(std::remove_if(bullets.begin(), bullets.end(),
+//        [](const Bullet& bullet) { return !bullet.IsActive(); }), bullets.end());
+//}
