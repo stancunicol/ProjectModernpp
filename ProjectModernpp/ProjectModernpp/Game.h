@@ -18,7 +18,7 @@ private:
 public:
     Game(uint32_t width, uint32_t height, uint8_t level);//constructor
 
-    ~Game();
+    ~Game();  //destructor
 
     void InitializeGame();//the game is initialed
 
@@ -28,9 +28,7 @@ public:
 
     void Run();//runs the game
 
-    void AddBullet(const Bullet& bullet);
+    void AddBullet(const Bullet& bullet);  //adds a bullet to the vector of bullets
 
-    //void UpdateBullets();
-
-    void UpdateBullets(std::vector<Bullet>& bullets, GameMap& map);
+    void UpdateBullets(std::vector<Bullet>& bullets, GameMap& map); //updates the bullet on the map
 };

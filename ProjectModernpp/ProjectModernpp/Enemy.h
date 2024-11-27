@@ -11,10 +11,10 @@ class Enemy : virtual public Character {
 private:
     GameMap& m_map; //references the game map
     Weapon m_weapon; //the enemy's weapon to shoot
-    Game& m_game;
-    bool m_active = false;
-    std::chrono::steady_clock::time_point m_lastShoot;
-    Bullet m_activeBullet;
+    Game& m_game;  //Referenced the game itself
+    bool m_active = false;  //If the enemy is active or not, which at first is not
+    std::chrono::steady_clock::time_point m_lastShoot;   //containes the time of the last shot bullet
+    Bullet m_activeBullet;  //if the bullet is active or not
 
 public:
     Enemy(Game& game, GameMap& map);//"puts" the enemies in the game map
@@ -25,7 +25,7 @@ public:
 
     const Point& GetPosition() const;//return the current position
 
-    void Shoot(const Point& direction);
+    void Shoot(const Point& direction);//shoots a bullet
 
-    void SetActive(const bool& active);
+    void SetActive(const bool& active);  //sets an enemy active
 };
