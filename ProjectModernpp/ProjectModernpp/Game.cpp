@@ -61,16 +61,16 @@ void Game::Run() {
         }
 
         m_player.Shot();
-        m_map.UpdateBullets();
+        UpdateBullets(m_bullets, m_map);
         for (auto* enemy : m_enemies) {
             enemy->MoveRandom();
         }
-        //UpdateBullets(m_bullets, m_map);
+        UpdateBullets(m_bullets, m_map);
 
         // Renderizăm harta
         m_map.Display();
 
-        Sleep(600);
+        Sleep(1000);
 
     }
 
@@ -79,21 +79,60 @@ void Game::Run() {
 void Game::AddBullet(const Bullet& bullet) {
     m_bullets.emplace_back(bullet);
 }
-//
-//void Game::UpdateBullets(std::vector<Bullet>& bullets, GameMap& map) {
-//    for (auto& bullet : bullets) {
-//        if (bullet.IsActive())
-//            bullet.Move(map);
-//        else {
-//            Point position = bullet.GetPosition();
-//            if (position.GetX() >= 0 && position.GetX() < map.GetHeight() &&
-//                position.GetY() >= 0 && position.GetY() < map.GetWidth()) {
-//                if (map.GetMap()[position.GetX()][position.GetY()] == CellType::BULLET) {
-//                    map.GetMap()[position.GetX()][position.GetY()] = CellType::EMPTY;
-//                }
-//            }
-//        }
-//    }
-//    bullets.erase(std::remove_if(bullets.begin(), bullets.end(),
-//        [](const Bullet& bullet) { return !bullet.IsActive(); }), bullets.end());
-//}
+
+void Game::UpdateBullets(std::vector<Bullet>& bullets, GameMap& map) {
+    for (auto& bullet : m_bullets) {
+        if (!bullet.IsActive()) continue;
+
+        // Calculăm noua poziție
+        Point newPos = bullet.GetPosition() + bullet.GetDirection();
+
+        // Verificăm limitele hărții
+        if (newPos.GetX() < 0 || newPos.GetX() >= map.GetHeight() ||
+            newPos.GetY() < 0 || newPos.GetY() >= map.GetWidth()) {
+            // Curățăm poziția anterioară a glonțului
+            map.GetMap()[bullet.GetPosition().GetX()][bullet.GetPosition().GetY()] = CellType::EMPTY;
+
+            bullet.SetActive(false); // Glonțul devine inactiv
+            continue;
+        }
+
+        // Gestionăm coliziuni
+        switch (map.GetMap()[newPos.GetX()][newPos.GetY()]) {
+        case CellType::PLAYER:
+            // Jucător lovit
+            map.GetMap()[bullet.GetPosition().GetX()][bullet.GetPosition().GetY()] = CellType::EMPTY;
+            bullet.SetActive(false);
+            break;
+
+        case CellType::BREAKABLE_WALL:
+            map.GetMap()[newPos.GetX()][newPos.GetY()] = CellType::EMPTY;
+            map.GetMap()[bullet.GetPosition().GetX()][bullet.GetPosition().GetY()] = CellType::EMPTY;
+            bullet.SetActive(false);
+            break;
+
+        case CellType::UNBREAKABLE_WALL:
+            map.GetMap()[bullet.GetPosition().GetX()][bullet.GetPosition().GetY()] = CellType::EMPTY;
+            bullet.SetActive(false);
+            break;
+
+        case CellType::BULLET: // Dacă se întâlnesc două gloanțe
+        case CellType::ENEMY: // Poți decide cum să tratezi coliziunea
+            map.GetMap()[bullet.GetPosition().GetX()][bullet.GetPosition().GetY()] = CellType::EMPTY;
+            bullet.SetActive(false);
+            break;
+
+        default:
+            // Mutăm glonțul
+            map.GetMap()[bullet.GetPosition().GetX()][bullet.GetPosition().GetY()] = CellType::EMPTY;
+            bullet.SetPosition(newPos);
+            map.GetMap()[newPos.GetX()][newPos.GetY()] = CellType::BULLET;
+            break;
+        }
+
+        // Eliminăm gloanțele inactive
+        m_bullets.erase(std::remove_if(m_bullets.begin(), m_bullets.end(),
+            [](const Bullet& b) { return !b.IsActive(); }), m_bullets.end());
+
+    }
+}

@@ -5,6 +5,7 @@
 #include "Weapon.h"
 #include "Bullet.h"
 #include "Game.h"
+#include <chrono>
 
 class Enemy : virtual public Character {
 private:
@@ -12,6 +13,8 @@ private:
     Weapon m_weapon; //the enemy's weapon to shoot
     Game& m_game;
     bool m_active = false;
+    std::chrono::steady_clock::time_point m_lastShoot;
+    Bullet m_activeBullet;
 
 public:
     Enemy(Game& game, GameMap& map);//"puts" the enemies in the game map

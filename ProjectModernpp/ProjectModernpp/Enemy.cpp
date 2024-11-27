@@ -1,8 +1,13 @@
 ﻿#include "Enemy.h"
 #include <algorithm>
+#include <chrono>
 
 Enemy::Enemy(Game& game, GameMap& map)
-    : Character(Point(0, 0), Point(0, 0)), m_game(game), m_map(map) {}
+    : Character(Point(0, 0), Point(0, 0)), m_game(game), m_map(map),
+      m_activeBullet(false, 0.25f, Point(0,0), Point(0,0))
+{
+    m_lastShoot = std::chrono::steady_clock::now();
+}
 
 void Enemy::PlaceCharacter() {
     uint16_t startX, startY;
@@ -37,10 +42,11 @@ void Enemy::MoveRandom() {
         int randomIndex = rand() % validPositions.size();
         Point randomFreePos = validPositions[randomIndex];
 
-        Point directionToShoot = m_position;
+        Point currentPos = m_position;
         m_map.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::EMPTY;
         m_position = randomFreePos;
         m_map.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::ENEMY; // Plasăm jucătorul pe noua poziție
+        Point directionToShoot = randomFreePos - currentPos;
         Shoot(directionToShoot);
     }
 }
@@ -50,9 +56,20 @@ const Point& Enemy::GetPosition() const {
 }
 
 void Enemy::Shoot(const Point& direction) {
-    Bullet bullet = m_weapon.Shoot(direction);
-    bullet.SetPosition(m_position);
-    m_game.AddBullet(bullet);
+    if (direction.GetX() == 0 && direction.GetY() == 0)
+        return;
+
+    if (m_activeBullet.IsActive())
+        return;
+
+    auto now = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - m_lastShoot);
+
+    if (elapsed.count() >= 1) { // Verificăm dacă a trecut o secundă
+        Bullet bullet(true, 0.25f, direction, m_position);
+        m_game.AddBullet(bullet);
+        m_lastShoot = now;
+    }
 }
 
 void Enemy::SetActive(const bool& active) {

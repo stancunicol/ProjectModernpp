@@ -31,5 +31,4 @@ public:
     uint32_t GetWidth() const;//returns the width of the map
     uint32_t GetHeight() const;//returns the height of the map
     void AddBullet(const Bullet& bullet);
-    void UpdateBullets();
 };

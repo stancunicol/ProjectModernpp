@@ -30,5 +30,7 @@ public:
 
     void AddBullet(const Bullet& bullet);
 
-    //void UpdateBullets(std::vector<Bullet>& bullets, GameMap& map);
+    //void UpdateBullets();
+
+    void UpdateBullets(std::vector<Bullet>& bullets, GameMap& map);
 };
