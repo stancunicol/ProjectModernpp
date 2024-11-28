@@ -35,6 +35,13 @@ public:
             map.GetMap()[newPos.GetX()][newPos.GetY()] == CellType::UNBREAKABLE_WALL ||
             map.GetMap()[newPos.GetX()][newPos.GetY()] == CellType::BREAKABLE_WALL) {
             m_active = false;
+            map.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::EMPTY;
+            return;
+        }
+
+        if (map.GetMap()[newPos.GetX()][newPos.GetY()] == CellType::ENEMY) {
+            m_active = false;
+            map.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::EMPTY;
             return;
         }
 
@@ -44,6 +51,10 @@ public:
         m_position = newPos;
         //and we declare the bullet on the matrix
         map.GetMap()[newPos.GetX()][newPos.GetY()] = CellType::BULLET;
+    }
+
+    bool operator==(const Bullet& other) const {
+        return (m_position == other.m_position && m_active == other.m_active);
     }
 
 };

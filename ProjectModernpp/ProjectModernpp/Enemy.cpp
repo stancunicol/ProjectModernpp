@@ -1,12 +1,10 @@
 ﻿#include "Enemy.h"
 #include <algorithm>
-#include <chrono>
+#include <random>
 
 Enemy::Enemy(Game& game, GameMap& map) //constructor
     : Character(Point(0, 0), Point(0, 0)), m_game(game), m_map(map),
-      m_activeBullet(false, 0.25f, Point(0,0), Point(0,0))
-{
-    m_lastShoot = std::chrono::steady_clock::now();  //we shoot the first bullet and containes the time 
+      m_activeBullet(false, 0.25f, Point(0,0), Point(0,0)){
 }
 
 void Enemy::PlaceCharacter() {
@@ -29,9 +27,11 @@ void Enemy::MoveRandom() {
         Point(1, 0), //down
         Point(0, -1), //left
         Point(0, 1)};//right
-    std::random_shuffle(directions.begin(), directions.end());//we shuffle the elements of the vector so the order is different every time
+    //we shuffle the elements of the vector so the order is different every time
+    std::shuffle(directions.begin(), directions.end(), std::mt19937(std::random_device{}()));
 
     std::vector<Point> validPositions; //here we keep the valid positions that an enemy can move to
+    Point shootingDirection = Point(0, 0);
     for (const auto& direction : directions) {
         Point newPos = m_position + direction; //we initialize the new position
         //and check if it is correct and if is an empty cell; if so, the position is valid
@@ -45,13 +45,14 @@ void Enemy::MoveRandom() {
     if (!validPositions.empty()) {  //if we have valid positions
         int randomIndex = rand() % validPositions.size();  //we take a random index so we can take a random valid position from the vector
         Point randomFreePos = validPositions[randomIndex];
-
-        Point currentPos = m_position;
+        shootingDirection = randomFreePos - m_position;
         m_map.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::EMPTY; //we set the previous cell empty
         m_position = randomFreePos; //we update the current position
         m_map.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::ENEMY; // and we place the enemy on the current position
-        Point directionToShoot = randomFreePos - currentPos; //we calculate the direction to shoot
-        Shoot(directionToShoot);
+        Shoot(shootingDirection);
+    }
+    else {
+        m_map.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::ENEMY;
     }
 }
 
@@ -67,14 +68,13 @@ void Enemy::Shoot(const Point& direction) {
     if (m_activeBullet.IsActive()) //if the bullet is not active, there's nothing to do
         return;
 
-    auto now = std::chrono::steady_clock::now(); //we update the shootinf of the bullet
-    auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - m_lastShoot);  //we calculate the distance between the bullet shot now and
-    //the previous one
-
-    if (elapsed.count() >= 1) { //if the distance is bigger than one second, we shoot
+    Point newPosition = m_position + direction;
+    if (newPosition.GetX() >= 0 && newPosition.GetX() < m_map.GetHeight() &&
+        newPosition.GetY() >= 0 && newPosition.GetY() < m_map.GetWidth() &&
+        m_map.GetMap()[newPosition.GetX()][newPosition.GetY()] == CellType::EMPTY) {
         Bullet bullet(true, 0.25f, direction, m_position);
         m_game.AddBullet(bullet);
-        m_lastShoot = now;
+        m_activeBullet = bullet;
     }
 }
 

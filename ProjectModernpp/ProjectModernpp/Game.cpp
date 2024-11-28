@@ -61,10 +61,11 @@ void Game::Run() { //running the game
         }
 
         m_player.Shot(); //the player shoots
-        UpdateBullets(m_bullets, m_map); //we update the bullets on the map
+        //UpdateBullets(m_bullets, m_map); //we update the bullets on the map
         for (auto* enemy : m_enemies) {
             enemy->MoveRandom(); //we move each enemy random on the map
         }
+
         UpdateBullets(m_bullets, m_map); //we update the bullets on the map
 
         //we renderizăm the map
@@ -81,6 +82,7 @@ void Game::AddBullet(const Bullet& bullet) { //we add the bullet to the vector o
 }
 
 void Game::UpdateBullets(std::vector<Bullet>& bullets, GameMap& map) { //we update the bullets on the map
+    std::vector<Bullet*> bulletsToRemove;
     for (auto& bullet : m_bullets) {
         if (!bullet.IsActive()) continue; //if the bullet is active
 
@@ -90,10 +92,12 @@ void Game::UpdateBullets(std::vector<Bullet>& bullets, GameMap& map) { //we upda
         //we check if it correctly placed
         if (newPos.GetX() < 0 || newPos.GetX() >= map.GetHeight() ||
             newPos.GetY() < 0 || newPos.GetY() >= map.GetWidth()) {
+
             //we clean the previous position of the bullet
             map.GetMap()[bullet.GetPosition().GetX()][bullet.GetPosition().GetY()] = CellType::EMPTY;
 
             bullet.SetActive(false); //we desactivate the bullet
+            bulletsToRemove.push_back(&bullet);
             continue;
         }
 
@@ -102,6 +106,7 @@ void Game::UpdateBullets(std::vector<Bullet>& bullets, GameMap& map) { //we upda
         case CellType::PLAYER:
             //if a player was hit
             map.GetMap()[bullet.GetPosition().GetX()][bullet.GetPosition().GetY()] = CellType::EMPTY; //we delete the bullet
+            bulletsToRemove.push_back(&bullet);
             bullet.SetActive(false); //and desactivate it
             break;
 
@@ -109,18 +114,21 @@ void Game::UpdateBullets(std::vector<Bullet>& bullets, GameMap& map) { //we upda
             //if a breakable wall was hit
             map.GetMap()[newPos.GetX()][newPos.GetY()] = CellType::EMPTY; //we delete the wall
             map.GetMap()[bullet.GetPosition().GetX()][bullet.GetPosition().GetY()] = CellType::EMPTY; //we delete the bullet
+            bulletsToRemove.push_back(&bullet);
             bullet.SetActive(false); //we desactivate it
             break;
 
         case CellType::UNBREAKABLE_WALL:
             //if an unbreakable wall was hit
             map.GetMap()[bullet.GetPosition().GetX()][bullet.GetPosition().GetY()] = CellType::EMPTY; //we delete the bullet
+            bulletsToRemove.push_back(&bullet);
             bullet.SetActive(false); //we desactivate it
             break;
 
         case CellType::BULLET: //if two bullets meet
         case CellType::ENEMY: //if a bullet hits an enemy
             map.GetMap()[bullet.GetPosition().GetX()][bullet.GetPosition().GetY()] = CellType::EMPTY; //we delete the bullet
+            bulletsToRemove.push_back(&bullet);
             bullet.SetActive(false); //we desactivate it
             break;
 
@@ -133,8 +141,9 @@ void Game::UpdateBullets(std::vector<Bullet>& bullets, GameMap& map) { //we upda
         }
 
         //we eliminate the inactive bullets from the vector
-        m_bullets.erase(std::remove_if(m_bullets.begin(), m_bullets.end(),
-            [](const Bullet& b) { return !b.IsActive(); }), m_bullets.end());
+        for (auto* bullet : bulletsToRemove) {
+            m_bullets.erase(std::remove(m_bullets.begin(), m_bullets.end(), *bullet), m_bullets.end());
+        }
 
     }
 }
