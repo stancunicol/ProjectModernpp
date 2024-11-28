@@ -2,15 +2,12 @@
 #include <cstdlib>
 #include "Character.h"
 #include "GameMap.h"
-#include "Weapon.h"
-#include "Bullet.h"
 #include "Game.h"
 #include <chrono>
 
 class Enemy : virtual public Character {
 private:
     GameMap& m_map; //references the game map
-    Weapon m_weapon; //the enemy's weapon to shoot
     Game& m_game;  //Referenced the game itself
     bool m_active = false;  //If the enemy is active or not, which at first is not
     std::chrono::steady_clock::time_point m_lastShoot;   //containes the time of the last shot bullet

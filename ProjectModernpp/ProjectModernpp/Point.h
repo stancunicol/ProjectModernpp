@@ -46,6 +46,12 @@ public:
 		return *this;
 	}
 
+	bool operator==(const Point& position) const {
+		if (m_x == position.m_x && m_y == position.m_y)
+			return true;
+		return false;
+	}
+
 	//"GetX" returns the x coordonate.
 	size_t GetX() const {
 		return m_x;

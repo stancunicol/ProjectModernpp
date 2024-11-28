@@ -61,7 +61,7 @@ const Point& Enemy::GetPosition() const { //returns the current position
 
 //the enemy shoots a bullet
 void Enemy::Shoot(const Point& direction) {
-    if (direction.GetX() == 0 && direction.GetY() == 0) //if the direction is a null one, there's nothing to do
+    if (direction == Point(0,0)) //if the direction is a null one, there's nothing to do
         return;
 
     if (m_activeBullet.IsActive()) //if the bullet is not active, there's nothing to do

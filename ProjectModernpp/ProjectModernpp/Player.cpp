@@ -43,7 +43,7 @@ void Player::MoveCharacter(const Point& direction) {
 }
 
 void Player::Shot() {
-    if (m_direction.GetX() == 0 && m_direction.GetY() == 0) {
+    if (m_direction == Point(0,0)) {
         m_direction = Point(0, 1); //to left, deafult
     }
 
