@@ -7,7 +7,6 @@
 #include <QLineEdit>//to create a text input field
 #include <QLabel>//to display images or text
 
-
 class LoginWindow : public QDialog
 {
 	Q_OBJECT

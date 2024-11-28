@@ -48,8 +48,8 @@ PlayWindow::PlayWindow(QWidget* parent)
         "}");
     layout->addWidget(generateButton);
 
-    fowardButton = new QPushButton("Start game", this);
-    fowardButton->setStyleSheet("QPushButton {"
+    forwardButton = new QPushButton("Start game", this);
+    forwardButton->setStyleSheet("QPushButton {"
         "background-color: rgba(144, 238, 144, 0.7);" // light green
         "color: white;" // text alb
         "border: none;"
@@ -65,9 +65,9 @@ PlayWindow::PlayWindow(QWidget* parent)
         "background-color: rgba(0, 100, 0, 0.7);" // even darker green (dark green shade)
         "color: rgba(255, 255, 255, 0.7);" // alb transparent
         "}");
-    layout->addWidget(fowardButton);
+    layout->addWidget(forwardButton);
     connect(generateButton, &QPushButton::clicked, this, &PlayWindow::OnGenerateClicked);
-    connect(fowardButton, &QPushButton::clicked, this, &PlayWindow::OnForwardClicked);
+    connect(forwardButton, &QPushButton::clicked, this, &PlayWindow::OnForwardClicked);
 }
 
 PlayWindow::~PlayWindow() 

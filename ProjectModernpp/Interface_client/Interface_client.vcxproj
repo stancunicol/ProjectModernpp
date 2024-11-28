@@ -166,6 +166,7 @@
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
     </ClCompile>
+    <ClCompile Include="ConnectWindow.cpp" />
     <ClCompile Include="ControlsWindow.cpp" />
     <ClCompile Include="LoginWindow.cpp" />
     <ClCompile Include="main.cpp" />
@@ -187,6 +188,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ControlsWindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="ConnectWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />

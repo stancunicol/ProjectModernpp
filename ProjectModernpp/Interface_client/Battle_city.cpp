@@ -128,6 +128,11 @@ void Battle_city::OnConnectButtonClicked()
 {
 	LoginWindow* login = new LoginWindow(this);
 	int result = login->exec();
+	if (result == QDialog::Accepted)
+	{
+		ConnectWindow* connectWindow = new ConnectWindow(this);
+		connectWindow->exec();
+	}
 }
 
 void Battle_city::OnControlsButtonClicked()

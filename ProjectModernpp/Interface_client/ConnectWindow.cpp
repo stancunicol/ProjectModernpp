@@ -3,19 +3,17 @@
 #include <QPushButton>
 #include<qpalette>
 ConnectWindow::ConnectWindow(QWidget* parent)
-    : QWidget(parent) {
-
+    : QDialog(parent) 
+{
     // Setare titlu și dimensiune fereastră
     setWindowTitle("Join Room");
     setFixedSize(300, 200);
-
 
     QPalette palette;
     palette.setColor(QPalette::Window, Qt::black); // Fundal negru
     palette.setColor(QPalette::WindowText, Qt::white); // Text alb
     setPalette(palette);
     setAutoFillBackground(true); // Asigură-te că fundalul se umple cu culoarea
-
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     QLabel* label = new QLabel("Insert code:", this);
@@ -34,7 +32,6 @@ ConnectWindow::ConnectWindow(QWidget* parent)
     insertCode->setFixedSize(240, 50);
     layout->setAlignment(Qt::AlignCenter); // Centrarea layout-ului
 
-
     startButton = new QPushButton("START GAME", this);
     startButton->setStyleSheet("background-color:green;"
         "color:lightGreen;"
@@ -51,15 +48,18 @@ void ConnectWindow::OnGenerateClicked()
 {
     QString roomCode = insertCode->text();
 
-    if (roomCode.isEmpty()) {
+    if (roomCode.isEmpty()) 
+    {
         QMessageBox::warning(this, "Error", "The code field is empty!");
     }
-    else {
+    else 
+    {
         QMessageBox::information(this, "Success", "You have joined the room: " + roomCode);
     }
 
 }
 
-ConnectWindow::~ConnectWindow() {
+ConnectWindow::~ConnectWindow() 
+{
     // Destructor 
 }

@@ -1,20 +1,32 @@
 #pragma once
 
 #include <QDialog>
-#include <QPushButton>
 #include <QLabel>
+#include <QPushButton>
+#include <QLineEdit>
 #include <QVBoxLayout>
-#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QKeyEvent>
+#include <QKeyEvent>
+#include <QMessageBox>
 
 class ControlsWindow : public QDialog
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	ControlsWindow(QWidget *parent = nullptr);
-	~ControlsWindow();
+    explicit ControlsWindow(QWidget* parent = nullptr);
+    ~ControlsWindow();
+
+protected:
+    void keyPressEvent(QKeyEvent* event) override;
 
 private:
-	QLabel* controlLabel;
-	QPushButton* closeButton;
+    QLabel* instructionLabel=nullptr;
+    QLineEdit* upKeyEdit = nullptr;
+    QLineEdit* downKeyEdit = nullptr;
+    QLineEdit* leftKeyEdit = nullptr;
+    QLineEdit* rightKeyEdit = nullptr;
+    QLineEdit* activeKeyEdit = nullptr;
+    QPushButton* closeButton = nullptr;
 };

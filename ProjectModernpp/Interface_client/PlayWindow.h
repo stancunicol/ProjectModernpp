@@ -20,9 +20,9 @@ protected:
     void OnForwardClicked();
 
 private:
-    QLineEdit* generateCode; // Câmp pentru numele de utilizator
-    QPushButton* generateButton; // Buton pentru logare
-    QPushButton* fowardButton; //Buton pentru mers mai departe
-    QLabel* messageLabel; // Etichetă pentru mesajele de feedback
+    QLineEdit* generateCode = nullptr; // Câmp pentru numele de utilizator
+    QPushButton* generateButton = nullptr; // Buton pentru logare
+    QPushButton* forwardButton = nullptr; //Buton pentru mers mai departe
+    QLabel* messageLabel = nullptr; // Etichetă pentru mesajele de feedback
 };
 

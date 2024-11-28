@@ -93,7 +93,8 @@ void LoginWindow::OnLoginClicked()
 {
 	QString username = usernameLineEdit->text();//get your username and password
 
-	if (username.isEmpty()) {
+	if (username.isEmpty()) 
+    {
 		QMessageBox::warning(this, "Login Failed", "Please enter username.");
 		return;
 	}
@@ -109,7 +110,8 @@ void LoginWindow::OnRegisterClicked()
 {
 	QString username = usernameLineEdit->text();//get your username and password
 
-	if (username.isEmpty()) {
+	if (username.isEmpty()) 
+    {
 		QMessageBox::warning(this, "Registration Failed", "Please enter username.");
 		return;
 	}
