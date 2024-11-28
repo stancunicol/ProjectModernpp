@@ -3,21 +3,21 @@
 
 Player::Player(const std::string& name, GameMap& grid)
     : m_name(name), m_grid(grid) {
-    m_positions.push_back({ Point(0, 0), false });                                 // Colțul stânga-sus
-    m_positions.push_back({ Point(0, grid.GetWidth() - 1), false });               // Colțul dreapta-sus
-    m_positions.push_back({ Point(grid.GetHeight() - 1, 0), false });             // Colțul stânga-jos
-    m_positions.push_back({ Point(grid.GetHeight() - 1, grid.GetWidth() - 1), false }); // Colțul dreapta-jos
+    m_positions.push_back({ Point(0, 0), false });                                 // corenr letf-up
+    m_positions.push_back({ Point(0, grid.GetWidth() - 1), false });               // corner right-up
+    m_positions.push_back({ Point(grid.GetHeight() - 1, 0), false });             // corner left-downs
+    m_positions.push_back({ Point(grid.GetHeight() - 1, grid.GetWidth() - 1), false }); // corner right-down
 }
 
 void Player::PlaceCharacter() {
     bool gasit = false;
 
     do {
-        size_t randomIndex = rand() % 4; // Generăm un index aleatoriu între 0 și 3
+        size_t randomIndex = rand() % 4; // generate a random index between 0 and 3
 
         if (!m_positions[randomIndex].second) {
-            m_position = m_positions[randomIndex].first;  // Setăm poziția jucătorului
-            m_positions[randomIndex].second = true;        // Marcăm poziția ca ocupată
+            m_position = m_positions[randomIndex].first;  // we set the position of the player
+            m_positions[randomIndex].second = true;        //we set the position as marked
             m_grid.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::PLAYER;
             gasit = true;
         }
@@ -32,25 +32,25 @@ void Player::MoveCharacter(const Point& direction) {
         newPos.GetY() >= 0 && newPos.GetY() < m_grid.GetWidth() &&
         map[newPos.GetX()][newPos.GetY()] == CellType::EMPTY) {
 
-        map[m_position.GetX()][m_position.GetY()] = CellType::EMPTY; // Curățăm poziția anterioară
+        map[m_position.GetX()][m_position.GetY()] = CellType::EMPTY; //we clean the previous position
         m_position = newPos;
-        map[newPos.GetX()][newPos.GetY()] = CellType::PLAYER; // Actualizăm noua poziție
+        map[newPos.GetX()][newPos.GetY()] = CellType::PLAYER; //we update the new position
         m_direction = direction;
     }
     else {
-        m_direction = Point(0, 0); // Resetăm direcția dacă mutarea nu e validă
+        m_direction = Point(0, 0); //reset the direction if is not valid
     }
 }
 
 void Player::Shot() {
     if (m_direction.GetX() == 0 && m_direction.GetY() == 0) {
-        m_direction = Point(0, 1); // Spre dreapta, implicit
+        m_direction = Point(0, 1); //to left, deafult
     }
 
-    // Cream glonțul și îl adăugăm direct
+    //we create the bullet and add it
     Bullet bullet(true, 1.0f, m_direction, m_position);
 
-    // Adăugăm glonțul în hartă
+    //we add the bullet in the map
     m_grid.AddBullet(bullet);
 }
 

@@ -19,6 +19,6 @@ public:
 
     void MoveCharacter(const Point& direction) override;//from "Character"; places the character
     
-    void Shot();
-    Bullet GetBullet();
+    void Shot(); //the player shoots
+    Bullet GetBullet(); //return the bullet
 };

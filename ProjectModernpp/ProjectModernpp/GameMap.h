@@ -12,7 +12,7 @@ private:
     uint32_t m_height;//the height of the game map
     uint32_t m_level;//the chosen level
     std::vector<std::vector<CellType>> m_grid;//the matrix of the game, with the celltypes specified in the CellType enum class
-    std::vector<Bullet> m_bullets;
+    std::vector<Bullet> m_bullets; //here, we memorize the bullets that were shot
 
 public:
     GameMap(uint32_t width, uint32_t height, uint8_t level);//constructor
@@ -30,5 +30,5 @@ public:
 
     uint32_t GetWidth() const;//returns the width of the map
     uint32_t GetHeight() const;//returns the height of the map
-    void AddBullet(const Bullet& bullet);
+    void AddBullet(const Bullet& bullet); //we add a bullet to the vector
 };
