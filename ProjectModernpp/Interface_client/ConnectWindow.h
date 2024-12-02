@@ -5,22 +5,22 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QVBoxLayout>
-#include <QMessageBox> // Pentru afișarea mesajelor de eroare
+#include <QMessageBox> 
 
 class ConnectWindow : public QDialog
 {
     Q_OBJECT
 
 public:
-    ConnectWindow(QWidget* parent = nullptr); // Constructor
-    ~ConnectWindow(); // Destructor
+    ConnectWindow(QWidget* parent = nullptr); 
+    ~ConnectWindow(); 
 
 protected:
-    void OnGenerateClicked(); // Slot pentru gestionarea click-ului pe butonul de generare cod
+    void OnGenerateClicked(); 
 
 private:
-    QLineEdit* insertCode = nullptr; // Câmp pentru numele de utilizator
-    QPushButton* startButton = nullptr; //Buton pentru mers mai departe
-    QLabel* messageLabel = nullptr; // Etichetă pentru mesajele de feedback
+    QLineEdit* insertCode = nullptr; 
+    QPushButton* startButton = nullptr; 
+    QLabel* messageLabel = nullptr; 
 };
 

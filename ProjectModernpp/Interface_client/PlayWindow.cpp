@@ -32,38 +32,38 @@ PlayWindow::PlayWindow(QWidget* parent)
     generateButton = new QPushButton("Generate code", this);
     generateButton->setStyleSheet("QPushButton {"
         "background-color: rgba(0, 191, 255, 0.7);" // light blue
-        "color: white;" // text alb
+        "color: white;" 
         "border: none;"
-        "padding: 10px;" // spațiul interior dintre conținutul widget-ului și limitele acestuia
+        "padding: 10px;" 
         "border-radius: 5px;"
         "font-size: 16px;"
         "}"
         "QPushButton:hover {"
         "background-color: rgba(0, 0, 255, 0.7);" // dark blue
-        "color: rgba(255, 255, 255, 0.5);" // alb transparent
+        "color: rgba(255, 255, 255, 0.5);" 
         "}"
         "QPushButton:pressed {"
         "background-color: rgba(0, 0, 139, 0.7);" // even darker blue (dark blue shade)
-        "color: rgba(255, 255, 255, 0.7);" // alb transparent
+        "color: rgba(255, 255, 255, 0.7);" 
         "}");
     layout->addWidget(generateButton);
 
     forwardButton = new QPushButton("Start game", this);
     forwardButton->setStyleSheet("QPushButton {"
         "background-color: rgba(144, 238, 144, 0.7);" // light green
-        "color: white;" // text alb
+        "color: white;" 
         "border: none;"
-        "padding: 10px;" // spațiul interior dintre conținutul widget-ului și limitele acestuia
+        "padding: 10px;" 
         "border-radius: 5px;"
         "font-size: 16px;"
         "}"
         "QPushButton:hover {"
         "background-color: rgba(34, 139, 34, 0.7);" // dark green
-        "color: rgba(255, 255, 255, 0.5);" // alb transparent
+        "color: rgba(255, 255, 255, 0.5);" 
         "}"
         "QPushButton:pressed {"
         "background-color: rgba(0, 100, 0, 0.7);" // even darker green (dark green shade)
-        "color: rgba(255, 255, 255, 0.7);" // alb transparent
+        "color: rgba(255, 255, 255, 0.7);" t
         "}");
     layout->addWidget(forwardButton);
     connect(generateButton, &QPushButton::clicked, this, &PlayWindow::OnGenerateClicked);
@@ -72,18 +72,20 @@ PlayWindow::PlayWindow(QWidget* parent)
 
 PlayWindow::~PlayWindow() 
 {
-    // Destructor (nimic special de curățat aici)
+    
 }
+
+//function for generate random numbers
 QString PlayWindow::GenerateRandomNumber()
 {
     QString number;
 
-    // Generarea a 5 cifre aleatoare
+    
     srand(time(NULL));
     for (int i = 0; i < 5; ++i) {
 
-        int digit = rand() % 10; // Generare cifră între 0 și 9
-        number.append(QString::number(digit)); // Adăugăm cifra la string
+        int digit = rand() % 10; 
+        number.append(QString::number(digit)); 
     }
     return number;
 

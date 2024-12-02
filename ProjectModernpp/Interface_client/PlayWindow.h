@@ -4,25 +4,25 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QVBoxLayout>
-#include <QMessageBox> // Pentru afișarea mesajelor de eroare
+#include <QMessageBox> 
 
 class PlayWindow : public QDialog
 {
     Q_OBJECT
 
 public:
-    PlayWindow(QWidget* parent = nullptr); // Constructor
-    ~PlayWindow(); // Destructor
+    PlayWindow(QWidget* parent = nullptr); 
+    ~PlayWindow(); 
 
 protected:
-    void OnGenerateClicked(); // Slot pentru gestionarea click-ului pe butonul de generare cod
-    QString GenerateRandomNumber();// functie pentru generare random de cod
+    void OnGenerateClicked(); 
+    QString GenerateRandomNumber();
     void OnForwardClicked();
 
 private:
-    QLineEdit* generateCode = nullptr; // Câmp pentru numele de utilizator
-    QPushButton* generateButton = nullptr; // Buton pentru logare
-    QPushButton* forwardButton = nullptr; //Buton pentru mers mai departe
-    QLabel* messageLabel = nullptr; // Etichetă pentru mesajele de feedback
+    QLineEdit* generateCode = nullptr; 
+    QPushButton* generateButton = nullptr; 
+    QPushButton* forwardButton = nullptr; 
+    QLabel* messageLabel = nullptr; 
 };
 

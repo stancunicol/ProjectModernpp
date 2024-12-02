@@ -5,33 +5,35 @@
 ConnectWindow::ConnectWindow(QWidget* parent)
     : QDialog(parent) 
 {
-    // Setare titlu și dimensiune fereastră
+    // set size and title for window
     setWindowTitle("Join Room");
     setFixedSize(300, 200);
 
     QPalette palette;
-    palette.setColor(QPalette::Window, Qt::black); // Fundal negru
-    palette.setColor(QPalette::WindowText, Qt::white); // Text alb
+    palette.setColor(QPalette::Window, Qt::black); 
+    palette.setColor(QPalette::WindowText, Qt::white); 
     setPalette(palette);
-    setAutoFillBackground(true); // Asigură-te că fundalul se umple cu culoarea
+    setAutoFillBackground(true); 
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     QLabel* label = new QLabel("Insert code:", this);
     QFont font;
-    font.setPointSize(14);  // Dimensiunea fontului
-    font.setFamily("Segoe Script");  // Familia fontului
-    font.setBold(true);  // Font îngroșat (opțional)
+    font.setPointSize(14); 
+    font.setFamily("Segoe Script");  
+    font.setBold(true);  
 
     label->setFont(font);
     layout->addWidget(label);
-    // Câmp pentru codul camerei
+
+    //label for insert code
     insertCode = new QLineEdit(this);
     layout->addWidget(insertCode);
     insertCode->setAlignment(Qt::AlignCenter);
     insertCode->setStyleSheet("color: lightBlue;background-color: darkBlue;font-size: 20px;border: 2px solid lightBlue");
     insertCode->setFixedSize(240, 50);
-    layout->setAlignment(Qt::AlignCenter); // Centrarea layout-ului
+    layout->setAlignment(Qt::AlignCenter); 
 
+    //button for start game
     startButton = new QPushButton("START GAME", this);
     startButton->setStyleSheet("background-color:green;"
         "color:lightGreen;"
@@ -60,6 +62,5 @@ void ConnectWindow::OnGenerateClicked()
 }
 
 ConnectWindow::~ConnectWindow() 
-{
-    // Destructor 
+{ 
 }
