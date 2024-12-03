@@ -71,8 +71,7 @@ void Game::Run() { //running the game
         //we renderizăm the map
         m_map.Display();
 
-        Sleep(1000);
-
+        Sleep(500);
     }
 
 }
@@ -146,4 +145,23 @@ void Game::UpdateBullets(std::vector<Bullet>& bullets, GameMap& map) { //we upda
         }
 
     }
+}
+
+crow::json::wvalue Game::TranformInJson() {
+    crow::json::wvalue jsonMap;
+    for (size_t i = 0; i < m_map.GetMap().size(); i++) {
+        for (size_t j = 0; j < m_map.GetMap()[i].size(); j++) {
+            jsonMap["matrix"][i][j] = static_cast<int>(m_map.GetMap()[i][j]);
+        }
+
+    }
+    jsonMap["level"] = m_map.GetLevel();
+    jsonMap["rows"] = m_map.GetHeight();
+    jsonMap["columns"] = m_map.GetWidth();
+
+    return jsonMap;
+}
+
+crow::json::wvalue Game::GetGameStateAsJson() {
+    return TranformInJson();
 }

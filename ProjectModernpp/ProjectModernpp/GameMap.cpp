@@ -95,4 +95,9 @@ void GameMap::AddBullet(const Bullet& bullet) {
     m_bullets.push_back(bullet);
 }
 
+uint32_t GameMap::GetLevel() const
+{
+    return m_level;
+}
+
 

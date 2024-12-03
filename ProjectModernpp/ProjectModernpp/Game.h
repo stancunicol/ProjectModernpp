@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Base.h"
 #include "Bullet.h"
+#include <crow.h>
 
 class Enemy;
 
@@ -31,4 +32,8 @@ public:
     void AddBullet(const Bullet& bullet);  //adds a bullet to the vector of bullets
 
     void UpdateBullets(std::vector<Bullet>& bullets, GameMap& map); //updates the bullet on the map
+
+    crow::json::wvalue TranformInJson();
+
+    crow::json::wvalue GetGameStateAsJson();
 };

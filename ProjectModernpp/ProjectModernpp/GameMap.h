@@ -31,4 +31,6 @@ public:
     uint32_t GetWidth() const;//returns the width of the map
     uint32_t GetHeight() const;//returns the height of the map
     void AddBullet(const Bullet& bullet); //we add a bullet to the vector
+
+    uint32_t GetLevel() const;
 };
