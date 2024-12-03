@@ -7,17 +7,15 @@ protected:
     Point m_direction;//the direction the character is moving to
 
 public:
-    Character(const Point& direction = Point(0, 0), const Point& position = Point(0, 0))//constructor
-        : m_position(position), m_direction(direction) {}
+    Character(const Point& direction = Point(0, 0), const Point& position = Point(0, 0));//constructor
 
     virtual void PlaceCharacter() = 0;
 
-    virtual void MoveCharacter(const Point& direction) {//moves the character in the mentioned direction
-        m_position = m_position + direction;
-    }
+    virtual void MoveCharacter(const Point& direction);//moves the character in the mentioned direction
 
-    Point GetPosition() const { return m_position; }//returns the current position
-    Point GetDirection() const { return m_direction; }//returns the current direction
+    Point GetPosition() const;//returns the current position
 
-    void SetPosition(const Point& point) { m_position = point; }//sets the position at the mentioned position
+    Point GetDirection() const;//returns the current direction
+
+    void SetPosition(const Point& point);//sets the position at the mentioned position
 };

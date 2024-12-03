@@ -12,27 +12,14 @@ private:
 
 public:
     // Constructor
-    explicit Base(GameMap& gameMap)
-        : m_gameMap(gameMap), m_destroyed(false) {}
+    explicit Base(GameMap& gameMap);
 
     // Places the base on the game map
-    void PlaceBase() {
-        const int centerX = m_gameMap.GetHeight() - 1; // Bottom row
-        const int centerY = m_gameMap.GetWidth() / 2;  // Middle column
-
-        // Access the map grid directly
-        auto& map = m_gameMap.GetMap();
-        map[centerX][centerY] = CellType::BASE;
-        map[centerX][centerY - 1] = CellType::BREAKABLE_WALL;
-        map[centerX][centerY + 1] = CellType::BREAKABLE_WALL;
-        map[centerX - 1][centerY - 1] = CellType::BREAKABLE_WALL;
-        map[centerX - 1][centerY] = CellType::BREAKABLE_WALL;
-        map[centerX - 1][centerY + 1] = CellType::BREAKABLE_WALL;
-    }
+    void PlaceBase();
 
     // Marks the base as destroyed
-    void Destroyed() { m_destroyed = true; }
+    void Destroyed();
 
     // Checks if the base is destroyed
-    [[nodiscard]] bool IsDestroyed() const { return m_destroyed; }
+    [[nodiscard]] bool IsDestroyed() const;
 };

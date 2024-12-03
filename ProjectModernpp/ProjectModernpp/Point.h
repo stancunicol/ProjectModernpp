@@ -8,27 +8,16 @@ public:
 	Point() = default;
 
 	//Copy constructor.
-	Point(const size_t& x, const size_t& y)
-		: m_x{ x }, m_y{ y }
-	{}
+	Point(const size_t& x, const size_t& y);
 
 	//"SetPosition" sets the position.
-	void SetPosition(const Point& position) {
-		m_x = position.m_x;
-		m_y = position.m_y;
-	}
+	void SetPosition(const Point& position);
 
 	//"GetPosition" gets the current position.
-	Point GetPosition() const {
-		return { m_x, m_y };
-	}
+	Point GetPosition() const;
 
 	//Copies an object in the current object.
-	Point operator=(const Point& position) {
-		m_x = position.m_x;
-		m_y = position.m_y;
-		return *this;
-	}
+	Point operator=(const Point& position);
 
 	Point operator+(const Point& position) const {
 		return Point(m_x + position.m_x, m_y + position.m_y);
@@ -38,25 +27,13 @@ public:
 		return Point(m_x - position.m_x, m_y - position.m_y);
 	}
 
-	Point operator+=(const Point& position) {
-		m_x = m_x + position.m_x;
-		m_y = m_y + position.m_y;
-		return *this;
-	}
+	Point operator+=(const Point& position);
 
-	bool operator==(const Point& position) const {
-		if (m_x == position.m_x && m_y == position.m_y)
-			return true;
-		return false;
-	}
+	bool operator==(const Point& position) const;
 
 	//"GetX" returns the x coordonate.
-	size_t GetX() const {
-		return m_x;
-	}
+	size_t GetX() const;
 
 	//"GetY" returns the y coordonate.
-	size_t GetY() const {
-		return m_y;
-	}
+	size_t GetY() const;
 };
