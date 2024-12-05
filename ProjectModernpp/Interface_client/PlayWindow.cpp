@@ -63,7 +63,7 @@ PlayWindow::PlayWindow(QWidget* parent)
         "}"
         "QPushButton:pressed {"
         "background-color: rgba(0, 100, 0, 0.7);" // even darker green (dark green shade)
-        "color: rgba(255, 255, 255, 0.7);" t
+        "color: rgba(255, 255, 255, 0.7);"
         "}");
     layout->addWidget(forwardButton);
     connect(generateButton, &QPushButton::clicked, this, &PlayWindow::OnGenerateClicked);
