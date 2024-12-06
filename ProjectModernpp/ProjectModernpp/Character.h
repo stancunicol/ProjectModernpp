@@ -9,8 +9,6 @@ protected:
 public:
     Character(const Point& direction = Point(0, 0), const Point& position = Point(0, 0)); //constructor
 
-    virtual void PlaceCharacter() = 0;
-
     virtual void MoveCharacter(const Point& direction); //moves the character in the mentioned direction
 
     Point GetPosition() const;
@@ -18,4 +16,5 @@ public:
     Point GetDirection() const;
 
     void SetPosition(const Point& point);
+    void SetDirection(const Point& point);
 };

@@ -2,14 +2,18 @@
 #include <cstdlib>
 #include <iostream>
 #include "Bullet.h"
+#include <cassert>
 
 GameMap::GameMap(uint32_t width, uint32_t height, uint8_t level)
-    : m_width(width), m_height(height), m_level(level) {
+    : m_width(width), m_height(height), m_level(level),
+    m_dynamicGrid(height, std::vector<CellType>(width, CellType::EMPTY)) 
+{
     m_grid.resize(height, std::vector<CellType>(width, CellType::EMPTY));
     Initialize();
 }
 
-void GameMap::Initialize() {
+void GameMap::Initialize() 
+{
     int breakableWallChance, unbreakableWallChance, safeZoneSize = 3;
 
     switch (m_level) {
@@ -25,7 +29,8 @@ void GameMap::Initialize() {
 
             int randVal = rand() % 100;
 
-            if (m_grid[i][j] == CellType::EMPTY && HasEmptyNeighbors(i, j)) {
+            if (m_grid[i][j] == CellType::EMPTY && HasEmptyNeighbors(i, j)) 
+            {
                 if (randVal < breakableWallChance) {
                     m_grid[i][j] = CellType::BREAKABLE_WALL;
                 }
@@ -37,14 +42,16 @@ void GameMap::Initialize() {
     }
 }
 
-bool GameMap::IsInSafeZone(int x, int y, int safeZoneSize) {
+bool GameMap::IsInSafeZone(int x, int y, int safeZoneSize) 
+{
     return (x < safeZoneSize && y < safeZoneSize) ||
         (x < safeZoneSize && y >= m_width - safeZoneSize) ||
         (x >= m_height - safeZoneSize && y < safeZoneSize) ||
         (x >= m_height - safeZoneSize && y >= m_width - safeZoneSize);
 }
 
-bool GameMap::HasEmptyNeighbors(int x, int y) {
+bool GameMap::HasEmptyNeighbors(int x, int y) 
+{
     int emptyCount = 0;
     const int dx[] = { -1, 0, 1, 0 };
     const int dy[] = { 0, -1, 0, 1 };
@@ -59,25 +66,50 @@ bool GameMap::HasEmptyNeighbors(int x, int y) {
     return emptyCount >= 2;
 }
 
-void GameMap::Display() const {
+void GameMap::Display() const 
+{
     for (int i = 0; i < m_height; ++i) {
         for (int j = 0; j < m_width; ++j) {
-            switch (m_grid[i][j]) {
-            case CellType::PLAYER: std::cout << "\033[32m P \033[0m"; break;
-            case CellType::EMPTY: std::cout << "\033[36m . \033[0m"; break;
-            case CellType::BREAKABLE_WALL: std::cout << "\033[35m * \033[0m"; break;
-            case CellType::UNBREAKABLE_WALL: std::cout << "\033[33m # \033[0m"; break;
-            case CellType::BULLET: std::cout << "\033[34m o \033[0m"; break;
-            case CellType::ENEMY: std::cout << "\033[31m E \033[0m"; break;
-            case CellType::BASE: std::cout << " B "; break;
-            default: std::cout << " ? "; break;
+
+            if (m_dynamicGrid[i][j] != CellType::EMPTY && m_dynamicGrid[i][j] != CellType::BREAKABLE_WALL
+                && m_dynamicGrid[i][j] != CellType::UNBREAKABLE_WALL && m_dynamicGrid[i][j] != CellType::BASE) {
+                std::cout << ' ' << static_cast<char>(m_dynamicGrid[i][j]) << ' ';
+            }
+            else {
+                std::cout << ' ' << static_cast<char>(m_grid[i][j]) << ' ';;
             }
         }
-        std::cout << '\n';
+        std::cout << std::endl;
     }
 }
 
-std::vector<std::vector<CellType>>& GameMap::GetMap() {
+void GameMap::ClearDynamicEntities()
+{
+    for (int i = 0; i < m_height; ++i) {
+        for (int j = 0; j < m_width; ++j) {
+            m_dynamicGrid[i][j] = CellType::EMPTY;
+        }
+    }
+}
+
+void GameMap::DrawEntity(const Point& position, char symbol)
+{
+    if (position.GetX() >= 0 && position.GetX() < m_height &&
+        position.GetY() >= 0 && position.GetY() < m_width) {
+
+        m_dynamicGrid[position.GetX()][position.GetY()] = static_cast<CellType>(symbol);
+    }
+}
+
+void GameMap::SetStaticCell(int x, int y, CellType type)
+{
+    if (x >= 0 && x < m_width && y >= 0 && y < m_height) {
+        m_grid[x][y] = type;
+    }
+}
+
+std::vector<std::vector<CellType>>& GameMap::GetMap()
+{
     return m_grid;
 }
 
@@ -91,13 +123,8 @@ uint32_t GameMap::GetHeight() const
     return m_grid.size();
 }
 
-void GameMap::AddBullet(const Bullet& bullet) {
-    m_bullets.push_back(bullet);
-}
-
 uint32_t GameMap::GetLevel() const
 {
     return m_level;
 }
-
 

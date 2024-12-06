@@ -1,17 +1,17 @@
 ﻿#include "Game.h"
 #include <iostream>
 #include <crow.h>
-
-void StartServer(Game& game) {
-    crow::SimpleApp serverApp;
-
-    CROW_ROUTE(serverApp, "/game")([&game]() {
-            crow::json::wvalue gameState = game.GetGameStateAsJson();
-            std::cout << "Game state: " << gameState.dump(4) << '\n';
-            return gameState;
-        });
-    serverApp.port(8080).multithreaded().run();
-}
+//
+//void StartServer(Game& game) {
+//    crow::SimpleApp serverApp;
+//
+//    CROW_ROUTE(serverApp, "/game")([&game]() {
+//            crow::json::wvalue gameState = game.GetGameStateAsJson();
+//            std::cout << "Game state: " << gameState.dump(4) << '\n';
+//            return gameState;
+//        });
+//    serverApp.port(8080).multithreaded().run();
+//}
 
 int main() {
 

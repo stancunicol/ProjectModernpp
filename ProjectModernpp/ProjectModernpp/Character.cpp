@@ -19,3 +19,8 @@ Point Character::GetDirection() const {
 void Character::SetPosition(const Point& point) {
 	m_position = point;
 }
+
+void Character::SetDirection(const Point& point)
+{
+	m_direction = point;
+}

@@ -27,7 +27,7 @@ public:
     void SetPosition(const Point& position);      //Sets the position of the bullet
 
     //It actualizes the map based on the movements of the bullet and the collisions (if they exists) or if the bullet exists the matrix
-    void Move(GameMap& map);
+    void Move(GameMap& map, float deltaTime);
 
     bool operator==(const Bullet& other) const;
 };

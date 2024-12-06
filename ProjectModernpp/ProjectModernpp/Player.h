@@ -1,24 +1,29 @@
 #pragma once
 #include "Character.h"
 #include "GameMap.h"
-#include "Bullet.h"
 #include <vector>
 
 class  Player : virtual public Character {
 private:
     std::string m_name;//the name of the player, that the player will write in the log in window
-    GameMap& m_grid;//the map of the ga,e
+
     uint8_t m_points;//the number of points of the player
+
     uint8_t m_score;//the number of score points
+
     std::vector<std::pair<Point, bool>> m_positions;
-    Bullet m_bullet;
+
+    Point m_shootDirection = Point(0, 0);
 public:
-    Player(const std::string& name, GameMap& grid);//constructor
+    Player(const std::string& name, const GameMap& grid);//constructor
 
-    void PlaceCharacter() override;//from "Character"; places the charater
+    void PlaceCharacter();//from "Character"; places the charater
 
-    void MoveCharacter(const Point& direction) override;//from "Character"; places the character
-    
-    void Shot(); //the player shoots
-    Bullet GetBullet(); //return the bullet
+    void MoveCharacter(const Point& direction, GameMap& m_grid);//from "Character"; places the character
+
+    const Point& GetShootDirection() const;
+
+    void SetShootDirection(const Point& direction);
+
+
 };

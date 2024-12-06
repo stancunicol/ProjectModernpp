@@ -22,28 +22,28 @@ void EntityManager::AddBullet(const Bullet& bullet)
 void EntityManager::RemovePlayer(size_t index) 
 {
     if (index < m_players.size()) {
-        //m_players.erase(m_players.begin() + index);
+        m_players.erase(m_players.begin() + index);
     }
 }
 
 void EntityManager::RemoveEnemy(size_t index) 
 {
     if (index < m_enemies.size()) {
-        //m_enemies.erase(m_enemies.begin() + index);
+        m_enemies.erase(m_enemies.begin() + index);
         m_enemyShootTimers.erase(m_enemyShootTimers.begin() + index);
     }
 }
 
 void EntityManager::EnemyShoots(const Point& direction, const Point& position)
 {
-    /*Bullet newBullet(position, direction);  
+    Bullet newBullet(position, direction);  
     newBullet.SetActive(true);  
-    AddBullet(newBullet); */
+    AddBullet(newBullet); 
 }
 
 void EntityManager::PlayerShoot(GameMap& map)
 {
-    /*Player& player = m_players[0];
+    Player& player = m_players[0];
     Point shootDirection = player.GetShootDirection(); 
 
     if (shootDirection != Point(0, 0)) {
@@ -56,59 +56,59 @@ void EntityManager::PlayerShoot(GameMap& map)
             AddBullet(bullet);
         }
     }
-    player.SetShootDirection(shootDirection);*/
+    player.SetShootDirection(shootDirection);
 }
 
 void EntityManager::UpdateEntities(GameMap& map, float deltaTime)
 {
-    //map.ClearDynamicEntities();
+    map.ClearDynamicEntities();
 
-    //for (size_t i = 0; i < m_players.size(); ++i) {
-    //    m_players[i].MoveCharacter(m_players[i].GetDirection(), map);
-    //}
+    for (size_t i = 0; i < m_players.size(); ++i) {
+        m_players[i].MoveCharacter(m_players[i].GetDirection(), map);
+    }
 
-    //for (size_t i = 0; i < m_enemies.size(); ++i) {
-    //    m_enemies[i].MoveRandom(map);
-    //    // Actualizăm timerul pentru tragere
-    //    m_enemyShootTimers[i] += deltaTime;
+    for (size_t i = 0; i < m_enemies.size(); ++i) {
+        m_enemies[i].MoveRandom(map);
+        // Actualizăm timerul pentru tragere
+        m_enemyShootTimers[i] += deltaTime;
 
-    //    if (m_enemyShootTimers[i] >= m_enemyShootInterval) {
-    //        Point shootDir = m_enemies[i].GetShootDirection();
-    //        if (shootDir != Point(0, 0)) {
-    //            Point bulletStartPos = m_enemies[i].GetPosition() + shootDir;
-    //            if (bulletStartPos.GetX() >= 0 && bulletStartPos.GetX() < map.GetHeight() &&
-    //                bulletStartPos.GetY() >= 0 && bulletStartPos.GetY() < map.GetWidth() &&
-    //                map.GetMap()[bulletStartPos.GetX()][bulletStartPos.GetY()] == CellType::EMPTY) {
-    //                Bullet newBullet(bulletStartPos, shootDir);
-    //                AddBullet(newBullet);
-    //            }
-    //        }
-    //        m_enemyShootTimers[i] = 0.0f;
-    //    }
-    //}
+        if (m_enemyShootTimers[i] >= m_enemyShootInterval) {
+            Point shootDir = m_enemies[i].GetShootDirection();
+            if (shootDir != Point(0, 0)) {
+                Point bulletStartPos = m_enemies[i].GetPosition() + shootDir;
+                if (bulletStartPos.GetX() >= 0 && bulletStartPos.GetX() < map.GetHeight() &&
+                    bulletStartPos.GetY() >= 0 && bulletStartPos.GetY() < map.GetWidth() &&
+                    map.GetMap()[bulletStartPos.GetX()][bulletStartPos.GetY()] == CellType::EMPTY) {
+                    Bullet newBullet(bulletStartPos, shootDir);
+                    AddBullet(newBullet);
+                }
+            }
+            m_enemyShootTimers[i] = 0.0f;
+        }
+    }
 
-    //for (size_t i = 0; i < m_bullets.size(); ++i) {
-    //    m_bullets[i].Move(map, deltaTime); // Mutăm fiecare glonț în direcția sa
-    //}
+    for (size_t i = 0; i < m_bullets.size(); ++i) {
+        m_bullets[i].Move(map, deltaTime); // Mutăm fiecare glonț în direcția sa
+    }
 
-    //HandleCollisions();
+    HandleCollisions();
 
-    //for (const Player& player : m_players) {
-    //    map.DrawEntity(player.GetPosition(), 'P'); 
-    //}
+    for (const Player& player : m_players) {
+        map.DrawEntity(player.GetPosition(), 'P'); 
+    }
 
-    //for (const Enemy& enemy : m_enemies) {
-    //    map.DrawEntity(enemy.GetPosition(), 'E');
-    //}
+    for (const Enemy& enemy : m_enemies) {
+        map.DrawEntity(enemy.GetPosition(), 'E');
+    }
 
-    //for (const Bullet& bullet : m_bullets) {
-    //    if (bullet.IsActive()) {
-    //        map.DrawEntity(bullet.GetPosition(), 'o');  
-    //    }
-    //}
-    //m_bullets.erase(std::remove_if(m_bullets.begin(), m_bullets.end(),
-    //    [](const Bullet& bullet) { return !bullet.IsActive(); }),
-    //    m_bullets.end());
+    for (const Bullet& bullet : m_bullets) {
+        if (bullet.IsActive()) {
+            map.DrawEntity(bullet.GetPosition(), 'o');  
+        }
+    }
+    m_bullets.erase(std::remove_if(m_bullets.begin(), m_bullets.end(),
+        [](const Bullet& bullet) { return !bullet.IsActive(); }),
+        m_bullets.end());
 }
 
 void EntityManager::RemoveBullet(size_t index) 

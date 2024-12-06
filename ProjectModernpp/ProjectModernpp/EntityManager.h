@@ -5,6 +5,15 @@
 #include "GameMap.h"
 
 class EntityManager {
+private:
+    std::vector<Player> m_players;      
+    std::vector<Enemy> m_enemies;       
+    std::vector<Bullet> m_bullets; 
+
+    std::vector<float> m_enemyShootTimers; // Timpurile scurse pentru fiecare inamic
+    const float m_enemyShootInterval = 0.3f; // Intervalul între trageri
+
+    void HandleCollisions();
 public:
     EntityManager();
 
@@ -21,23 +30,12 @@ public:
     void PlayerShoot(GameMap& map);
     void UpdateEntities(GameMap& map, float deltaTime);   // Updates the positions and states of all entities
 
-
     const std::vector<Player>& GetPlayers() const;
     const std::vector<Enemy>& GetEnemies() const;
     const std::vector<Bullet>& GetBullets() const;
 
     std::vector<Player>& GetPlayersMutable();
-
-private:
-    std::vector<Player> m_players;      
-    std::vector<Enemy> m_enemies;       
-    std::vector<Bullet> m_bullets; 
-
-private:
-    std::vector<float> m_enemyShootTimers; // Timpurile scurse pentru fiecare inamic
-    const float m_enemyShootInterval = 0.3f; // Intervalul între trageri
-
-    void HandleCollisions();
-
+    std::vector<Enemy>& GetEnemiesMutable() { return m_enemies; }
+    std::vector<Bullet>& GetBulletsMutable() { return m_bullets; }
 };
 

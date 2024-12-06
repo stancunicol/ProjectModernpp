@@ -1,16 +1,17 @@
 ﻿#include "Player.h"
 #include <cstdlib>
 
-Player::Player(const std::string& name, GameMap& grid)
-    : m_name(name), m_grid(grid) {
-    m_positions.push_back({ Point(0, 0), false });                                 // corenr letf-up
+Player::Player(const std::string& name, const GameMap& grid)
+    : m_name{ name }, m_points{ 0 }, m_score{ 0 } {
+    m_positions.push_back({ Point(0, 0), false });                                 // corner letf-up
     m_positions.push_back({ Point(0, grid.GetWidth() - 1), false });               // corner right-up
     m_positions.push_back({ Point(grid.GetHeight() - 1, 0), false });             // corner left-downs
     m_positions.push_back({ Point(grid.GetHeight() - 1, grid.GetWidth() - 1), false }); // corner right-down
 }
 
 void Player::PlaceCharacter() {
-    bool gasit = false;
+    srand(time(NULL));
+    bool found = false;
 
     do {
         size_t randomIndex = rand() % 4; // generate a random index between 0 and 3
@@ -18,42 +19,33 @@ void Player::PlaceCharacter() {
         if (!m_positions[randomIndex].second) {
             m_position = m_positions[randomIndex].first;  // we set the position of the player
             m_positions[randomIndex].second = true;        //we set the position as marked
-            m_grid.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::PLAYER;
-            gasit = true;
+            found = true;
         }
-    } while (!gasit);
+    } while (!found);
+
 }
 
-void Player::MoveCharacter(const Point& direction) {
+void Player::MoveCharacter(const Point& direction, GameMap& grid) {
     Point newPos = m_position + direction;
-    auto& map = m_grid.GetMap();
 
-    if (newPos.GetX() >= 0 && newPos.GetX() < m_grid.GetHeight() &&
-        newPos.GetY() >= 0 && newPos.GetY() < m_grid.GetWidth() &&
-        map[newPos.GetX()][newPos.GetY()] == CellType::EMPTY) {
+    // Verificăm dacă poziția nouă este validă
+    if (newPos.GetX() >= 0 && newPos.GetX() < grid.GetHeight() &&
+        newPos.GetY() >= 0 && newPos.GetY() < grid.GetWidth() &&
+        grid.GetMap()[newPos.GetX()][newPos.GetY()] == CellType::EMPTY) {
 
-        map[m_position.GetX()][m_position.GetY()] = CellType::EMPTY; //we clean the previous position
+        // Actualizăm doar poziția internă a jucătorului
+        m_shootDirection = newPos - m_position;
         m_position = newPos;
-        map[newPos.GetX()][newPos.GetY()] = CellType::PLAYER; //we update the new position
-        m_direction = direction;
     }
-    else {
-        m_direction = Point(0, 0); //reset the direction if is not valid
-    }
+    m_direction = Point(0, 0);
 }
 
-void Player::Shot() {
-    if (m_direction == Point(0,0)) {
-        m_direction = Point(0, 1); //to left, deafult
-    }
+const Point& Player::GetShootDirection() const {
 
-    //we create the bullet and add it
-    Bullet bullet(m_direction, m_position);
-
-    //we add the bullet in the map
-    m_grid.AddBullet(bullet);
+    return m_shootDirection;
 }
 
-Bullet Player::GetBullet() {
-    return m_bullet;
+void Player::SetShootDirection(const Point& direction)
+{
+    m_shootDirection = direction;
 }
