@@ -12,6 +12,18 @@ public:
     void AddEnemy(const Enemy& enemy);
     void AddBullet(const Bullet& bullet);
 
+    void RemoveBullet(size_t index);
+    void RemovePlayer(size_t index);
+    void RemoveEnemy(size_t index);
+
+
+
+    const std::vector<Player>& GetPlayers() const;
+    const std::vector<Enemy>& GetEnemies() const;
+    const std::vector<Bullet>& GetBullets() const;
+
+    std::vector<Player>& GetPlayersMutable();
+
 private:
     std::vector<Player> m_players;      
     std::vector<Enemy> m_enemies;       
@@ -20,6 +32,8 @@ private:
 private:
     std::vector<float> m_enemyShootTimers; // Timpurile scurse pentru fiecare inamic
     const float m_enemyShootInterval = 0.3f; // Intervalul între trageri
+
+    void HandleCollisions();
 
 };
 
