@@ -21,14 +21,14 @@ int main() {
 
     Game game(15, 15, level);
     game.InitializeGame();
-
-    std::thread serverThread(StartServer, std::ref(game));
+    game.Run();
+    /*std::thread serverThread(StartServer, std::ref(game));
 
     std::thread gameThread(&Game::Run, &game);
 
     serverThread.join();
 
-    gameThread.join();
+    gameThread.join();*/
 
     return 0;
 }

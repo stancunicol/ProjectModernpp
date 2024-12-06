@@ -2,38 +2,35 @@
 #include <cstdint>
 
 class Point {
-	size_t m_x, m_y;
+private:
+	int m_x, m_y;
+	int* m_data;
+
 public:
 	//Default constructor.
 	Point() = default;
 
 	//Copy constructor.
-	Point(const size_t& x, const size_t& y);
+	Point(int x, int y);
+	Point(const Point& other);
 
-	//"SetPosition" sets the position.
-	void SetPosition(const Point& position);
+	~Point();
 
-	//"GetPosition" gets the current position.
-	Point GetPosition() const;
+	Point& operator=(const Point& position);
 
-	//Copies an object in the current object.
-	Point operator=(const Point& position);
+	Point operator+(const Point& position) const;
 
-	Point operator+(const Point& position) const {
-		return Point(m_x + position.m_x, m_y + position.m_y);
-	}
-
-	Point operator-(const Point& position) const {
-		return Point(m_x - position.m_x, m_y - position.m_y);
-	}
+	Point operator-(const Point& position) const;
 
 	Point operator+=(const Point& position);
 
 	bool operator==(const Point& position) const;
 
-	//"GetX" returns the x coordonate.
-	size_t GetX() const;
+	bool operator!=(const Point& other) const;
 
-	//"GetY" returns the y coordonate.
+	void SetPosition(const Point& position);
+	Point GetPosition() const;
+
+	size_t GetX() const;
 	size_t GetY() const;
 };
