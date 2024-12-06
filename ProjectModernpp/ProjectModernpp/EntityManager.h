@@ -17,6 +17,10 @@ public:
     void RemoveEnemy(size_t index);
 
 
+    void EnemyShoots(const Point& direction, const Point& position);
+    void PlayerShoot(GameMap& map);
+    void UpdateEntities(GameMap& map, float deltaTime);   // Updates the positions and states of all entities
+
 
     const std::vector<Player>& GetPlayers() const;
     const std::vector<Enemy>& GetEnemies() const;
