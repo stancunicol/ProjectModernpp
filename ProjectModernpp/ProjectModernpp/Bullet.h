@@ -9,10 +9,12 @@ private:
     float m_speed;                // The speed of the bullet (cells on second)
     Point m_position;             // The current position of the bullet
 
-public:
+    float m_progress;
+    float m_interpolationProgress;
 
+public:
     //Constructor
-    Bullet(bool active = false, float speed = 0.25f, const Point& direction = Point(0, 0), const Point& position = Point(0, 0));
+    Bullet(const Point& position = Point(0, 0), const Point& direction = Point(0, 0));
 
     bool IsActive() const;    //Returns if the bullet is active or not at the current moment
 

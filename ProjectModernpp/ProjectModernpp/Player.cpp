@@ -48,7 +48,7 @@ void Player::Shot() {
     }
 
     //we create the bullet and add it
-    Bullet bullet(true, 1.0f, m_direction, m_position);
+    Bullet bullet(m_direction, m_position);
 
     //we add the bullet in the map
     m_grid.AddBullet(bullet);

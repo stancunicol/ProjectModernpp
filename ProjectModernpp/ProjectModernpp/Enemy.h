@@ -11,6 +11,8 @@ private:
     bool m_active = false;  //If the enemy is active or not, which at first is not
     Bullet m_activeBullet;  //if the bullet is active or not
 
+    Point m_shootDirection = Point(0, 0);
+
 public:
     Enemy(Game& game, GameMap& map);//"puts" the enemies in the game map
 
@@ -18,9 +20,11 @@ public:
 
     void MoveRandom();//moves the enemies in random movements
 
+
+    void Shoot(const Point& direction); //shoots a bullet
+
+    void SetActive(const bool& active);  
+
     const Point& GetPosition() const;//return the current position
-
-    void Shoot(const Point& direction);//shoots a bullet
-
-    void SetActive(const bool& active);  //sets an enemy active
+    const Point& GetShootDirection() const;
 };

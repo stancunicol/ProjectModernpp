@@ -4,7 +4,7 @@
 
 Enemy::Enemy(Game& game, GameMap& map) //constructor
     : Character(Point(0, 0), Point(0, 0)), m_game(game), m_map(map),
-      m_activeBullet(false, 0.25f, Point(0,0), Point(0,0)){
+      m_activeBullet( Point(0,0), Point(0,0)){
 }
 
 void Enemy::PlaceCharacter() {
@@ -56,9 +56,6 @@ void Enemy::MoveRandom() {
     }
 }
 
-const Point& Enemy::GetPosition() const { //returns the current position
-    return m_position;
-}
 
 //the enemy shoots a bullet
 void Enemy::Shoot(const Point& direction) {
@@ -72,14 +69,23 @@ void Enemy::Shoot(const Point& direction) {
     if (newPosition.GetX() >= 0 && newPosition.GetX() < m_map.GetHeight() &&
         newPosition.GetY() >= 0 && newPosition.GetY() < m_map.GetWidth() &&
         m_map.GetMap()[newPosition.GetX()][newPosition.GetY()] == CellType::EMPTY) {
-        Bullet bullet(true, 0.25f, direction, m_position);
+        Bullet bullet(direction, m_position);
         m_game.AddBullet(bullet);
         m_activeBullet = bullet;
     }
 }
 
-void Enemy::SetActive(const bool& active) { //set the bullet active or desactivates it
-    if (m_active == active)
-        return;
+void Enemy::SetActive(const bool& active) //set the bullet active or desactivates it
+{ 
     m_active = active;
+}
+
+const Point& Enemy::GetPosition() const 
+{ 
+    return m_position;
+}
+
+const Point& Enemy::GetShootDirection() const
+{
+    return m_shootDirection;
 }
