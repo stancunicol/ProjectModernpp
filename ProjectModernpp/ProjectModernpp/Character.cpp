@@ -1,7 +1,7 @@
 #include "Character.h"
 
 Character::Character(const Point& direction, const Point& position)
-	: m_position(position), m_direction(direction) {
+	: m_position{ position }, m_direction{ direction }, m_lives{ 3 } {
 }
 
 void Character::MoveCharacter(const Point& direction) {
@@ -23,4 +23,14 @@ void Character::SetPosition(const Point& point) {
 void Character::SetDirection(const Point& point)
 {
 	m_direction = point;
+}
+
+uint8_t Character::GetLives() const
+{
+	return m_lives;
+}
+
+void Character::SetLives(uint8_t lives)
+{
+	m_lives = lives;
 }

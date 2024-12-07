@@ -3,33 +3,33 @@
 Bullet::Bullet(const Point& position, const Point& direction)
     : m_active(true), m_speed(0.25f), m_direction(direction), m_position(position), m_progress{ 0.0f }, m_interpolationProgress{ 0.0f } {}
 
-bool Bullet::IsActive() const 
+bool Bullet::IsActive() const
 
 {
-	return m_active;
+    return m_active;
 }
 
-void Bullet::SetActive(bool active) 
+void Bullet::SetActive(bool active)
 {
-	m_active = active;
+    m_active = active;
 }
 
-Point Bullet::GetPosition() const 
+Point Bullet::GetPosition() const
 {
-	return m_position;
+    return m_position;
 }
 
 Point Bullet::GetDirection() const
 {
-	return m_direction;
+    return m_direction;
 }
 
-void Bullet::SetPosition(const Point& position) 
+void Bullet::SetPosition(const Point& position)
 {
-	m_position = position;
+    m_position = position;
 }
 
-void Bullet::Move(GameMap& map, float deltaTime)
+void Bullet::Move(GameMap& map)
 {
     if (!IsActive()) return; //if the bullet is not active -> return
 
@@ -46,7 +46,7 @@ void Bullet::Move(GameMap& map, float deltaTime)
     CellType newCellType = map.GetMap()[newPos.GetX()][newPos.GetY()];
 
     if (newCellType == CellType::BREAKABLE_WALL) {
-        map.GetMap()[newPos.GetX()][newPos.GetY()] = CellType::EMPTY; 
+        map.GetMap()[newPos.GetX()][newPos.GetY()] = CellType::EMPTY;
         SetActive(false);
         return;
     }
@@ -56,12 +56,12 @@ void Bullet::Move(GameMap& map, float deltaTime)
         return;
     }
 
-    map.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::EMPTY;  
-    m_position = newPos; 
+    map.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::EMPTY;
+    m_position = newPos;
 
 }
 
-bool Bullet::operator==(const Bullet& other) const 
+bool Bullet::operator==(const Bullet& other) const
 {
     return (m_position == other.m_position && m_active == other.m_active);
 }

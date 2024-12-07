@@ -33,9 +33,11 @@ void Player::MoveCharacter(const Point& direction, GameMap& grid) {
         newPos.GetY() >= 0 && newPos.GetY() < grid.GetWidth() &&
         grid.GetMap()[newPos.GetX()][newPos.GetY()] == CellType::EMPTY) {
 
-        // Actualizăm doar poziția internă a jucătorului
-        m_shootDirection = newPos - m_position;
         m_position = newPos;
+    }
+
+    if (direction != Point(0, 0)) {
+        m_shootDirection = direction;
     }
     m_direction = Point(0, 0);
 }

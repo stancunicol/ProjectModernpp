@@ -2,7 +2,7 @@
 #include "Enemy.h"
 #include <Windows.h>
 
-Game::Game(uint32_t width, uint32_t height, uint8_t level) 
+Game::Game(uint32_t width, uint32_t height, uint8_t level)
     : m_map(width, height, level) {}
 
 Game::~Game() {}
@@ -31,7 +31,7 @@ void Game::Run() { //running the game
     static float enemyShootTimer = 0.0f; // Timerul inamicilor
 
     while (true) {
-        system("CLS"); 
+        system("CLS");
 
         if (_kbhit()) {
             char input = _getch();
@@ -41,22 +41,24 @@ void Game::Run() { //running the game
             case 'a': case 'A': direction = Point(0, -1); break;
             case 's': case 'S': direction = Point(1, 0); break;
             case 'd': case 'D': direction = Point(0, 1); break;
-            case ' ':  m_entityManager.PlayerShoot(m_map); 
+            case ' ':
+                m_entityManager.PlayerShoot(m_map);
                 break;
             default: break;
             }
             m_entityManager.GetPlayersMutable()[0].MoveCharacter(direction, m_map);
+
             //m_entityManager.GetPlayersMutable()[1].MoveCharacter(Point(0, 0), m_map);
             //m_entityManager.GetPlayersMutable()[2].MoveCharacter(Point(0, 0), m_map);
             //m_entityManager.GetPlayersMutable()[3].MoveCharacter(Point(0, 0), m_map);
         }
 
         // Actualizarea timerului pentru intervalul de tragere al inamicilor
-        elapsedTime += 0.1f;  
+        elapsedTime += 0.15f;
 
         if (elapsedTime >= shootInterval) {
-            m_entityManager.UpdateEntities(m_map, elapsedTime);  
-            elapsedTime = 0.0f; 
+            m_entityManager.UpdateEntities(m_map, elapsedTime);
+            elapsedTime = 0.0f;
         }
 
         m_map.Display();
