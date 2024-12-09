@@ -46,7 +46,32 @@ const Point& Player::GetShootDirection() const {
     return m_shootDirection;
 }
 
+std::string Player::GetName() const
+{
+    return m_name;
+}
+
+uint32_t Player::GetPoints() const
+{
+    return m_points;
+}
+
+uint32_t Player::GetScore() const
+{
+    return m_score;
+}
+
 void Player::SetShootDirection(const Point& direction)
 {
     m_shootDirection = direction;
+}
+
+void Player::SetPoints(uint32_t points)
+{
+    m_points += points;
+}
+
+void Player::SetScore()
+{
+    m_score += m_points;
 }

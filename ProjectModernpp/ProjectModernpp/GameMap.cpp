@@ -72,7 +72,7 @@ void GameMap::Display() const
         for (int j = 0; j < m_width; ++j) {
 
             if (m_dynamicGrid[i][j] != CellType::EMPTY && m_dynamicGrid[i][j] != CellType::BREAKABLE_WALL
-                && m_dynamicGrid[i][j] != CellType::UNBREAKABLE_WALL && m_dynamicGrid[i][j] != CellType::BASE) {
+                && m_dynamicGrid[i][j] != CellType::UNBREAKABLE_WALL) {
                 std::cout << ' ' << static_cast<char>(m_dynamicGrid[i][j]) << ' ';
             }
             else {

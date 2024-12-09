@@ -7,9 +7,9 @@ class  Player : virtual public Character {
 private:
     std::string m_name;//the name of the player, that the player will write in the log in window
 
-    uint8_t m_points;//the number of points of the player
+    uint32_t m_points;//the number of points of the player; score/ per game
 
-    uint8_t m_score;//the number of score points
+    uint32_t m_score;//the number of score points
 
     std::vector<std::pair<Point, bool>> m_positions;
 
@@ -22,11 +22,16 @@ public:
 
     void MoveCharacter(const Point& direction, GameMap& m_grid);//from "Character"; places the character
 
+
     const Point& GetShootDirection() const;
 
+    std::string GetName() const;
+    uint32_t GetPoints() const;
+    uint32_t GetScore() const;
+
+
     void SetShootDirection(const Point& direction);
-
-    std::string GetName() const { return m_name; };
-
+    void SetPoints(uint32_t points);
+    void SetScore();
 
 };

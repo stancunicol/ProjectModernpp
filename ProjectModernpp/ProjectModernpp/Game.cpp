@@ -39,13 +39,13 @@ void Game::InitializeGame() { //here, we initialize the game
     }
 }
 
-void Game::Run() {
+void Game::Run() { 
     static float elapsedTime = 0.0f;
-    const float shootInterval = 0.3f;
-    static float enemyShootTimer = 0.0f;
+    const float shootInterval = 0.3f; 
+    static float enemyShootTimer = 0.0f; 
 
     while (m_entityManager.GetBase().GetLife()) {
-        system("CLS");
+        system("CLS"); 
 
         if (_kbhit()) {
             char input = _getch();
@@ -55,24 +55,24 @@ void Game::Run() {
             case 'a': case 'A': direction = Point(0, -1); break;
             case 's': case 'S': direction = Point(1, 0); break;
             case 'd': case 'D': direction = Point(0, 1); break;
-            case ' ':
+            case ' ': 
                 m_entityManager.PlayerShoot(m_map);
                 break;
             default: break;
             }
             m_entityManager.GetPlayersMutable()[0].MoveCharacter(direction, m_map);
-
+            
             //m_entityManager.GetPlayersMutable()[1].MoveCharacter(Point(0, 0), m_map);
             //m_entityManager.GetPlayersMutable()[2].MoveCharacter(Point(0, 0), m_map);
             //m_entityManager.GetPlayersMutable()[3].MoveCharacter(Point(0, 0), m_map);
         }
 
         // Actualizarea timerului pentru intervalul de tragere al inamicilor
-        elapsedTime += 0.15f;
+        elapsedTime += 0.15f;  
 
         if (elapsedTime >= shootInterval) {
             m_entityManager.UpdateEntities(m_map, elapsedTime);
-            elapsedTime = 0.0f;
+            elapsedTime = 0.0f; 
         }
 
         m_map.Display();
@@ -84,6 +84,10 @@ void Game::Run() {
 
 void Game::EndGame(const std::string& winner)
 {
+    for (size_t i = 0; i < m_entityManager.GetPlayers().size(); i++) {
+        std::cout << m_entityManager.GetPlayers()[i].GetName() << " score: " 
+            << static_cast<int>(m_entityManager.GetPlayers()[i].GetScore()) << '\n';\
+    }
     std::cout << "The game is over! " << winner << " WON!\n";
 }
 

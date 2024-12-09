@@ -10,7 +10,7 @@ private:
 
 public:
     // Constructor
-    explicit Base(const Point& position, uint8_t initialLife = 10);
+    Base(const Point& position, uint8_t initialLife = 10);
 
     // Marks the base as destroyed
     void Destroyed();
@@ -19,10 +19,10 @@ public:
     bool IsDestroyed() const;
 
     // Scade viața bazei și returnează dacă jocul s-a încheiat
-    bool TakeHit();
+    void TakeHit();
 
-    // Returnează numărul de viață al bazei
+    void SetPosition(const Point& point);
+
     int GetLife() const;
-
     const Point& GetPosition() const;
 };

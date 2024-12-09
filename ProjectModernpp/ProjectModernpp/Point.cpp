@@ -59,11 +59,8 @@ Point Point::operator+=(const Point& position)
 	return *this;
 }
 
-bool Point::operator==(const Point& position) const 
-{
-	if (m_x == position.m_x && m_y == position.m_y)
-		return true;
-	return false;
+bool Point::operator==(const Point& position) const {
+	return (m_x == position.m_x && m_y == position.m_y);
 }
 
 bool Point::operator!=(const Point& other) const

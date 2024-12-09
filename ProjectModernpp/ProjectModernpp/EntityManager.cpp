@@ -27,7 +27,7 @@ void EntityManager::AddBullet(const Bullet& bullet)
     m_bullets.push_back(bullet);
 }
 
-void EntityManager::AddPlayerBullet(const Bullet& bullet)
+void EntityManager::AddPlayerBullet(const Bullet& bullet) 
 {
     m_playerBullets.push_back(bullet);
 }
@@ -37,8 +37,10 @@ void EntityManager::PlaceBase(GameMap& m_map)
     const int centerX = m_map.GetHeight() - 1; // Bottom row
     const int centerY = m_map.GetWidth() / 2;  // Middle column
 
+    m_base.SetPosition({ centerX, centerY });
+
     auto& map = m_map.GetMap();
-    map[centerX][centerY] = CellType::BASE;
+
     map[centerX][centerY - 1] = CellType::BREAKABLE_WALL;
     map[centerX][centerY + 1] = CellType::BREAKABLE_WALL;
     map[centerX - 1][centerY - 1] = CellType::BREAKABLE_WALL;
@@ -46,14 +48,14 @@ void EntityManager::PlaceBase(GameMap& m_map)
     map[centerX - 1][centerY + 1] = CellType::BREAKABLE_WALL;
 }
 
-void EntityManager::RemovePlayer(size_t index)
+void EntityManager::RemovePlayer(size_t index) 
 {
     if (index < m_players.size()) {
         m_players.erase(m_players.begin() + index);
     }
 }
 
-void EntityManager::RemoveEnemy(size_t index)
+void EntityManager::RemoveEnemy(size_t index) 
 {
     if (index < m_enemies.size()) {
         m_enemies.erase(m_enemies.begin() + index);
@@ -70,15 +72,15 @@ void EntityManager::RemoveBomb(size_t index)
 
 void EntityManager::EnemyShoots(const Point& direction, const Point& position)
 {
-    Bullet newBullet(position, direction);
-    newBullet.SetActive(true);
-    AddBullet(newBullet);
+    Bullet newBullet(position, direction);  
+    newBullet.SetActive(true);  
+    AddBullet(newBullet); 
 }
 
 void EntityManager::PlayerShoot(GameMap& map)
 {
     Player& player = m_players[0];
-    Point shootDirection = player.GetShootDirection();
+    Point shootDirection = player.GetShootDirection(); 
 
     if (shootDirection != Point(0, 0)) {
         Point bulletStartPos = player.GetPosition();
@@ -120,6 +122,7 @@ void EntityManager::ExplodeBomb(const Bomb& bomb, GameMap& map) {
                 for (size_t i = 0; i < m_players.size(); ++i) {
                     if (m_players[i].GetPosition() == target) {
                         RemovePlayer(i);
+                        m_players[i].SetScore();
                         break;
                     }
                 }
@@ -132,7 +135,7 @@ void EntityManager::UpdateEntities(GameMap& map, float deltaTime)
 {
     map.ClearDynamicEntities();
 
-    for (size_t i = 0; i < m_players.size(); ++i)
+    for (size_t i = 0; i < m_players.size(); ++i) 
     {
         m_players[i].MoveCharacter(m_players[i].GetDirection(), map);
     }
@@ -159,12 +162,12 @@ void EntityManager::UpdateEntities(GameMap& map, float deltaTime)
         }
     }
 
-    for (size_t i = 0; i < m_playerBullets.size(); ++i)
+    for (size_t i = 0; i < m_playerBullets.size(); ++i) 
     {
         m_playerBullets[i].Move(map);
     }
 
-    for (size_t i = 0; i < m_bullets.size(); ++i)
+    for (size_t i = 0; i < m_bullets.size(); ++i) 
     {
         m_bullets[i].Move(map);
     }
@@ -178,11 +181,11 @@ void EntityManager::UpdateEntities(GameMap& map, float deltaTime)
             RemoveBomb(i);
         }
     }
-
+    
     HandleCollisions(map);
 
     for (const Player& player : m_players) {
-        map.DrawEntity(player.GetPosition(), 'P');
+        map.DrawEntity(player.GetPosition(), 'P'); 
     }
 
     for (const Enemy& enemy : m_enemies) {
@@ -197,8 +200,12 @@ void EntityManager::UpdateEntities(GameMap& map, float deltaTime)
 
     for (const Bullet& bullet : m_bullets) {
         if (bullet.IsActive()) {
-            map.DrawEntity(bullet.GetPosition(), 'o');
+            map.DrawEntity(bullet.GetPosition(), 'o');  
         }
+    }
+
+    if (!m_base.IsDestroyed()) {
+        map.DrawEntity(m_base.GetPosition(), 'B');
     }
 
     m_bullets.erase(std::remove_if(m_bullets.begin(), m_bullets.end(),
@@ -211,7 +218,7 @@ void EntityManager::UpdateEntities(GameMap& map, float deltaTime)
 
 }
 
-void EntityManager::RemoveBullet(size_t index)
+void EntityManager::RemoveBullet(size_t index) 
 {
     if (index < m_bullets.size()) {
         m_bullets.erase(m_bullets.begin() + index);
@@ -258,7 +265,7 @@ std::string EntityManager::GetWinner() const
     return m_winner;
 }
 
-void EntityManager::HandleCollisions(GameMap& map)
+void EntityManager::HandleCollisions(GameMap& map) 
 {
     // Coliziuni gloanțe player - inamici
     for (size_t i = 0; i < m_playerBullets.size(); ++i) {
@@ -271,17 +278,20 @@ void EntityManager::HandleCollisions(GameMap& map)
 
                 if (m_enemies[j].GetLives() == 0) {
                     RemoveEnemy(j);
+                    m_players[0].SetPoints(100);
+                    m_players[0].SetScore();
                 }
                 break;
             }
         }
 
-        if (m_playerBullets[i].GetPosition() == m_base.GetPosition()) {
+        if ((m_playerBullets[i].GetPosition() + m_playerBullets[i].GetDirection()) == m_base.GetPosition()) {
             m_playerBullets[i].SetActive(false);
-            if (m_base.TakeHit()) {
-                if (m_base.GetLife() == 0) {
-                    m_winner = m_players[0].GetName();
-                }
+            m_base.TakeHit();
+            if (m_base.GetLife() == 0) {
+                m_players[0].SetPoints(500);
+                m_players[0].SetScore();
+                m_winner = m_players[0].GetName();
             }
             break;
         }
@@ -303,12 +313,11 @@ void EntityManager::HandleCollisions(GameMap& map)
             }
         }
 
-        if (m_bullets[i].GetPosition() == m_base.GetPosition()) {
+        if ((m_bullets[i].GetPosition() + m_bullets[i].GetDirection()) == m_base.GetPosition()) {
             m_bullets[i].SetActive(false);
-            if (m_base.TakeHit()) {
-                if (m_base.GetLife() == 0) {
-                    m_winner = "Enemy";
-                }
+            m_base.TakeHit();
+            if (m_base.GetLife() == 0) {
+                m_winner = "Enemy";
             }
             break;
         }
