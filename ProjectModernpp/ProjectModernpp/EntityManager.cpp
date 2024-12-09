@@ -2,6 +2,11 @@
 
 EntityManager::EntityManager() {}
 
+void EntityManager::AddBomb(const Bomb& bomb)
+{
+    m_bombs.push_back(bomb);
+}
+
 void EntityManager::AddPlayer(const Player& player)
 {
     m_players.push_back(player);
@@ -24,7 +29,6 @@ void EntityManager::AddPlayerBullet(const Bullet& bullet)
     m_playerBullets.push_back(bullet);
 }
 
-
 void EntityManager::RemovePlayer(size_t index)
 {
     if (index < m_players.size()) {
@@ -37,6 +41,13 @@ void EntityManager::RemoveEnemy(size_t index)
     if (index < m_enemies.size()) {
         m_enemies.erase(m_enemies.begin() + index);
         m_enemyShootTimers.erase(m_enemyShootTimers.begin() + index);
+    }
+}
+
+void EntityManager::RemoveBomb(size_t index)
+{
+    if (index < m_bombs.size()) {
+        m_bombs.erase(m_bombs.begin() + index);
     }
 }
 
@@ -63,6 +74,41 @@ void EntityManager::PlayerShoot(GameMap& map)
         }
     }
     player.SetShootDirection(shootDirection);
+}
+
+void EntityManager::ExplodeBomb(const Bomb& bomb, GameMap& map) {
+    Point center = bomb.GetPosition();
+    const int radius = 3;
+
+    for (int dx = -radius; dx <= radius; ++dx) {
+        for (int dy = -radius; dy <= radius; ++dy) {
+            Point target(center.GetX() + dx, center.GetY() + dy);
+
+            if (target.GetX() >= 0 && target.GetX() < map.GetHeight() &&
+                target.GetY() >= 0 && target.GetY() < map.GetWidth()) {
+
+                // Ștergem blocurile
+                if (map.GetMap()[target.GetX()][target.GetY()] != CellType::EMPTY) {
+                    map.SetStaticCell(target.GetX(), target.GetY(), CellType::EMPTY);
+                }
+
+                // Eliminăm inamici și jucători
+                for (size_t i = 0; i < m_enemies.size(); ++i) {
+                    if (m_enemies[i].GetPosition() == target) {
+                        RemoveEnemy(i);
+                        break;
+                    }
+                }
+
+                for (size_t i = 0; i < m_players.size(); ++i) {
+                    if (m_players[i].GetPosition() == target) {
+                        RemovePlayer(i);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }
 
 void EntityManager::UpdateEntities(GameMap& map, float deltaTime)
@@ -99,6 +145,16 @@ void EntityManager::UpdateEntities(GameMap& map, float deltaTime)
 
     for (size_t i = 0; i < m_bullets.size(); ++i) {
         m_bullets[i].Move(map); // Mutăm fiecare glonț în direcția sa
+    }
+
+    for (size_t i = 0; i < m_bombs.size(); ++i) {
+        m_bombs[i].Update(deltaTime);
+        if (m_bombs[i].IsActive()) {
+            ExplodeBomb(m_bombs[i], map);
+            std::cout << "!!! BOOM !!! Bomb Exploded!\n";
+            std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+            RemoveBomb(i);
+        }
     }
 
     HandleCollisions();
@@ -187,7 +243,7 @@ void EntityManager::HandleCollisions() {
                 m_players[k].SetLives(m_players[k].GetLives() - 1);
 
                 if (m_players[k].GetLives() == 0) {
-                    //RemovePlayer(k);
+                    RemovePlayer(k);
                 }
                 break;
             }

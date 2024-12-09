@@ -1,8 +1,11 @@
 #pragma once
+#include <thread>
+#include <chrono>
 #include "Player.h"
 #include "Enemy.h"
 #include "Bullet.h"
 #include "GameMap.h"
+#include "Bomb.h"
 
 class EntityManager {
 private:
@@ -11,6 +14,8 @@ private:
     std::vector<Bullet> m_bullets;
     std::vector<Bullet> m_playerBullets;
 
+    std::vector<Bomb> m_bombs;
+
     std::vector<float> m_enemyShootTimers; // Timpurile scurse pentru fiecare inamic
     const float m_enemyShootInterval = 0.3f; // Intervalul între trageri
 
@@ -18,6 +23,7 @@ private:
 public:
     EntityManager();
 
+    void AddBomb(const Bomb& bomb);
     void AddPlayer(const Player& player);
     void AddEnemy(const Enemy& enemy);
     void AddBullet(const Bullet& bullet);
@@ -26,10 +32,12 @@ public:
     void RemoveBullet(size_t index);
     void RemovePlayer(size_t index);
     void RemoveEnemy(size_t index);
+    void RemoveBomb(size_t index);
 
 
     void EnemyShoots(const Point& direction, const Point& position);
     void PlayerShoot(GameMap& map);
+    void ExplodeBomb(const Bomb& bomb, GameMap& map);
     void UpdateEntities(GameMap& map, float deltaTime);   // Updates the positions and states of all entities
 
     const std::vector<Player>& GetPlayers() const;

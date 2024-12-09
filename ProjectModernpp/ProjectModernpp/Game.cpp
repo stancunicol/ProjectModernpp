@@ -1,5 +1,4 @@
 ﻿#include "Game.h"
-#include "Enemy.h"
 #include <Windows.h>
 
 Game::Game(uint32_t width, uint32_t height, uint8_t level)
@@ -14,6 +13,9 @@ void Game::InitializeGame() { //here, we initialize the game
     base.PlaceBase();
 
     m_entityManager.AddPlayer(Player("Player1", m_map));
+
+    // TODO: Multiplayer; playerii se spameaza pe aceeasi pozitie
+
     //m_entityManager.AddPlayer(Player("Player2", m_map));
     //m_entityManager.AddPlayer(Player("Player3", m_map));
     //m_entityManager.AddPlayer(Player("Player4", m_map));
@@ -23,12 +25,23 @@ void Game::InitializeGame() { //here, we initialize the game
         enemy.PlaceCharacter(m_map);
         m_entityManager.AddEnemy(enemy);
     }
+
+    int bombsToPlace = m_map.GetLevel();
+    while (bombsToPlace > 0) {
+        Point randomPos(rand() % m_map.GetHeight(), rand() % m_map.GetWidth());
+
+        if (m_map.GetMap()[randomPos.GetX()][randomPos.GetY()] == CellType::UNBREAKABLE_WALL) {
+            float randomActivationTime = static_cast<float>(rand() % 10 + 5); // 10-15 s
+            m_entityManager.AddBomb(Bomb(randomPos, randomActivationTime));
+            bombsToPlace--;
+        }
+    }
 }
 
-void Game::Run() { //running the game
+void Game::Run() {
     static float elapsedTime = 0.0f;
-    const float shootInterval = 0.3f; // Intervalul de tragere al inamicilor (in secunde)
-    static float enemyShootTimer = 0.0f; // Timerul inamicilor
+    const float shootInterval = 0.3f;
+    static float enemyShootTimer = 0.0f;
 
     while (true) {
         system("CLS");
