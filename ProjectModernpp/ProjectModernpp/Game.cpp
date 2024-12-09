@@ -2,19 +2,20 @@
 #include <Windows.h>
 
 Game::Game(uint32_t width, uint32_t height, uint8_t level)
-    : m_map(width, height, level) {}
+    : m_map(width, height, level), m_entityManager(m_map) {
+}
+
 
 Game::~Game() {}
 
 void Game::InitializeGame() { //here, we initialize the game
     srand(time(NULL)); // Seed pentru generarea pozițiilor aleatoare
 
-    Base base(m_map);
-    base.PlaceBase();
+    m_entityManager.PlaceBase(m_map);
 
     m_entityManager.AddPlayer(Player("Player1", m_map));
 
-    // TODO: Multiplayer; playerii se spameaza pe aceeasi pozitie
+    // TODO: Multiplayer; playerii se spameaza pe aceeasi pozitie, posibila problema: srand
 
     //m_entityManager.AddPlayer(Player("Player2", m_map));
     //m_entityManager.AddPlayer(Player("Player3", m_map));
@@ -43,7 +44,7 @@ void Game::Run() {
     const float shootInterval = 0.3f;
     static float enemyShootTimer = 0.0f;
 
-    while (true) {
+    while (m_entityManager.GetBase().GetLife()) {
         system("CLS");
 
         if (_kbhit()) {
@@ -78,6 +79,12 @@ void Game::Run() {
 
         std::this_thread::sleep_for(std::chrono::milliseconds(150));
     }
+    EndGame(m_entityManager.GetWinner());
+}
+
+void Game::EndGame(const std::string& winner)
+{
+    std::cout << "The game is over! " << winner << " WON!\n";
 }
 
 crow::json::wvalue Game::TranformInJson() {

@@ -28,7 +28,6 @@ void Player::PlaceCharacter() {
 void Player::MoveCharacter(const Point& direction, GameMap& grid) {
     Point newPos = m_position + direction;
 
-    // Verificăm dacă poziția nouă este validă
     if (newPos.GetX() >= 0 && newPos.GetX() < grid.GetHeight() &&
         newPos.GetY() >= 0 && newPos.GetY() < grid.GetWidth() &&
         grid.GetMap()[newPos.GetX()][newPos.GetY()] == CellType::EMPTY) {

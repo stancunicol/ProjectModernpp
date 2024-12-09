@@ -14,6 +14,7 @@ private:
     std::vector<std::pair<Point, bool>> m_positions;
 
     Point m_shootDirection = Point(0, 0);
+
 public:
     Player(const std::string& name, const GameMap& grid);//constructor
 
@@ -24,6 +25,8 @@ public:
     const Point& GetShootDirection() const;
 
     void SetShootDirection(const Point& direction);
+
+    std::string GetName() const { return m_name; };
 
 
 };

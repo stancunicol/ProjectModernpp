@@ -1,25 +1,28 @@
-#pragma once
-#include "GameMap.h"
+﻿#pragma once
+#include "Point.h"
 #include "CellType.h"
-
-// Forward declaration of GameMap to avoid circular dependency
-class GameMap;
 
 class  Base {
 private:
     bool m_destroyed;   // Checks if the base is destroyed
-    GameMap& m_gameMap; // Reference to the game map
+    uint8_t m_life;
+    Point m_position;
 
 public:
     // Constructor
-    explicit Base(GameMap& gameMap);
-
-    // Places the base on the game map
-    void PlaceBase();
+    explicit Base(const Point& position, uint8_t initialLife = 10);
 
     // Marks the base as destroyed
     void Destroyed();
 
     // Checks if the base is destroyed
-    [[nodiscard]] bool IsDestroyed() const;
+    bool IsDestroyed() const;
+
+    // Scade viața bazei și returnează dacă jocul s-a încheiat
+    bool TakeHit();
+
+    // Returnează numărul de viață al bazei
+    int GetLife() const;
+
+    const Point& GetPosition() const;
 };

@@ -12,15 +12,16 @@ class  Game {
 private:
     GameMap m_map;
     EntityManager m_entityManager;
-
 public:
     Game(uint32_t width, uint32_t height, uint8_t level);
 
-    ~Game(); 
+    ~Game();
 
     void InitializeGame(); //the game is initialed
 
-    void Run();//runs the game  
+    void Run(); //runs the game  
+
+    void EndGame(const std::string& winner);
 
     crow::json::wvalue TranformInJson();
 

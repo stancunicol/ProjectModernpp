@@ -6,6 +6,7 @@
 #include "Bullet.h"
 #include "GameMap.h"
 #include "Bomb.h"
+#include "Base.h"
 
 class EntityManager {
 private:
@@ -13,21 +14,24 @@ private:
     std::vector<Enemy> m_enemies;
     std::vector<Bullet> m_bullets;
     std::vector<Bullet> m_playerBullets;
-
     std::vector<Bomb> m_bombs;
 
     std::vector<float> m_enemyShootTimers; // Timpurile scurse pentru fiecare inamic
     const float m_enemyShootInterval = 0.3f; // Intervalul între trageri
 
-    void HandleCollisions();
+    Base m_base;
+    std::string m_winner;
+
+    void HandleCollisions(GameMap& map);
 public:
-    EntityManager();
+    EntityManager(GameMap& gameMap);
 
     void AddBomb(const Bomb& bomb);
     void AddPlayer(const Player& player);
     void AddEnemy(const Enemy& enemy);
     void AddBullet(const Bullet& bullet);
     void AddPlayerBullet(const Bullet& bullet);
+    void PlaceBase(GameMap& map);
 
     void RemoveBullet(size_t index);
     void RemovePlayer(size_t index);
@@ -37,7 +41,9 @@ public:
 
     void EnemyShoots(const Point& direction, const Point& position);
     void PlayerShoot(GameMap& map);
+
     void ExplodeBomb(const Bomb& bomb, GameMap& map);
+
     void UpdateEntities(GameMap& map, float deltaTime);   // Updates the positions and states of all entities
 
     const std::vector<Player>& GetPlayers() const;
@@ -45,7 +51,10 @@ public:
     const std::vector<Bullet>& GetBullets() const;
 
     std::vector<Player>& GetPlayersMutable();
-    std::vector<Enemy>& GetEnemiesMutable() { return m_enemies; }
-    std::vector<Bullet>& GetBulletsMutable() { return m_bullets; }
+    std::vector<Enemy>& GetEnemiesMutable();
+    std::vector<Bullet>& GetBulletsMutable();
+    const Base& GetBase() const;
+    std::string GetWinner() const;
+
 };
 
