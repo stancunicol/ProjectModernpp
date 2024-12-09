@@ -9,61 +9,61 @@ ControlsWindow::ControlsWindow(QWidget* parent)
     setWindowTitle("Game Controls");
 
     // Create label to display instructions
-    instructionLabel = new QLabel(this);
-    instructionLabel->setText("<b>Set Your Game Controls</b><br><br>"
+    m_instructionLabel = new QLabel(this);
+    m_instructionLabel->setText("<b>Set Your Game Controls</b><br><br>"
         "Click on a field and press a key to assign it.");
 
     // Create editable fields for controls
-    upKeyEdit = new QLineEdit(this);
-    upKeyEdit->setText("W");
-    upKeyEdit->setAlignment(Qt::AlignCenter);
+    m_upKeyEdit = new QLineEdit(this);
+    m_upKeyEdit->setText("W");
+    m_upKeyEdit->setAlignment(Qt::AlignCenter);
 
-    downKeyEdit = new QLineEdit(this);
-    downKeyEdit->setText("S");
-    downKeyEdit->setAlignment(Qt::AlignCenter);
+    m_downKeyEdit = new QLineEdit(this);
+    m_downKeyEdit->setText("S");
+    m_downKeyEdit->setAlignment(Qt::AlignCenter);
 
-    leftKeyEdit = new QLineEdit(this);
-    leftKeyEdit->setText("A");
-    leftKeyEdit->setAlignment(Qt::AlignCenter);
+    m_leftKeyEdit = new QLineEdit(this);
+    m_leftKeyEdit->setText("A");
+    m_leftKeyEdit->setAlignment(Qt::AlignCenter);
 
-    rightKeyEdit = new QLineEdit(this);
-    rightKeyEdit->setText("D");
-    rightKeyEdit->setAlignment(Qt::AlignCenter);
+    m_rightKeyEdit = new QLineEdit(this);
+    m_rightKeyEdit->setText("D");
+    m_rightKeyEdit->setAlignment(Qt::AlignCenter);
 
     // Set the focus policy to StrongFocus, which allows these fields to receive focus
-    upKeyEdit->setFocusPolicy(Qt::StrongFocus);
-    downKeyEdit->setFocusPolicy(Qt::StrongFocus);
-    leftKeyEdit->setFocusPolicy(Qt::StrongFocus);
-    rightKeyEdit->setFocusPolicy(Qt::StrongFocus);
+    m_upKeyEdit->setFocusPolicy(Qt::StrongFocus);
+    m_downKeyEdit->setFocusPolicy(Qt::StrongFocus);
+    m_leftKeyEdit->setFocusPolicy(Qt::StrongFocus);
+    m_rightKeyEdit->setFocusPolicy(Qt::StrongFocus);
 
-    upKeyEdit->setReadOnly(true); // Disable manual editing to ensure only key events set the value
-    downKeyEdit->setReadOnly(true);
-    leftKeyEdit->setReadOnly(true);
-    rightKeyEdit->setReadOnly(true);
+    m_upKeyEdit->setReadOnly(true); // Disable manual editing to ensure only key events set the value
+    m_downKeyEdit->setReadOnly(true);
+    m_leftKeyEdit->setReadOnly(true);
+    m_rightKeyEdit->setReadOnly(true);
 
-    connect(upKeyEdit, &QLineEdit::editingFinished, this, [this]() { upKeyEdit->clearFocus(); });
-    connect(downKeyEdit, &QLineEdit::editingFinished, this, [this]() { downKeyEdit->clearFocus(); });
-    connect(leftKeyEdit, &QLineEdit::editingFinished, this, [this]() { leftKeyEdit->clearFocus(); });
-    connect(rightKeyEdit, &QLineEdit::editingFinished, this, [this]() { rightKeyEdit->clearFocus(); });
+    connect(m_upKeyEdit, &QLineEdit::editingFinished, this, [this]() { m_upKeyEdit->clearFocus(); });
+    connect(m_downKeyEdit, &QLineEdit::editingFinished, this, [this]() { m_downKeyEdit->clearFocus(); });
+    connect(m_leftKeyEdit, &QLineEdit::editingFinished, this, [this]() { m_leftKeyEdit->clearFocus(); });
+    connect(m_rightKeyEdit, &QLineEdit::editingFinished, this, [this]() { m_rightKeyEdit->clearFocus(); });
 
-    closeButton = new QPushButton("Close", this); // Create a close button
-    connect(closeButton, &QPushButton::clicked, this, &QDialog::accept);
+    m_closeButton = new QPushButton("Close", this); // Create a close button
+    connect(m_closeButton, &QPushButton::clicked, this, &QDialog::accept);
 
     QVBoxLayout* layout = new QVBoxLayout; // Layout for displaying controls
-    layout->addWidget(instructionLabel);
+    layout->addWidget(m_instructionLabel);
 
     QGridLayout* gridLayout = new QGridLayout;
     gridLayout->addWidget(new QLabel("Move Up:"), 0, 0);
-    gridLayout->addWidget(upKeyEdit, 0, 1);
+    gridLayout->addWidget(m_upKeyEdit, 0, 1);
     gridLayout->addWidget(new QLabel("Move Down:"), 1, 0);
-    gridLayout->addWidget(downKeyEdit, 1, 1);
+    gridLayout->addWidget(m_downKeyEdit, 1, 1);
     gridLayout->addWidget(new QLabel("Move Left:"), 2, 0);
-    gridLayout->addWidget(leftKeyEdit, 2, 1);
+    gridLayout->addWidget(m_leftKeyEdit, 2, 1);
     gridLayout->addWidget(new QLabel("Move Right:"), 3, 0);
-    gridLayout->addWidget(rightKeyEdit, 3, 1);
+    gridLayout->addWidget(m_rightKeyEdit, 3, 1);
 
     layout->addLayout(gridLayout);
-    layout->addWidget(closeButton);
+    layout->addWidget(m_closeButton);
 
     setLayout(layout);
 }
@@ -100,10 +100,10 @@ void ControlsWindow::keyPressEvent(QKeyEvent* event)
                 }
 
     // Check if the pressed key is already assigned to any other control
-    if (pressedKey == upKeyEdit->text() ||
-        pressedKey == downKeyEdit->text() ||
-        pressedKey == leftKeyEdit->text() ||
-        pressedKey == rightKeyEdit->text())
+    if (pressedKey == m_upKeyEdit->text() ||
+        pressedKey == m_downKeyEdit->text() ||
+        pressedKey == m_leftKeyEdit->text() ||
+        pressedKey == m_rightKeyEdit->text())
     {
         // If the key is already assigned, show a warning and return without setting the key
         QMessageBox::warning(this, "Duplicate Key", "This key is already assigned to another action!");
@@ -111,21 +111,21 @@ void ControlsWindow::keyPressEvent(QKeyEvent* event)
     }
 
     // Set the key in the focused field
-    if (focusedWidget == upKeyEdit) 
+    if (focusedWidget == m_upKeyEdit) 
     {
-        upKeyEdit->setText(pressedKey);
+        m_upKeyEdit->setText(pressedKey);
     }
-    else if (focusedWidget == downKeyEdit) 
+    else if (focusedWidget == m_downKeyEdit) 
     {
-        downKeyEdit->setText(pressedKey);
+        m_downKeyEdit->setText(pressedKey);
     }
-    else if (focusedWidget == leftKeyEdit) 
+    else if (focusedWidget == m_leftKeyEdit) 
     {
-        leftKeyEdit->setText(pressedKey);
+        m_leftKeyEdit->setText(pressedKey);
     }
-    else if (focusedWidget == rightKeyEdit) 
+    else if (focusedWidget == m_rightKeyEdit) 
     {
-        rightKeyEdit->setText(pressedKey);
+        m_rightKeyEdit->setText(pressedKey);
     }
 }
 

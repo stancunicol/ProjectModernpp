@@ -15,12 +15,12 @@ public:
     ConnectWindow(QWidget* parent = nullptr); 
     ~ConnectWindow(); 
 
-protected:
+private:
     void OnGenerateClicked(); 
 
 private:
-    QLineEdit* insertCode = nullptr; 
-    QPushButton* startButton = nullptr; 
-    QLabel* messageLabel = nullptr; 
+    QLineEdit* m_insertCode = nullptr; 
+    QPushButton* m_startButton = nullptr; 
+    QLabel* m_messageLabel = nullptr; 
 };
 

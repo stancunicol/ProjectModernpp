@@ -26,20 +26,20 @@ LevelsWindow::LevelsWindow(QWidget* parent)
     verticalLayout->addWidget(label);
 
     //buttons for levels
-    easyLevelButton = new QPushButton("EASY", this);
-    mediumLevelButton = new QPushButton("MEDIUM", this);
-    hardLevelButton = new QPushButton("HARD", this);
+    m_easyLevelButton = new QPushButton("EASY", this);
+    m_mediumLevelButton = new QPushButton("MEDIUM", this);
+    m_hardLevelButton = new QPushButton("HARD", this);
 
-    easyLevelButton->setFixedSize(250, 60);
-    mediumLevelButton->setFixedSize(250, 60);
-    hardLevelButton->setFixedSize(250, 60);
+    m_easyLevelButton->setFixedSize(250, 60);
+    m_mediumLevelButton->setFixedSize(250, 60);
+    m_hardLevelButton->setFixedSize(250, 60);
 
     QFont buttonFont("Segoe Script", 14, QFont::Bold);
-    easyLevelButton->setFont(buttonFont);
-    mediumLevelButton->setFont(buttonFont);
-    hardLevelButton->setFont(buttonFont);
+    m_easyLevelButton->setFont(buttonFont);
+    m_mediumLevelButton->setFont(buttonFont);
+    m_hardLevelButton->setFont(buttonFont);
 
-    easyLevelButton->setStyleSheet("QPushButton {"
+    m_easyLevelButton->setStyleSheet("QPushButton {"
         "background-color: rgba(158, 204, 158, 1);"  // green
         "color: black;"
         "border: none;"
@@ -56,7 +56,7 @@ LevelsWindow::LevelsWindow(QWidget* parent)
         "color: rgba(255, 255, 255, 1);"  // transparent white
         "}");
 
-    mediumLevelButton->setStyleSheet("QPushButton {"
+    m_mediumLevelButton->setStyleSheet("QPushButton {"
         "background-color: rgba(248, 253, 170, 1);"//beige
         "color: black;"
         "border: none;"
@@ -73,7 +73,7 @@ LevelsWindow::LevelsWindow(QWidget* parent)
         "color: rgba(255, 255, 255, 1);"  // transparent white
         "}");
 
-    hardLevelButton->setStyleSheet("QPushButton {"
+    m_hardLevelButton->setStyleSheet("QPushButton {"
         "background-color: rgba(235, 126, 102, 1);"  // red
         "color: black;"
         "border: none;"
@@ -91,11 +91,14 @@ LevelsWindow::LevelsWindow(QWidget* parent)
         "}");
 
     //add buttons and text in Vertical Layout
-    verticalLayout->addWidget(easyLevelButton, 0, Qt::AlignCenter);
-    verticalLayout->addWidget(mediumLevelButton, 0, Qt::AlignCenter);
-    verticalLayout->addWidget(hardLevelButton, 0, Qt::AlignCenter);
+    verticalLayout->addWidget(m_easyLevelButton, 0, Qt::AlignCenter);
+    verticalLayout->addWidget(m_mediumLevelButton, 0, Qt::AlignCenter);
+    verticalLayout->addWidget(m_hardLevelButton, 0, Qt::AlignCenter);
     label->setAlignment(Qt::AlignCenter);
 
+    connect(m_easyLevelButton, &QPushButton::clicked, this, &LevelsWindow::OnEasyLevelClicked);
+    connect(m_mediumLevelButton, &QPushButton::clicked, this, &LevelsWindow::OnMediumLevelClicked);
+    connect(m_hardLevelButton, &QPushButton::clicked, this, &LevelsWindow::OnHardLevelClicked);
 }
 
 LevelsWindow::~LevelsWindow()
@@ -103,13 +106,22 @@ LevelsWindow::~LevelsWindow()
 
 void LevelsWindow::OnEasyLevelClicked()
 {
+    level = 1;
+    QMessageBox::information(this, "Level", "Level easy was selected");
+    accept();
 }
 
 void LevelsWindow::OnMediumLevelClicked()
 {
+    level = 2;
+    QMessageBox::information(this, "Level", "Level medium was selected");
+    accept();
 }
 
 void LevelsWindow::OnHardLevelClicked()
 {
+    level = 3;
+    QMessageBox::information(this, "Level", "Level hard was selected");
+    accept();
 }
 

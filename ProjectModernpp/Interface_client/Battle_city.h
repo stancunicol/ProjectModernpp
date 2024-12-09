@@ -13,6 +13,7 @@
 #include "PlayWindow.h"
 #include "ControlsWindow.h"
 #include "ConnectWindow.h"
+#include "LevelsWindow.h"
 
 class Battle_city : public QMainWindow
 {
@@ -22,14 +23,15 @@ public:
 	Battle_city(QWidget * parent = nullptr);
 	~Battle_city();
 
-private:
+protected:
 	void OnPlayButtonClicked();
 	void OnConnectButtonClicked();
 	void OnControlsButtonClicked();
 
 private:
-	QLabel* background = nullptr;//Background picture
-	QPushButton* playButton = nullptr;//Button for Play
-	QPushButton* connectButton = nullptr;//Button for Connect
-	QPushButton* controlsButton = nullptr;//Button for Controls
+	QLabel* m_background = nullptr;//Background picture
+	QPushButton* m_playButton = nullptr;//Button for Play
+	QPushButton* m_connectButton = nullptr;//Button for Connect
+	QPushButton* m_controlsButton = nullptr;//Button for Controls
+	bool m_connectLogin = false;
 };

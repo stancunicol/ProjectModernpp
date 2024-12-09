@@ -7,15 +7,15 @@ LoginWindow::LoginWindow(QWidget* parent)
     setFixedSize(400, 300);//400X300
 
     QVBoxLayout* layout = new QVBoxLayout(this);//create layout
-    usernameLineEdit = new QLineEdit(this);//create username
-    usernameLineEdit->setPlaceholderText("Username");//used to set a placeholder text in the username input field
-    usernameLineEdit->setFixedSize(400, 50);//size
+    m_usernameLineEdit = new QLineEdit(this);//create username
+    m_usernameLineEdit->setPlaceholderText("Username");//used to set a placeholder text in the username input field
+    m_usernameLineEdit->setFixedSize(400, 50);//size
 
-    layout->addWidget(usernameLineEdit);
+    layout->addWidget(m_usernameLineEdit);
     layout->addSpacerItem(new QSpacerItem(0, 30, QSizePolicy::Minimum, QSizePolicy::Fixed));//spacer
 
-    loginButton = new QPushButton("Login", this);//create login button
-    loginButton->setStyleSheet(
+    m_loginButton = new QPushButton("Login", this);//create login button
+    m_loginButton->setStyleSheet(
         "QPushButton {"
         "background-color: rgba(0,255,0,0.7);" // green
         "color: white;"
@@ -32,10 +32,10 @@ LoginWindow::LoginWindow(QWidget* parent)
         "background-color: rgba(0,77,0,0.7);" // even darker green
         "color: rgba(0, 0, 0,0.7);"//black
         "}");
-    layout->addWidget(loginButton);
+    layout->addWidget(m_loginButton);
 
-    registerButton = new QPushButton("Register", this);//create register button
-    registerButton->setStyleSheet(
+    m_registerButton = new QPushButton("Register", this);//create register button
+    m_registerButton->setStyleSheet(
         "QPushButton {"
         "background-color: rgba(0,255,0,0.7);" // green
         "color: white;"
@@ -52,10 +52,10 @@ LoginWindow::LoginWindow(QWidget* parent)
         "background-color: rgba(0,77,0,0.7);" // even darker green
         "color: rgba(0, 0, 0,0.7);"//black
         "}");
-    layout->addWidget(registerButton);
+    layout->addWidget(m_registerButton);
 
-    cancelButton = new QPushButton("Cancel", this);
-    cancelButton->setStyleSheet(
+    m_cancelButton = new QPushButton("Cancel", this);
+    m_cancelButton->setStyleSheet(
         "QPushButton {"
         "background-color: rgba(255,127,127,0.7);" // red
         "color: white;"
@@ -72,16 +72,16 @@ LoginWindow::LoginWindow(QWidget* parent)
         "background-color: rgba(139,0,0,0.7);" // even darker
         "color: rgba(0, 0, 0,0.7);"//black
         "}");
-    layout->addWidget(cancelButton);
+    layout->addWidget(m_cancelButton);
     layout->setAlignment(Qt::AlignCenter);
 
-    messageLabel = new QLabel(this);//label for messages
-    layout->addWidget(messageLabel);
+    m_messageLabel = new QLabel(this);//label for messages
+    layout->addWidget(m_messageLabel);
 
     //Connect signals to slots(function that conects a signal emitted by another object)
-    connect(loginButton, &QPushButton::clicked, this, &LoginWindow::OnLoginClicked);
-    connect(registerButton, &QPushButton::clicked, this, &LoginWindow::OnRegisterClicked);
-    connect(cancelButton, &QPushButton::clicked, this, &LoginWindow::close);
+    connect(m_loginButton, &QPushButton::clicked, this, &LoginWindow::OnLoginClicked);
+    connect(m_registerButton, &QPushButton::clicked, this, &LoginWindow::OnRegisterClicked);
+    connect(m_cancelButton, &QPushButton::clicked, this, &LoginWindow::close);
 }
 
 LoginWindow::~LoginWindow()
@@ -91,7 +91,7 @@ LoginWindow::~LoginWindow()
 
 void LoginWindow::OnLoginClicked()
 {
-	QString username = usernameLineEdit->text();//get your username and password
+	QString username = m_usernameLineEdit->text();//get your username and password
 
 	if (username.isEmpty()) 
     {
@@ -103,12 +103,12 @@ void LoginWindow::OnLoginClicked()
 		QMessageBox::information(this, "Login Successful", "User " + username + " login successfully!");
 		accept();
 	}
-	usernameLineEdit->clear();//reset fields after registration
+    m_usernameLineEdit->clear();//reset fields after registration
 }
 
 void LoginWindow::OnRegisterClicked()
 {
-	QString username = usernameLineEdit->text();//get your username and password
+	QString username = m_usernameLineEdit->text();//get your username and password
 
 	if (username.isEmpty()) 
     {
@@ -120,6 +120,6 @@ void LoginWindow::OnRegisterClicked()
 		QMessageBox::information(this, "Registration Successful", "User " + username + " registered successfully!");
 		accept();
 	}
-	usernameLineEdit->clear();//reset fields after registration
+    m_usernameLineEdit->clear();//reset fields after registration
 }
 

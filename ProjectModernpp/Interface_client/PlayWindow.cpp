@@ -18,19 +18,19 @@ PlayWindow::PlayWindow(QWidget* parent)
 
     // Creating  layout
     QVBoxLayout* layout = new QVBoxLayout(this);
-    generateCode = new QLineEdit(this);
-    generateCode->setPlaceholderText("CODE");
-    generateCode->setAlignment(Qt::AlignCenter);
-    generateCode->setEnabled(false);
-    generateCode->setStyleSheet("color: lightBlue;background-color: darkBlue;font-size: 20px;border: 2px solid lightBlue");
-    generateCode->setFixedSize(240, 50);
+    m_generateCode = new QLineEdit(this);
+    m_generateCode->setPlaceholderText("CODE");
+    m_generateCode->setAlignment(Qt::AlignCenter);
+    m_generateCode->setEnabled(false);
+    m_generateCode->setStyleSheet("color: lightBlue;background-color: darkBlue;font-size: 20px;border: 2px solid lightBlue");
+    m_generateCode->setFixedSize(240, 50);
 
-    layout->addWidget(generateCode);
+    layout->addWidget(m_generateCode);
     layout->setAlignment(Qt::AlignCenter);
 
     // Create generate code button
-    generateButton = new QPushButton("Generate code", this);
-    generateButton->setStyleSheet("QPushButton {"
+    m_generateButton = new QPushButton("Generate code", this);
+    m_generateButton->setStyleSheet("QPushButton {"
         "background-color: rgba(0, 191, 255, 0.7);" // light blue
         "color: white;" 
         "border: none;"
@@ -46,10 +46,10 @@ PlayWindow::PlayWindow(QWidget* parent)
         "background-color: rgba(0, 0, 139, 0.7);" // even darker blue (dark blue shade)
         "color: rgba(255, 255, 255, 0.7);" 
         "}");
-    layout->addWidget(generateButton);
+    layout->addWidget(m_generateButton);
 
-    forwardButton = new QPushButton("Start game", this);
-    forwardButton->setStyleSheet("QPushButton {"
+    m_forwardButton = new QPushButton("Start game", this);
+    m_forwardButton->setStyleSheet("QPushButton {"
         "background-color: rgba(144, 238, 144, 0.7);" // light green
         "color: white;" 
         "border: none;"
@@ -65,9 +65,9 @@ PlayWindow::PlayWindow(QWidget* parent)
         "background-color: rgba(0, 100, 0, 0.7);" // even darker green (dark green shade)
         "color: rgba(255, 255, 255, 0.7);"
         "}");
-    layout->addWidget(forwardButton);
-    connect(generateButton, &QPushButton::clicked, this, &PlayWindow::OnGenerateClicked);
-    connect(forwardButton, &QPushButton::clicked, this, &PlayWindow::OnForwardClicked);
+    layout->addWidget(m_forwardButton);
+    connect(m_generateButton, &QPushButton::clicked, this, &PlayWindow::OnGenerateClicked);
+    connect(m_forwardButton, &QPushButton::clicked, this, &PlayWindow::OnForwardClicked);
 }
 
 PlayWindow::~PlayWindow() 
@@ -99,6 +99,6 @@ void PlayWindow::OnForwardClicked()
 void PlayWindow::OnGenerateClicked() 
 {
     QString randomNumber = GenerateRandomNumber();
-    generateCode->setText(randomNumber);
+    m_generateCode->setText(randomNumber);
 }
 

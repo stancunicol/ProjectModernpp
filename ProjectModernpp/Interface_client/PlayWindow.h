@@ -20,9 +20,9 @@ protected:
     void OnForwardClicked();
 
 private:
-    QLineEdit* generateCode = nullptr; 
-    QPushButton* generateButton = nullptr; 
-    QPushButton* forwardButton = nullptr; 
-    QLabel* messageLabel = nullptr; 
+    QLineEdit* m_generateCode = nullptr; 
+    QPushButton* m_generateButton = nullptr; 
+    QPushButton* m_forwardButton = nullptr; 
+    QLabel* m_messageLabel = nullptr; 
 };
 

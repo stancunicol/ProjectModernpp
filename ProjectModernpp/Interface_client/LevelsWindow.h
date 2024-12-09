@@ -15,17 +15,18 @@ class LevelsWindow : public QDialog
 public:
     LevelsWindow(QWidget* parent = nullptr);
     ~LevelsWindow();
+
 protected:
     void OnEasyLevelClicked();
     void OnMediumLevelClicked();
     void OnHardLevelClicked();
 
 private:
-    QPushButton* easyLevelButton= nullptr;
-    QPushButton* mediumLevelButton = nullptr;
-    QPushButton* hardLevelButton = nullptr;
-    QLabel* messageLabel = nullptr;
-
+    QPushButton* m_easyLevelButton= nullptr;
+    QPushButton* m_mediumLevelButton = nullptr;
+    QPushButton* m_hardLevelButton = nullptr;
+    QLabel* m_messageLabel = nullptr;
+    size_t level = 0;
 };
 
 
