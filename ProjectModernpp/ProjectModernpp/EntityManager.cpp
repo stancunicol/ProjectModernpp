@@ -187,7 +187,7 @@ void EntityManager::HandleCollisions() {
                 m_players[k].SetLives(m_players[k].GetLives() - 1);
 
                 if (m_players[k].GetLives() == 0) {
-                    RemovePlayer(k);
+                    //RemovePlayer(k);
                 }
                 break;
             }
