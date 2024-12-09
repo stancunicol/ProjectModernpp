@@ -7,8 +7,9 @@
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QKeyEvent>
-#include <QKeyEvent>
 #include <QMessageBox>
+#include <QPalette>
+#include <QColor>
 
 class ControlsWindow : public QDialog
 {

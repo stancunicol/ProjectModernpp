@@ -1,12 +1,13 @@
 #pragma once
+
 #include <QWidget>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QMessageBox>
-#include<qdebug>
-
+#include <qdebug>
+#include <QColor>
 
 class LevelsWindow : public QDialog
 {
@@ -21,12 +22,15 @@ protected:
     void OnMediumLevelClicked();
     void OnHardLevelClicked();
 
+signals:
+    void levelSelected(int level);
+
 private:
     QPushButton* m_easyLevelButton= nullptr;
     QPushButton* m_mediumLevelButton = nullptr;
     QPushButton* m_hardLevelButton = nullptr;
     QLabel* m_messageLabel = nullptr;
-    size_t level = 0;
+    size_t m_level = 0;
 };
 
 

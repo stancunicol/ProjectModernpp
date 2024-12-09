@@ -6,6 +6,8 @@
 #include <QMessageBox>
 #include <QLineEdit>//to create a text input field
 #include <QLabel>//to display images or text
+#include <QPalette>
+#include <QColor>
 
 class LoginWindow : public QDialog
 {

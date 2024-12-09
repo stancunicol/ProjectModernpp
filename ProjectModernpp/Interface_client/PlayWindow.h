@@ -1,10 +1,13 @@
 ﻿#pragma once
+
 #include <QWidget>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QMessageBox> 
+#include <QPalette>
+#include <QColor>
 
 class PlayWindow : public QDialog
 {
@@ -23,6 +26,6 @@ private:
     QLineEdit* m_generateCode = nullptr; 
     QPushButton* m_generateButton = nullptr; 
     QPushButton* m_forwardButton = nullptr; 
-    QLabel* m_messageLabel = nullptr; 
+    bool m_generate = false;
 };
 

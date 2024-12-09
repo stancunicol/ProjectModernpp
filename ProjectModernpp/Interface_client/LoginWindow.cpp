@@ -6,6 +6,12 @@ LoginWindow::LoginWindow(QWidget* parent)
     setWindowTitle("Login");//title
     setFixedSize(400, 300);//400X300
 
+    QPalette palette;
+    QColor customColor(20, 20, 20, 245); 
+    palette.setColor(QPalette::Window, customColor);
+    setPalette(palette);
+    setAutoFillBackground(true);
+
     QVBoxLayout* layout = new QVBoxLayout(this);//create layout
     m_usernameLineEdit = new QLineEdit(this);//create username
     m_usernameLineEdit->setPlaceholderText("Username");//used to set a placeholder text in the username input field

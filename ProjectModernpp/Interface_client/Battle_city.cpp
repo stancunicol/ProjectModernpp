@@ -115,51 +115,50 @@ Battle_city::~Battle_city()
 
 void Battle_city::OnPlayButtonClicked()
 {
-	if (m_connectLogin == false)
+	while (m_connectLogin == false)
 	{
 		LoginWindow* login = new LoginWindow(this);//associates the login window with the current window
-		int result = login->exec();//opens the login window as a modal dialog, meaning the user cannot interact with the parent window until the login window is closed
+		size_t result = login->exec();//opens the login window as a modal dialog, meaning the user cannot interact with the parent window until the login window is closed
 		if (result == QDialog::Accepted)
 		{
 			m_connectLogin = true;
-			LevelsWindow* level = new LevelsWindow(this);
-			int result2 = level->exec();
-			if (result2 == QDialog::Accepted)
-			{
-				PlayWindow* playWindow = new PlayWindow(this);
-				playWindow->exec();
-			}
 		}
+		else
+			QMessageBox::information(this, "Account", "You must login/register to continue");
 	}
-	else
+	LevelsWindow* level = new LevelsWindow(this);
+	if (level->exec() == QDialog::Accepted)
 	{
-		LevelsWindow* level = new LevelsWindow(this);
-		int result2 = level->exec();
-		if (result2 == QDialog::Accepted)
+		level->close();
+		PlayWindow* playWindow = new PlayWindow(this);
+		if (playWindow->exec() == QDialog::Accepted)
 		{
-			PlayWindow* playWindow = new PlayWindow(this);
-			playWindow->exec();
+			playWindow->close();
+			emit aboutToClose();
+			Battle_city::close();
 		}
 	}
 }
 
 void Battle_city::OnConnectButtonClicked()
 {
-	if (m_connectLogin == false)
+	while (m_connectLogin == false)
 	{
 		LoginWindow* login = new LoginWindow(this);
 		int result = login->exec();
 		if (result == QDialog::Accepted)
 		{
 			m_connectLogin = true;
-			ConnectWindow* connectWindow = new ConnectWindow(this);
-			connectWindow->exec();
 		}
+		else
+			QMessageBox::information(this, "Account", "You must login/register to continue");
 	}
-	else
+	ConnectWindow* connectWindow = new ConnectWindow(this);
+	if (connectWindow->exec() == QDialog::Accepted)
 	{
-		ConnectWindow* connectWindow = new ConnectWindow(this);
-		connectWindow->exec();
+		connectWindow->close();
+		emit aboutToClose();
+		Battle_city::close();
 	}
 }
 

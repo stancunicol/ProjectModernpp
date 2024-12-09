@@ -1,7 +1,4 @@
 ﻿#include "PLayWindow.h"
-#include <QVBoxLayout>
-#include <QPushButton>
-#include<qpalette>
 
 PlayWindow::PlayWindow(QWidget* parent)
     : QDialog(parent) 
@@ -11,7 +8,8 @@ PlayWindow::PlayWindow(QWidget* parent)
     setFixedSize(300, 200);
 
     QPalette palette;
-    palette.setColor(QPalette::Window, Qt::black); // Background
+    QColor customColor(20, 20, 20, 245); 
+    palette.setColor(QPalette::Window, customColor);
     palette.setColor(QPalette::WindowText, Qt::white); // Text 
     setPalette(palette);
     setAutoFillBackground(true);
@@ -93,12 +91,16 @@ QString PlayWindow::GenerateRandomNumber()
 
 void PlayWindow::OnForwardClicked()
 {
-
+    if (m_generate == false)
+        QMessageBox::information(this, "Game room", "Please generate a room number");
+    else
+        accept();
 }
 
 void PlayWindow::OnGenerateClicked() 
 {
     QString randomNumber = GenerateRandomNumber();
+    m_generate = true;
     m_generateCode->setText(randomNumber);
 }
 

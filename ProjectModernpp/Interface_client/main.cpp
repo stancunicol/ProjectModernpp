@@ -1,5 +1,7 @@
 ﻿#include <QApplication>
 #include "Battle_city.h"
+#include "GameMapInterface.h"
+#include <QObject>
 
 #include <iostream>
 #include <nlohmann/json.hpp>
@@ -8,20 +10,23 @@
 
 using json = nlohmann::json;
 
-size_t WriteCallBack(void* content, size_t size, size_t memb, void* user) {
+size_t WriteCallBack(void* content, size_t size, size_t memb, void* user) 
+{
     size_t totalSize = size * memb;
     ((std::string*)user)->append((char*)content, totalSize);
     return totalSize;
 }
 
-void FetchGameState() {
+void FetchGameState() 
+{
     CURL* curl;
     CURLcode res;
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
     curl = curl_easy_init();
 
-    if (curl) {
+    if (curl) 
+    {
         std::string readBuffer;
 
         curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:8080/game");
@@ -30,11 +35,14 @@ void FetchGameState() {
 
         res = curl_easy_perform(curl);
 
-        if (res != CURLE_OK) {
+        if (res != CURLE_OK) 
+        {
             qDebug() << "CURL error: " << curl_easy_strerror(res);
         }
-        else {
-            try {
+        else 
+        {
+            try 
+            {
                 json jsonResponse = json::parse(readBuffer);
 
                 int level = jsonResponse.value("level", -1); 
@@ -45,13 +53,16 @@ void FetchGameState() {
                 qDebug() << "Rows:" << rows;
                 qDebug() << "Columns:" << columns;
 
-                if (jsonResponse.contains("matrix")) {
+                if (jsonResponse.contains("matrix")) 
+                {
                     auto matrix = jsonResponse["matrix"];
 
                     qDebug() << "Matrix:";
-                    for (const auto& row : matrix) {
+                    for (const auto& row : matrix) 
+                    {
                         QString rowString;
-                        for (const auto& cell : row) {
+                        for (const auto& cell : row)
+                        {
                             rowString += QString::number(cell.get<int>()) + " "; // Convertește valorile la întregi și le concatenează
                         }
                         rowString.chop(1);
@@ -59,11 +70,13 @@ void FetchGameState() {
                         qDebug() << rowString;
                     }
                 }
-                else {
+                else 
+                {
                     qDebug() << "Matrix not found in response.";
                 }
             }
-            catch (const json::parse_error& e) {
+            catch (const json::parse_error& e) 
+            {
                 qDebug() << "JSON Parsing error: " << e.what();
             }
         }
@@ -76,14 +89,22 @@ void FetchGameState() {
 int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
-    Battle_city game;
-
-    std::thread fetchThread([]() {
+    Battle_city* game = new Battle_city();
+    GameMapInterface* gameMap = new GameMapInterface();
+    
+    std::thread fetchThread([]() 
+        {
         FetchGameState();
         });
 
     fetchThread.join();
 
-    game.show();
+    game->show();
+
+    QObject::connect(game, &Battle_city::aboutToClose, [=]()
+        {
+        gameMap->show();
+        });
+
     return app.exec();
 }

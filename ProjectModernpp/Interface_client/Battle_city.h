@@ -28,6 +28,9 @@ protected:
 	void OnConnectButtonClicked();
 	void OnControlsButtonClicked();
 
+signals:
+	void aboutToClose();
+
 private:
 	QLabel* m_background = nullptr;//Background picture
 	QPushButton* m_playButton = nullptr;//Button for Play

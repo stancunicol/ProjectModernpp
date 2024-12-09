@@ -1,7 +1,5 @@
 ﻿#include "ConnectWindow.h"
-#include <QVBoxLayout>
-#include <QPushButton>
-#include<qpalette>
+
 ConnectWindow::ConnectWindow(QWidget* parent)
     : QDialog(parent) 
 {
@@ -10,7 +8,8 @@ ConnectWindow::ConnectWindow(QWidget* parent)
     setFixedSize(300, 200);
 
     QPalette palette;
-    palette.setColor(QPalette::Window, Qt::black); 
+    QColor customColor(20, 20, 20, 245); 
+    palette.setColor(QPalette::Window, customColor);
     palette.setColor(QPalette::WindowText, Qt::white); 
     setPalette(palette);
     setAutoFillBackground(true); 
@@ -63,13 +62,11 @@ void ConnectWindow::OnGenerateClicked()
     {
         QMessageBox::warning(this, "Error", "The code field is empty!");
     }
-    else 
-    {
-        QMessageBox::information(this, "Success", "You have joined the room: " + roomCode);
-    }
-
+    else
+        accept();
 }
 
 ConnectWindow::~ConnectWindow() 
 { 
+
 }

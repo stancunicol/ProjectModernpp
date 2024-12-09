@@ -1,12 +1,17 @@
 ﻿#include "ControlsWindow.h"
-#include <QMessageBox>
-#include <QKeyEvent>
 
 ControlsWindow::ControlsWindow(QWidget* parent)
     : QDialog(parent)
 {
     // Set window title
     setWindowTitle("Game Controls");
+    setFixedSize(300, 200);
+
+    QPalette palette; 
+    QColor customColor(20, 20, 20, 245);
+    palette.setColor(QPalette::Window, customColor);
+    setPalette(palette);
+    setAutoFillBackground(true);
 
     // Create label to display instructions
     m_instructionLabel = new QLabel(this);

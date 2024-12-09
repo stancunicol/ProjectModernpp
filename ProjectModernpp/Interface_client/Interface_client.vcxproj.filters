@@ -36,6 +36,9 @@
     <ClCompile Include="LevelsWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GameMapInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="PlayWindow.h">
@@ -56,6 +59,9 @@
     <QtMoc Include="LevelsWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="GameMapInterface.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Battle_city.jpg">
@@ -70,6 +76,9 @@
       <Filter>Resource Files</Filter>
     </QtUic>
     <QtUic Include="LoginWindow.ui">
+      <Filter>Resource Files</Filter>
+    </QtUic>
+    <QtUic Include="GameMapInterface.ui">
       <Filter>Resource Files</Filter>
     </QtUic>
   </ItemGroup>

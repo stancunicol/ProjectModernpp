@@ -169,6 +169,7 @@
     </ClCompile>
     <ClCompile Include="ConnectWindow.cpp" />
     <ClCompile Include="ControlsWindow.cpp" />
+    <ClCompile Include="GameMapInterface.cpp" />
     <ClCompile Include="LevelsWindow.cpp" />
     <ClCompile Include="LoginWindow.cpp" />
     <ClCompile Include="main.cpp" />
@@ -177,6 +178,7 @@
   <ItemGroup>
     <QtUic Include="Battle_city.ui" />
     <QtUic Include="ControlsWindow.ui" />
+    <QtUic Include="GameMapInterface.ui" />
     <QtUic Include="LoginWindow.ui" />
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +198,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="LevelsWindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="GameMapInterface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />

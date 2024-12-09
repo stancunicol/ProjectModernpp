@@ -6,6 +6,8 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QMessageBox> 
+#include <QPalette>
+#include <QColor>
 
 class ConnectWindow : public QDialog
 {

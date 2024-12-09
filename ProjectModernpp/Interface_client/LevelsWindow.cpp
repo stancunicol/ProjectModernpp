@@ -7,7 +7,8 @@ LevelsWindow::LevelsWindow(QWidget* parent)
     setFixedSize(300, 300);
 
     QPalette palette;
-    palette.setColor(QPalette::Window, Qt::black);
+    QColor customColor(20, 20, 20, 245); 
+    palette.setColor(QPalette::Window, customColor);
     palette.setColor(QPalette::WindowText, Qt::white);
     setPalette(palette);
     setAutoFillBackground(true);
@@ -102,26 +103,27 @@ LevelsWindow::LevelsWindow(QWidget* parent)
 }
 
 LevelsWindow::~LevelsWindow()
-{}
+{
+
+}
 
 void LevelsWindow::OnEasyLevelClicked()
 {
-    level = 1;
-    QMessageBox::information(this, "Level", "Level easy was selected");
+    m_level = 1;
+    emit levelSelected(m_level);
     accept();
 }
 
 void LevelsWindow::OnMediumLevelClicked()
 {
-    level = 2;
-    QMessageBox::information(this, "Level", "Level medium was selected");
+    m_level = 2;
+    emit levelSelected(m_level);
     accept();
 }
 
 void LevelsWindow::OnHardLevelClicked()
 {
-    level = 3;
-    QMessageBox::information(this, "Level", "Level hard was selected");
-    accept();
+    m_level = 3;
+    emit levelSelected(m_level);
 }
 
