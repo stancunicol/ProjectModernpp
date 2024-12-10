@@ -1,4 +1,5 @@
 #include "LevelsWindow.h"
+#include "ServerUtils.h"
 
 LevelsWindow::LevelsWindow(QWidget* parent)
     : QDialog(parent)
@@ -110,6 +111,7 @@ LevelsWindow::~LevelsWindow()
 void LevelsWindow::OnEasyLevelClicked()
 {
     m_level = 1;
+    SendLevelToServer(m_level);
     emit levelSelected(m_level);
     accept();
 }
@@ -117,6 +119,7 @@ void LevelsWindow::OnEasyLevelClicked()
 void LevelsWindow::OnMediumLevelClicked()
 {
     m_level = 2;
+    SendLevelToServer(m_level);
     emit levelSelected(m_level);
     accept();
 }
@@ -124,6 +127,8 @@ void LevelsWindow::OnMediumLevelClicked()
 void LevelsWindow::OnHardLevelClicked()
 {
     m_level = 3;
+    SendLevelToServer(m_level);
     emit levelSelected(m_level);
+    accept();
 }
 
