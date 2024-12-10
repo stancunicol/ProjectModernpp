@@ -4,11 +4,25 @@
 #include "Bullet.h"
 #include <cassert>
 
-GameMap::GameMap(uint32_t width, uint32_t height, uint8_t level)
-    : m_width(width), m_height(height), m_level(level),
-    m_dynamicGrid(height, std::vector<CellType>(width, CellType::EMPTY)) 
+void GameMap::MatrixSizeGenerator()
 {
-    m_grid.resize(height, std::vector<CellType>(width, CellType::EMPTY));
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+
+    do {
+        m_height = 19 + (std::rand() % ((27 - 19) + 1));
+    } while (m_height % 2 == 0);
+
+    do {
+        m_width = 19 + (std::rand() % ((27 - 19) + 1));
+    } while (m_width % 2 == 0 || m_width == m_height);
+}
+
+GameMap::GameMap(uint8_t level)
+    : m_level(level)
+{
+    MatrixSizeGenerator();
+    m_dynamicGrid.resize(m_height, std::vector<CellType>(m_width, CellType::EMPTY));
+    m_grid.resize(m_height, std::vector<CellType>(m_width, CellType::EMPTY));
     Initialize();
 }
 
@@ -128,9 +142,7 @@ uint32_t GameMap::GetLevel() const
     return m_level;
 }
 
-void GameMap::Reset(uint32_t newWidth, uint32_t newHeight, uint8_t level) {
-    m_width = newWidth;
-    m_height = newHeight;
+void GameMap::Reset(uint8_t level) {
     m_level = level;
 
     m_grid.clear();

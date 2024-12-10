@@ -36,7 +36,7 @@ void StartServer(Game& game) {
 
 int main() 
 {
-    Game game(15, 15);
+    Game game;
 
     std::thread serverThread(StartServer, std::ref(game));
     std::thread gameThread(&Game::Run, &game);

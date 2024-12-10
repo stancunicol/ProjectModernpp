@@ -16,8 +16,8 @@ public:
     bool m_setLevel;
     std::mutex mutex;
     std::condition_variable condition;
-    Game(uint32_t width, uint32_t height);
 
+    Game();
     ~Game();
 
     void InitializeGame(); //the game is initialed
