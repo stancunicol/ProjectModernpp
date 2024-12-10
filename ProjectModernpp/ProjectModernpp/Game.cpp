@@ -1,8 +1,8 @@
 ﻿#include "Game.h"
 #include <Windows.h>
 
-Game::Game(uint32_t width, uint32_t height, uint8_t level)
-    : m_map(width, height, level), m_entityManager(m_map) {
+Game::Game(uint32_t width, uint32_t height)
+    : m_map(width, height), m_entityManager(m_map), m_setLevel(false) {
 }
 
 
@@ -43,6 +43,12 @@ void Game::Run() {
     static float elapsedTime = 0.0f;
     const float shootInterval = 0.3f; 
     static float enemyShootTimer = 0.0f; 
+
+    // Așteaptă până când nivelul este setat
+    {
+        std::unique_lock<std::mutex> lock(mutex);
+        condition.wait(lock, [this]() { return m_setLevel; });
+    }
 
     while (m_entityManager.GetBase().GetLife()) {
         system("CLS"); 
@@ -89,6 +95,19 @@ void Game::EndGame(const std::string& winner)
             << static_cast<int>(m_entityManager.GetPlayers()[i].GetScore()) << '\n';\
     }
     std::cout << "The game is over! " << winner << " WON!\n";
+}
+
+void Game::SetLevel(int newLevel) {
+    {
+        std::lock_guard<std::mutex> lock(mutex);
+        m_map.Reset(m_map.GetWidth(), m_map.GetHeight(), newLevel);
+        m_setLevel = true;
+    }
+    // Reinitializam jocul
+    InitializeGame();
+
+    condition.notify_all(); // Notifică bucla principală că poate continua
+    std::cout << "Game level updated to: " << newLevel << '\n';
 }
 
 crow::json::wvalue Game::TranformInJson() {

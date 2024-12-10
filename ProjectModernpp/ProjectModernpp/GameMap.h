@@ -14,7 +14,7 @@ private:
     std::vector<std::vector<CellType>> m_grid;
 
 public:
-    GameMap(uint32_t width, uint32_t height, uint8_t level);
+    GameMap(uint32_t width, uint32_t height, uint8_t level = 1);
 
 
     void Initialize();//initialize the map based on the level
@@ -34,5 +34,5 @@ public:
     uint32_t GetHeight() const;
     uint32_t GetLevel() const;
 
-
+    void Reset(uint32_t newWidth, uint32_t newHeight, uint8_t level);
 };

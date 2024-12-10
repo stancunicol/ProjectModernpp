@@ -128,3 +128,13 @@ uint32_t GameMap::GetLevel() const
     return m_level;
 }
 
+void GameMap::Reset(uint32_t newWidth, uint32_t newHeight, uint8_t level) {
+    m_width = newWidth;
+    m_height = newHeight;
+    m_level = level;
+
+    m_grid.clear();
+    m_grid.resize(m_height, std::vector<CellType>(m_width, CellType::EMPTY));
+
+    Initialize();
+}

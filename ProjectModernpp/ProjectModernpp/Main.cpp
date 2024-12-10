@@ -1,34 +1,48 @@
 ﻿#include "Game.h"
 #include <iostream>
 #include <crow.h>
-//
-//void StartServer(Game& game) {
-//    crow::SimpleApp serverApp;
-//
-//    CROW_ROUTE(serverApp, "/game")([&game]() {
-//            crow::json::wvalue gameState = game.GetGameStateAsJson();
-//            std::cout << "Game state: " << gameState.dump(4) << '\n';
-//            return gameState;
-//        });
-//    serverApp.port(8080).multithreaded().run();
-//}
 
-int main() {
+void StartServer(Game& game) {
+    crow::SimpleApp serverApp;
 
-    int level;
-    std::cout << "Alegeti un nivel (1 = usor, 2 = mediu, 3 = greu): ";
-    std::cin >> level;
+    CROW_ROUTE(serverApp, "/game")([&game]() {
+            crow::json::wvalue gameState = game.GetGameStateAsJson();
+            std::cout << "Game state: " << gameState.dump(4) << '\n';
+            return gameState;
+        });
 
-    Game game(15, 15, level);
-    game.InitializeGame();
-    game.Run();
-    /*std::thread serverThread(StartServer, std::ref(game));
+    CROW_ROUTE(serverApp, "/submitLevel").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
+        try {
+            auto jsonBody = crow::json::load(req.body);
+            if (!jsonBody || !jsonBody.has("level")) {
+                return crow::response(400, "Invalid JSON payload. Expected a 'level' field.");
+            }
 
+            int level = jsonBody["level"].i();
+            if (level < 1 || level > 3) {
+                return crow::response(400, "Invalid level. Must be 1, 2, or 3.");
+            }
+
+            game.SetLevel(level);
+
+            return crow::response(200, "Level updated successfully.");
+        }
+        catch (const std::exception& e) {
+            return crow::response(500, std::string("Error processing request: ") + e.what());
+        }
+        });
+    serverApp.port(8080).multithreaded().run();
+}
+
+int main() 
+{
+    Game game(15, 15);
+
+    std::thread serverThread(StartServer, std::ref(game));
     std::thread gameThread(&Game::Run, &game);
 
     serverThread.join();
-
-    gameThread.join();*/
+    //gameThread.join();
 
     return 0;
 }

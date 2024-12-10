@@ -13,7 +13,10 @@ private:
     GameMap m_map;
     EntityManager m_entityManager;
 public:
-    Game(uint32_t width, uint32_t height, uint8_t level);
+    bool m_setLevel;
+    std::mutex mutex;
+    std::condition_variable condition;
+    Game(uint32_t width, uint32_t height);
 
     ~Game();
 
@@ -22,6 +25,8 @@ public:
     void Run(); //runs the game  
 
     void EndGame(const std::string& winner);
+
+    void SetLevel(int level);
 
     crow::json::wvalue TranformInJson();
 
