@@ -21,6 +21,7 @@ public:
 	void DeleteGameData();
 
 	bool UserExists(const std::string& username);
+	void AddUser(const std::string& username);
 
 	std::vector<std::tuple<std::string, int, int>> GetGameData() const;
 

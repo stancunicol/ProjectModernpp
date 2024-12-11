@@ -56,6 +56,31 @@ void StartServer(Game& game) {
         }
         });
 
+    CROW_ROUTE(serverApp, "/register").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
+        try {
+            auto jsonBody = crow::json::load(req.body);
+            if (!jsonBody || !jsonBody.has("username")) {
+                return crow::response(400, "Invalid JSON payload. Expected a 'username' field.");
+            }
+
+            std::string username = jsonBody["username"].s();
+
+            // Adaugă utilizatorul în baza de date
+            auto& db = game.GetDatabase();
+            if (db.UserExists(username)) {
+                return crow::response(409, "User already exists.");
+            }
+            else {
+                db.AddUser(username); // Presupunând că ai o metodă AddUser
+                return crow::response(200, "registered");
+            }
+        }
+        catch (const std::exception& e) {
+            return crow::response(500, std::string("Error processing request: ") + e.what());
+        }
+        });
+
+
     serverApp.port(8080).multithreaded().run();
 }
 

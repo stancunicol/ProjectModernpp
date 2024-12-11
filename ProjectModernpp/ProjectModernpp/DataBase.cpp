@@ -67,6 +67,13 @@ bool DataBase::UserExists(const std::string& username)
     return exists;
 }
 
+void DataBase::AddUser(const std::string& username)
+{
+    const std::string insertQuery = "INSERT INTO GameData (playerName, score, level) "
+        "VALUES ('" + username + "', 0, 0);";
+    executeQuery(insertQuery);
+}
+
 
 std::vector<std::tuple<std::string, int, int>> DataBase::GetGameData() const {
 
