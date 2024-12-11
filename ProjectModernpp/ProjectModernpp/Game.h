@@ -22,11 +22,10 @@ public:
     bool m_setLevel;
     std::mutex mutex;
     std::condition_variable condition;
-    Game(uint32_t width, uint32_t height);
 
     Game();
 
-    ~Game(); 
+    ~Game();
 
     void InitializeGame(); //the game is initialed
 
@@ -35,6 +34,8 @@ public:
     void EndGame(const std::string& winner);
 
     void SetLevel(int level);
+
+    DataBase& GetDatabase() { return m_database; };
 
     crow::json::wvalue TranformInJson();
 

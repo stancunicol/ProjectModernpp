@@ -20,6 +20,8 @@ public:
 	void UpdateGameData(const std::string& playerName, uint32_t score);
 	void DeleteGameData();
 
+	bool UserExists(const std::string& username);
+
 	std::vector<std::tuple<std::string, int, int>> GetGameData() const;
 
 	friend std::ostream& operator<<(std::ostream& out, const DataBase& db);

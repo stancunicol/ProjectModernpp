@@ -3,10 +3,10 @@
 #include "Character.h"
 #include "GameMap.h"
 
-class Enemy : virtual public Character 
+class Enemy : virtual public Character
 {
 private:
-    bool m_active = false;  
+    bool m_active = false;
     Point m_shootDirection = Point(0, 0);
 
 public:

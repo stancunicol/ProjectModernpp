@@ -49,7 +49,27 @@ void DataBase::DeleteGameData()
     executeQuery(deleteQuery);
 }
 
+bool DataBase::UserExists(const std::string& username)
+{
+    const std::string checkQuery = "SELECT COUNT(*) FROM GameData WHERE playerName = '" + username + "';";
+    sqlite3_stmt* stmt;
+    bool exists = false;
+
+    if (sqlite3_prepare_v2(db, checkQuery.c_str(), -1, &stmt, nullptr) == SQLITE_OK) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            exists = sqlite3_column_int(stmt, 0) > 0;
+        }
+    }
+    else {
+        std::cerr << "Eroare la executarea interogării: " << sqlite3_errmsg(db) << '\n';
+    }
+    sqlite3_finalize(stmt);
+    return exists;
+}
+
+
 std::vector<std::tuple<std::string, int, int>> DataBase::GetGameData() const {
+
     const std::string selectQuery = "SELECT playerName, score, level FROM GameData;";
     sqlite3_stmt* stmt;
     std::vector<std::tuple<std::string, int, int>> results;
@@ -78,16 +98,14 @@ void DataBase::executeQuery(const std::string& query) {
 }
 
 std::ostream& operator<<(std::ostream& out, const DataBase& db) {
-    // Obține datele din baza de date
+
     auto data = db.GetGameData();
 
-    // Verificăm dacă baza de date conține date
     if (data.empty()) {
         out << "Database is empty.\n";
         return out;
     }
 
-    // Afișăm datele într-un format tabular
     out << "Player Name\tScore\tLevel\n";
     out << "----------------------------------\n";
 

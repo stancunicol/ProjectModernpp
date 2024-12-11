@@ -26,7 +26,7 @@ GameMap::GameMap(uint8_t level)
     Initialize();
 }
 
-void GameMap::Initialize() 
+void GameMap::Initialize()
 {
     int breakableWallChance, unbreakableWallChance, safeZoneSize = 3;
 
@@ -43,7 +43,7 @@ void GameMap::Initialize()
 
             int randVal = rand() % 100;
 
-            if (m_grid[i][j] == CellType::EMPTY && HasEmptyNeighbors(i, j)) 
+            if (m_grid[i][j] == CellType::EMPTY && HasEmptyNeighbors(i, j))
             {
                 if (randVal < breakableWallChance) {
                     m_grid[i][j] = CellType::BREAKABLE_WALL;
@@ -56,7 +56,7 @@ void GameMap::Initialize()
     }
 }
 
-bool GameMap::IsInSafeZone(int x, int y, int safeZoneSize) 
+bool GameMap::IsInSafeZone(int x, int y, int safeZoneSize)
 {
     return (x < safeZoneSize && y < safeZoneSize) ||
         (x < safeZoneSize && y >= m_width - safeZoneSize) ||
@@ -64,7 +64,7 @@ bool GameMap::IsInSafeZone(int x, int y, int safeZoneSize)
         (x >= m_height - safeZoneSize && y >= m_width - safeZoneSize);
 }
 
-bool GameMap::HasEmptyNeighbors(int x, int y) 
+bool GameMap::HasEmptyNeighbors(int x, int y)
 {
     int emptyCount = 0;
     const int dx[] = { -1, 0, 1, 0 };
@@ -80,7 +80,7 @@ bool GameMap::HasEmptyNeighbors(int x, int y)
     return emptyCount >= 2;
 }
 
-void GameMap::Display() const 
+void GameMap::Display() const
 {
     for (int i = 0; i < m_height; ++i) {
         for (int j = 0; j < m_width; ++j) {
