@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <qdebug>
 #include <QColor>
+#include "ServerUtils.h"
 
 class LevelsWindow : public QDialog
 {

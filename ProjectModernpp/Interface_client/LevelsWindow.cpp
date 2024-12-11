@@ -1,5 +1,4 @@
 #include "LevelsWindow.h"
-#include "ServerUtils.h"
 
 LevelsWindow::LevelsWindow(QWidget* parent)
     : QDialog(parent)

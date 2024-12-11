@@ -104,11 +104,17 @@ void LoginWindow::OnLoginClicked()
 		QMessageBox::warning(this, "Login Failed", "Please enter username.");
 		return;
 	}
-	else
-	{
-		QMessageBox::information(this, "Login Successful", "User " + username + " login successfully!");
-		accept();
-	}
+
+    //Send the username to server
+    std::string response = GetServerData("http://localhost:8080/checkUser?username=" + username.toStdString());
+
+    if (response == "success") {
+        QMessageBox::information(this, "Login Successful", "User " + username + " logged in successfully!");
+        accept();
+    }
+    else {
+        QMessageBox::warning(this, "Login Failed", "Invalid username or server error.");
+    }
     m_usernameLineEdit->clear();//reset fields after registration
 }
 
@@ -121,11 +127,11 @@ void LoginWindow::OnRegisterClicked()
 		QMessageBox::warning(this, "Registration Failed", "Please enter username.");
 		return;
 	}
-	else
-	{
-		QMessageBox::information(this, "Registration Successful", "User " + username + " registered successfully!");
-		accept();
-	}
+    else
+    {
+        QMessageBox::information(this, "Registration Successful", "User " + username + " registered successfully!");
+        accept();
+    }
     m_usernameLineEdit->clear();//reset fields after registration
 }
 

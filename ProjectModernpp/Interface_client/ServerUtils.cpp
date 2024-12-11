@@ -1,17 +1,15 @@
 ﻿#include "ServerUtils.h"
 
-#include <QDebug>
-#include <curl/curl.h>
-#include <string>
-
-void SendLevelToServer(int level) {
+void SendLevelToServer(int level) 
+{
     CURL* curl;
     CURLcode res;
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
     curl = curl_easy_init();
 
-    if (curl) {
+    if (curl) 
+    {
         std::string url = "http://localhost:8080/submitLevel";
         std::string jsonPayload = "{\"level\": " + std::to_string(level) + "}";
 
@@ -24,10 +22,12 @@ void SendLevelToServer(int level) {
 
         res = curl_easy_perform(curl);
 
-        if (res != CURLE_OK) {
+        if (res != CURLE_OK) 
+        {
             qDebug() << "Failed to send level: " << curl_easy_strerror(res);
         }
-        else {
+        else 
+        {
             qDebug() << "Level sent successfully: " << level;
         }
 
@@ -37,3 +37,46 @@ void SendLevelToServer(int level) {
 
     curl_global_cleanup();
 }
+
+// Funcție pentru recepționarea unui răspuns de la server
+static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* response)
+{
+    size_t totalSize = size * nmemb;
+    response->append((char*)contents, totalSize);
+    return totalSize;
+}
+
+std::string GetServerData(const std::string& url) {
+
+    CURL* curl;
+    CURLcode res;
+    std::string response;
+
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+    curl = curl_easy_init();
+
+    if (curl) 
+    {
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+        res = curl_easy_perform(curl);
+
+        if (res != CURLE_OK) 
+        {
+            qDebug() << "Failed to fetch data from server: " << curl_easy_strerror(res);
+        }
+        else
+        {
+            qDebug() << "Data fetched successfully from server: " << QString::fromStdString(response);
+        }
+
+        curl_easy_cleanup(curl);
+    }
+
+    curl_global_cleanup();
+
+    return response;
+}
+

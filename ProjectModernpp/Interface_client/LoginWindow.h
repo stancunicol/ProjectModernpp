@@ -8,6 +8,7 @@
 #include <QLabel>//to display images or text
 #include <QPalette>
 #include <QColor>
+#include "ServerUtils.h"
 
 class LoginWindow : public QDialog
 {
