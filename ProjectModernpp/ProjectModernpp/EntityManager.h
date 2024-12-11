@@ -7,13 +7,14 @@
 #include "GameMap.h"
 #include "Bomb.h"
 #include "Base.h"
+#include "DataBase.h"
 
 class EntityManager {
 private:
-    std::vector<Player> m_players;
-    std::vector<Enemy> m_enemies;
-    std::vector<Bullet> m_bullets;
-    std::vector<Bullet> m_playerBullets;
+    std::vector<Player> m_players;      
+    std::vector<Enemy> m_enemies;       
+    std::vector<Bullet> m_bullets; 
+    std::vector<Bullet> m_playerBullets; 
     std::vector<Bomb> m_bombs;
 
     std::vector<float> m_enemyShootTimers; // Timpurile scurse pentru fiecare inamic
@@ -21,6 +22,8 @@ private:
 
     Base m_base;
     std::string m_winner;
+
+    DataBase m_database;
 
     void HandleCollisions(GameMap& map);
 public:

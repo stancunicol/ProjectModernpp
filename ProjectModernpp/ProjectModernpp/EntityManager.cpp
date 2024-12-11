@@ -1,7 +1,7 @@
 ﻿#include "EntityManager.h"
 
 EntityManager::EntityManager(GameMap& map)
-    : m_base{ Point(map.GetHeight() - 1, map.GetWidth() / 2) } {
+    : m_base{ Point(map.GetHeight() - 1, map.GetWidth() / 2) }, m_database{ "GameData.db" } {
     PlaceBase(map);
 }
 
@@ -280,6 +280,7 @@ void EntityManager::HandleCollisions(GameMap& map)
                     RemoveEnemy(j);
                     m_players[0].SetPoints(100);
                     m_players[0].SetScore();
+                    m_database.UpdateGameData(m_players[0].GetName(), m_players[0].GetScore());
                 }
                 break;
             }
@@ -291,6 +292,7 @@ void EntityManager::HandleCollisions(GameMap& map)
             if (m_base.GetLife() == 0) {
                 m_players[0].SetPoints(500);
                 m_players[0].SetScore();
+                m_database.UpdateGameData(m_players[0].GetName(), m_players[0].GetScore());
                 m_winner = m_players[0].GetName();
             }
             break;

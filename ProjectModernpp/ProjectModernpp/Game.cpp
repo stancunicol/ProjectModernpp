@@ -1,10 +1,11 @@
 ﻿#include "Game.h"
 #include <Windows.h>
 
-Game::Game()
-    : m_map(), m_entityManager(m_map), m_setLevel(false) {
+Game::Game(uint32_t width, uint32_t height)
+    : m_map(width, height), m_entityManager(m_map), m_database("GameData.db"), m_setLevel(false) {
+    //m_database.DeleteGameData();
+    m_database.Initialize();
 }
-
 
 Game::~Game() {}
 
@@ -14,6 +15,7 @@ void Game::InitializeGame() { //here, we initialize the game
     m_entityManager.PlaceBase(m_map);
 
     m_entityManager.AddPlayer(Player("Player1", m_map));
+    m_database.InsertGameData(m_entityManager.GetPlayers()[0].GetName(), m_entityManager.GetPlayers()[0].GetScore(), m_map.GetLevel());
 
     // TODO: Multiplayer; playerii se spameaza pe aceeasi pozitie, posibila problema: srand
 
@@ -39,10 +41,10 @@ void Game::InitializeGame() { //here, we initialize the game
     }
 }
 
-void Game::Run() { 
+void Game::Run() {
     static float elapsedTime = 0.0f;
-    const float shootInterval = 0.3f; 
-    static float enemyShootTimer = 0.0f; 
+    const float shootInterval = 0.3f;
+    static float enemyShootTimer = 0.0f;
 
     // Așteaptă până când nivelul este setat
     {
@@ -51,7 +53,7 @@ void Game::Run() {
     }
 
     while (m_entityManager.GetBase().GetLife()) {
-        system("CLS"); 
+        system("CLS");
 
         if (_kbhit()) {
             char input = _getch();
@@ -61,24 +63,24 @@ void Game::Run() {
             case 'a': case 'A': direction = Point(0, -1); break;
             case 's': case 'S': direction = Point(1, 0); break;
             case 'd': case 'D': direction = Point(0, 1); break;
-            case ' ': 
+            case ' ':
                 m_entityManager.PlayerShoot(m_map);
                 break;
             default: break;
             }
             m_entityManager.GetPlayersMutable()[0].MoveCharacter(direction, m_map);
-            
+
             //m_entityManager.GetPlayersMutable()[1].MoveCharacter(Point(0, 0), m_map);
             //m_entityManager.GetPlayersMutable()[2].MoveCharacter(Point(0, 0), m_map);
             //m_entityManager.GetPlayersMutable()[3].MoveCharacter(Point(0, 0), m_map);
         }
 
         // Actualizarea timerului pentru intervalul de tragere al inamicilor
-        elapsedTime += 0.15f;  
+        elapsedTime += 0.15f;
 
         if (elapsedTime >= shootInterval) {
             m_entityManager.UpdateEntities(m_map, elapsedTime);
-            elapsedTime = 0.0f; 
+            elapsedTime = 0.0f;
         }
 
         m_map.Display();
@@ -91,8 +93,8 @@ void Game::Run() {
 void Game::EndGame(const std::string& winner)
 {
     for (size_t i = 0; i < m_entityManager.GetPlayers().size(); i++) {
-        std::cout << m_entityManager.GetPlayers()[i].GetName() << " score: " 
-            << static_cast<int>(m_entityManager.GetPlayers()[i].GetScore()) << '\n';\
+        std::cout << m_entityManager.GetPlayers()[i].GetName() << " score: "
+            << static_cast<int>(m_entityManager.GetPlayers()[i].GetScore()) << '\n'; \
     }
     std::cout << "The game is over! " << winner << " WON!\n";
 }
@@ -100,7 +102,7 @@ void Game::EndGame(const std::string& winner)
 void Game::SetLevel(int newLevel) {
     {
         std::lock_guard<std::mutex> lock(mutex);
-        m_map.Reset(newLevel);
+        m_map.Reset(m_map.GetWidth(), m_map.GetHeight(), newLevel);
         m_setLevel = true;
     }
     // Reinitializam jocul
