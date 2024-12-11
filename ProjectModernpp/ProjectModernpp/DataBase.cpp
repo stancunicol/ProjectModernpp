@@ -14,11 +14,11 @@ DataBase::~DataBase() {
 }
 
 void DataBase::Initialize() {
-    
+
     const std::string createTableQuery = R"(
         CREATE TABLE IF NOT EXISTS GameData (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            playerName TEXT,
+            id INTEGER PRIMARY KEY,
+            playerName TEXT UNIQUE,
             score INTEGER, 
             level INTEGER
         );
@@ -28,8 +28,12 @@ void DataBase::Initialize() {
 
 void DataBase::InsertGameData(const std::string& playerName, uint32_t score, uint8_t level)
 {
-    const std::string insertQuery = "INSERT INTO GameData (playerName, score, level) VALUES ('" 
-        + playerName + "', " + std::to_string(score) + ", " + std::to_string(level) + ");";
+    const std::string insertQuery =
+        "INSERT INTO GameData (playerName, score, level) "
+        "VALUES ('" + playerName + "', " + std::to_string(score) + ", " + std::to_string(level) + ") "
+        "ON CONFLICT(playerName) DO UPDATE SET "
+        "score = 0, "
+        "level = " + std::to_string(level) + ";";
     executeQuery(insertQuery);
 }
 
@@ -42,11 +46,10 @@ void DataBase::UpdateGameData(const std::string& playerName, uint32_t score)
 void DataBase::DeleteGameData()
 {
     const std::string deleteQuery = "DELETE FROM GameData;";
-    //const std::string deleteQuery = "DROP TABLE GameData;";
     executeQuery(deleteQuery);
 }
 
-std::vector<std::tuple<std::string, int, int>> DataBase::GetGameData() {
+std::vector<std::tuple<std::string, int, int>> DataBase::GetGameData() const {
     const std::string selectQuery = "SELECT playerName, score, level FROM GameData;";
     sqlite3_stmt* stmt;
     std::vector<std::tuple<std::string, int, int>> results;
@@ -74,3 +77,27 @@ void DataBase::executeQuery(const std::string& query) {
     }
 }
 
+std::ostream& operator<<(std::ostream& out, const DataBase& db) {
+    // Obține datele din baza de date
+    auto data = db.GetGameData();
+
+    // Verificăm dacă baza de date conține date
+    if (data.empty()) {
+        out << "Database is empty.\n";
+        return out;
+    }
+
+    // Afișăm datele într-un format tabular
+    out << "Player Name\tScore\tLevel\n";
+    out << "----------------------------------\n";
+
+    for (const auto& row : data) {
+        const std::string& playerName = std::get<0>(row);
+        int score = std::get<1>(row);
+        int level = std::get<2>(row);
+
+        out << playerName << "\t\t" << score << "\t" << level << "\n";
+    }
+
+    return out;
+}

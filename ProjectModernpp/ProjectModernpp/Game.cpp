@@ -1,8 +1,8 @@
 ﻿#include "Game.h"
 #include <Windows.h>
 
-Game::Game(uint32_t width, uint32_t height)
-    : m_map(width, height), m_entityManager(m_map), m_database("GameData.db"), m_setLevel(false) {
+Game::Game()
+    : m_map(), m_entityManager(m_map), m_database("GameData.db"), m_setLevel(false) {
     //m_database.DeleteGameData();
     m_database.Initialize();
 }
@@ -87,6 +87,7 @@ void Game::Run() {
 
         std::this_thread::sleep_for(std::chrono::milliseconds(150));
     }
+    std::cout << m_database;
     EndGame(m_entityManager.GetWinner());
 }
 
@@ -102,7 +103,7 @@ void Game::EndGame(const std::string& winner)
 void Game::SetLevel(int newLevel) {
     {
         std::lock_guard<std::mutex> lock(mutex);
-        m_map.Reset(m_map.GetWidth(), m_map.GetHeight(), newLevel);
+        m_map.Reset(newLevel);
         m_setLevel = true;
     }
     // Reinitializam jocul

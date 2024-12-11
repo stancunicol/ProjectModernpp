@@ -5,7 +5,7 @@
 #include <vector>
 
 
-class DataBase{
+class DataBase {
 private:
 	sqlite3* db;
 
@@ -14,12 +14,14 @@ public:
 	DataBase(const std::string& dbName);
 	~DataBase();
 
-	void Initialize(); 
+	void Initialize();
 
 	void InsertGameData(const std::string& playerName, uint32_t score, uint8_t level);
 	void UpdateGameData(const std::string& playerName, uint32_t score);
 	void DeleteGameData();
 
-	std::vector<std::tuple<std::string, int, int>> GetGameData();
+	std::vector<std::tuple<std::string, int, int>> GetGameData() const;
+
+	friend std::ostream& operator<<(std::ostream& out, const DataBase& db);
 };
 
