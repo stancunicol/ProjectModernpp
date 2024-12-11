@@ -17,6 +17,7 @@ class ControlsWindow : public QDialog
 
 public:
     ControlsWindow(QWidget* parent = nullptr);
+    void setupKeyEdit(QLineEdit* keyEdit);
     ~ControlsWindow();
 
 protected:
@@ -28,6 +29,5 @@ private:
     QLineEdit* m_downKeyEdit = nullptr;
     QLineEdit* m_leftKeyEdit = nullptr;
     QLineEdit* m_rightKeyEdit = nullptr;
-    QLineEdit* m_activeKeyEdit = nullptr;
-    QPushButton* m_closeButton = nullptr;
+    QLineEdit* m_fireKeyEdit=nullptr;
 };

@@ -20,11 +20,11 @@ LevelsWindow::LevelsWindow(QWidget* parent)
     QLabel* label = new QLabel("SELECT LEVEL", this);
     QFont font;
     font.setPointSize(16);
-    font.setFamily("Segoe Script");
     font.setBold(true);
     label->setStyleSheet("color: white;");
     label->setFont(font);
     verticalLayout->addWidget(label);
+    verticalLayout->setAlignment(Qt::AlignCenter);
 
     //buttons for levels
     m_easyLevelButton = new QPushButton("EASY", this);
@@ -35,30 +35,29 @@ LevelsWindow::LevelsWindow(QWidget* parent)
     m_mediumLevelButton->setFixedSize(250, 60);
     m_hardLevelButton->setFixedSize(250, 60);
 
-    QFont buttonFont("Segoe Script", 14, QFont::Bold);
-    m_easyLevelButton->setFont(buttonFont);
-    m_mediumLevelButton->setFont(buttonFont);
-    m_hardLevelButton->setFont(buttonFont);
+    m_easyLevelButton->setFont(font);
+    m_mediumLevelButton->setFont(font);
+    m_hardLevelButton->setFont(font);
 
     m_easyLevelButton->setStyleSheet("QPushButton {"
-        "background-color: rgba(158, 204, 158, 1);"  // green
-        "color: black;"
+        "background-color: rgba(34, 177, 76, 0.5);"  
+        "color: white;"
         "border: none;"
         "padding: 10px;"
         "border-radius: 5px;"
         "font-size: 16px;"
         "}"
         "QPushButton:hover {"
-        "background-color: rgba(124, 160, 124, 0.7);"  // dark green
-        "color: rgba(255, 255, 255, 0.5);"  // transparent white
+        "background-color: rgba(0, 128, 0, 0.4);"  
+        "color: rgba(255, 255, 255, 1);"  
         "}"
         "QPushButton:pressed {"
-        "background-color: rgba(86, 123, 86, 0.9);"  // even darker green
-        "color: rgba(255, 255, 255, 1);"  // transparent white
+        "background-color: rgba(0, 100, 0, 0.6);"  
+        "color: rgba(255, 255, 255, 1);"  
         "}");
 
     m_mediumLevelButton->setStyleSheet("QPushButton {"
-        "background-color: rgba(248, 253, 170, 1);"//beige
+        "background-color: rgba(255, 204, 0, 0.5);" 
         "color: black;"
         "border: none;"
         "padding: 10px;"
@@ -66,29 +65,29 @@ LevelsWindow::LevelsWindow(QWidget* parent)
         "font-size: 16px;"
         "}"
         "QPushButton:hover {"
-        "background-color: rgba(237, 242, 164, 0.7);"  // dark beige
-        "color: rgba(255, 255, 255, 0.5);"  // transparent white
+        "background-color: rgba(255, 165, 0, 0.4);"
+        "color: rgba(255, 255, 255, 1);"  
         "}"
         "QPushButton:pressed {"
-        "background-color: rgba(222, 227, 153, 0.9);"  // even darker beige
-        "color: rgba(255, 255, 255, 1);"  // transparent white
+        "background-color: rgba(255, 140, 0, 0.6);"  
+        "color: rgba(255, 255, 255, 1);"  
         "}");
 
     m_hardLevelButton->setStyleSheet("QPushButton {"
-        "background-color: rgba(235, 126, 102, 1);"  // red
-        "color: black;"
+        "background-color: rgba(204, 0, 0, 0.5);"
+        "color: white;"
         "border: none;"
         "padding: 10px;"
         "border-radius: 5px;"
         "font-size: 16px;"
         "}"
         "QPushButton:hover {"
-        "background-color: rgba(219, 122, 97, 0.7);"  // dark red
-        "color: rgba(255, 255, 255, 0.5);"  // transparent white
+        "background-color: rgba(178, 0, 0, 0.4);" 
+        "color: rgba(255, 255, 255, 1);"  
         "}"
         "QPushButton:pressed {"
-        "background-color: rgba(205, 118, 96, 0.9);"  // even darker red
-        "color: rgba(255, 255, 255,1 );"  //transparent white
+        "background-color: rgba(153, 0, 0, 0.6);"  
+        "color: rgba(255, 255, 255, 1);"  
         "}");
 
     //add buttons and text in Vertical Layout

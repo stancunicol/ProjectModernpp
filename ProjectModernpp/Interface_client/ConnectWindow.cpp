@@ -18,11 +18,10 @@ ConnectWindow::ConnectWindow(QWidget* parent)
     QLabel* label = new QLabel("Insert code:", this);
     QFont font;
     font.setPointSize(14); 
-    font.setFamily("Segoe Script");  
     font.setBold(true);  
 
     label->setFont(font);
-    layout->addWidget(label);
+    layout->addWidget(label, 0, Qt::AlignCenter);
 
     //label for insert code
     m_insertCode = new QLineEdit(this);
@@ -30,7 +29,7 @@ ConnectWindow::ConnectWindow(QWidget* parent)
     m_insertCode->setAlignment(Qt::AlignCenter);
     m_insertCode->setStyleSheet("color: lightBlue;background-color: darkBlue;font-size: 20px;border: 2px solid lightBlue");
     m_insertCode->setFixedSize(240, 50);
-    layout->setAlignment(Qt::AlignCenter); 
+    layout->setAlignment(Qt::AlignCenter);
 
     //button for start game
     m_startButton = new QPushButton("START GAME", this);

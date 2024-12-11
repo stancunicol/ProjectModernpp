@@ -1,139 +1,119 @@
 ﻿#include "ControlsWindow.h"
+#include <QKeyEvent>
+#include <QMessageBox>
+#include <QVBoxLayout>
+#include <QGridLayout>
+#include <QLabel>
+#include <QPushButton>
 
 ControlsWindow::ControlsWindow(QWidget* parent)
-    : QDialog(parent)
+    : QDialog(parent),
+    m_upKeyEdit(new QLineEdit("W", this)),
+    m_downKeyEdit(new QLineEdit("S", this)),
+    m_leftKeyEdit(new QLineEdit("A", this)),
+    m_rightKeyEdit(new QLineEdit("D", this)),
+    m_fireKeyEdit(new QLineEdit("Space", this))
 {
-    // Set window title
     setWindowTitle("Game Controls");
-    setFixedSize(300, 200);
+    setFixedSize(600, 500);
 
-    QPalette palette; 
-    QColor customColor(20, 20, 20, 245);
-    palette.setColor(QPalette::Window, customColor);
+    QPalette palette;
+    palette.setColor(QPalette::Window, QColor(20, 20, 20, 245));
     setPalette(palette);
     setAutoFillBackground(true);
 
-    // Create label to display instructions
-    m_instructionLabel = new QLabel(this);
-    m_instructionLabel->setText("<b>Set Your Game Controls</b><br><br>"
-        "Click on a field and press a key to assign it.");
+    QLabel* instructionLabel = new QLabel(
+        "<b>Set Your Game Controls</b><br>"
+        "Click on a field and press a key to assign it.", this);
+    instructionLabel->setAlignment(Qt::AlignCenter);
+    instructionLabel->setStyleSheet("color: white;");
 
-    // Create editable fields for controls
-    m_upKeyEdit = new QLineEdit(this);
-    m_upKeyEdit->setText("W");
-    m_upKeyEdit->setAlignment(Qt::AlignCenter);
+    QLabel* gameLegendLabel = new QLabel(
+        "<b>Game Legend:</b>"
+        "<ul>"
+        "<li><b>Goal:</b> Destroy the enemy base to win the game!</li>"
+        "<li><b>Movement:</b> Use arrow keys or WASD to move your tank.</li>"
+        "<li><b>Actions:</b> Use 'Space' to shoot your weapon.</li>"
+        "<li><b>Walls:</b> Destroyable walls can be broken to open paths, while indestructible walls block the way.</li>"
+        "<li><b>Bases:</b> Shout the base in order to win faster.</li>"
+        "<li><b>Bombs:</b> Explosions triggered by destroyed walls can eliminate anyone in a 10-meter radius.</li>"
+        "</ul>"
+        "<br><b>Player Actions:</b>"
+        "<ul>"
+        "<li>Each enemy killed gives you 100 points.</li>"
+        "<li>The winner of the game gets an extra 200 points.</li>"
+        "<li>After collecting enough points, improve your weapon's power.</li>"
+        "</ul>"
+        "<br>Good luck and be strategic!", this);
+    gameLegendLabel->setAlignment(Qt::AlignCenter);
+    gameLegendLabel->setStyleSheet("color: white;");
 
-    m_downKeyEdit = new QLineEdit(this);
-    m_downKeyEdit->setText("S");
-    m_downKeyEdit->setAlignment(Qt::AlignCenter);
-
-    m_leftKeyEdit = new QLineEdit(this);
-    m_leftKeyEdit->setText("A");
-    m_leftKeyEdit->setAlignment(Qt::AlignCenter);
-
-    m_rightKeyEdit = new QLineEdit(this);
-    m_rightKeyEdit->setText("D");
-    m_rightKeyEdit->setAlignment(Qt::AlignCenter);
-
-    // Set the focus policy to StrongFocus, which allows these fields to receive focus
-    m_upKeyEdit->setFocusPolicy(Qt::StrongFocus);
-    m_downKeyEdit->setFocusPolicy(Qt::StrongFocus);
-    m_leftKeyEdit->setFocusPolicy(Qt::StrongFocus);
-    m_rightKeyEdit->setFocusPolicy(Qt::StrongFocus);
-
-    m_upKeyEdit->setReadOnly(true); // Disable manual editing to ensure only key events set the value
-    m_downKeyEdit->setReadOnly(true);
-    m_leftKeyEdit->setReadOnly(true);
-    m_rightKeyEdit->setReadOnly(true);
-
-    connect(m_upKeyEdit, &QLineEdit::editingFinished, this, [this]() { m_upKeyEdit->clearFocus(); });
-    connect(m_downKeyEdit, &QLineEdit::editingFinished, this, [this]() { m_downKeyEdit->clearFocus(); });
-    connect(m_leftKeyEdit, &QLineEdit::editingFinished, this, [this]() { m_leftKeyEdit->clearFocus(); });
-    connect(m_rightKeyEdit, &QLineEdit::editingFinished, this, [this]() { m_rightKeyEdit->clearFocus(); });
-
-    m_closeButton = new QPushButton("Close", this); // Create a close button
-    connect(m_closeButton, &QPushButton::clicked, this, &QDialog::accept);
-
-    QVBoxLayout* layout = new QVBoxLayout; // Layout for displaying controls
-    layout->addWidget(m_instructionLabel);
+    setupKeyEdit(m_upKeyEdit);
+    setupKeyEdit(m_downKeyEdit);
+    setupKeyEdit(m_leftKeyEdit);
+    setupKeyEdit(m_rightKeyEdit);
+    setupKeyEdit(m_fireKeyEdit);
 
     QGridLayout* gridLayout = new QGridLayout;
-    gridLayout->addWidget(new QLabel("Move Up:"), 0, 0);
+    gridLayout->addWidget(new QLabel("Move Up:", this), 0, 0);
     gridLayout->addWidget(m_upKeyEdit, 0, 1);
-    gridLayout->addWidget(new QLabel("Move Down:"), 1, 0);
+    gridLayout->addWidget(new QLabel("Move Down:", this), 1, 0);
     gridLayout->addWidget(m_downKeyEdit, 1, 1);
-    gridLayout->addWidget(new QLabel("Move Left:"), 2, 0);
+    gridLayout->addWidget(new QLabel("Move Left:", this), 2, 0);
     gridLayout->addWidget(m_leftKeyEdit, 2, 1);
-    gridLayout->addWidget(new QLabel("Move Right:"), 3, 0);
+    gridLayout->addWidget(new QLabel("Move Right:", this), 3, 0);
     gridLayout->addWidget(m_rightKeyEdit, 3, 1);
+    gridLayout->addWidget(new QLabel("Fire:", this), 4, 0);
+    gridLayout->addWidget(m_fireKeyEdit, 4, 1);
 
-    layout->addLayout(gridLayout);
-    layout->addWidget(m_closeButton);
-
-    setLayout(layout);
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    mainLayout->addWidget(instructionLabel);
+    mainLayout->addWidget(gameLegendLabel);
+    mainLayout->addLayout(gridLayout);
 }
 
-void ControlsWindow::keyPressEvent(QKeyEvent* event)
+void ControlsWindow::setupKeyEdit(QLineEdit * keyEdit)
 {
-    // Capture the key press and set it to the focused field
+    keyEdit->setAlignment(Qt::AlignCenter);
+    keyEdit->setFocusPolicy(Qt::StrongFocus);
+    keyEdit->setReadOnly(true); 
+}
+
+void ControlsWindow::keyPressEvent(QKeyEvent * event)
+{
     QWidget* focusedWidget = focusWidget();
+    if (!focusedWidget)
+        return;
+
     QString pressedKey;
-
-    // Handle special keys like Up, Down, Left, Right arrow keys
-    if (event->key() == Qt::Key_Up) 
-    {
-        pressedKey = "↑"; // For up arrow
+    switch (event->key()) {
+    case Qt::Key_Up: pressedKey = "↑"; break;
+    case Qt::Key_Down: pressedKey = "↓"; break;
+    case Qt::Key_Left: pressedKey = "←"; break;
+    case Qt::Key_Right: pressedKey = "→"; break;
+    default: pressedKey = event->text().toUpper(); break;
     }
-    else 
-        if (event->key() == Qt::Key_Down) 
-        {
-            pressedKey = "↓"; // For down arrow
-        }
-        else 
-            if (event->key() == Qt::Key_Left) 
-            {
-                pressedKey = "←"; // For left arrow
-            }
-            else 
-                if (event->key() == Qt::Key_Right) 
-                {
-                    pressedKey = "→"; // For right arrow
-                }
-                else 
-                {
-                    pressedKey = event->text().toUpper(); // For regular alphanumeric keys
-                }
 
-    // Check if the pressed key is already assigned to any other control
     if (pressedKey == m_upKeyEdit->text() ||
         pressedKey == m_downKeyEdit->text() ||
         pressedKey == m_leftKeyEdit->text() ||
-        pressedKey == m_rightKeyEdit->text())
-    {
-        // If the key is already assigned, show a warning and return without setting the key
+        pressedKey == m_rightKeyEdit->text() ||
+        pressedKey == m_fireKeyEdit->text()) {
         QMessageBox::warning(this, "Duplicate Key", "This key is already assigned to another action!");
         return;
     }
 
-    // Set the key in the focused field
-    if (focusedWidget == m_upKeyEdit) 
-    {
+    if (focusedWidget == m_upKeyEdit)
         m_upKeyEdit->setText(pressedKey);
-    }
-    else if (focusedWidget == m_downKeyEdit) 
-    {
+    else if (focusedWidget == m_downKeyEdit)
         m_downKeyEdit->setText(pressedKey);
-    }
-    else if (focusedWidget == m_leftKeyEdit) 
-    {
+    else if (focusedWidget == m_leftKeyEdit)
         m_leftKeyEdit->setText(pressedKey);
-    }
-    else if (focusedWidget == m_rightKeyEdit) 
-    {
+    else if (focusedWidget == m_rightKeyEdit)
         m_rightKeyEdit->setText(pressedKey);
-    }
+    else if (focusedWidget == m_fireKeyEdit)
+        m_fireKeyEdit->setText(pressedKey);
 }
-
 ControlsWindow::~ControlsWindow()
 {
 
