@@ -102,5 +102,7 @@ void PlayWindow::OnGenerateClicked()
     QString randomNumber = GenerateRandomNumber();
     m_generate = true;
     m_generateCode->setText(randomNumber);
+
+    PostServerData("http://localhost:8080/registerRoom", "{\"code\": \"" + randomNumber.toStdString() + "\"}");
 }
 
