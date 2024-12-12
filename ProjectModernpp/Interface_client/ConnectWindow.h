@@ -8,6 +8,7 @@
 #include <QMessageBox> 
 #include <QPalette>
 #include <QColor>
+#include "ServerUtils.h"
 
 class ConnectWindow : public QDialog
 {

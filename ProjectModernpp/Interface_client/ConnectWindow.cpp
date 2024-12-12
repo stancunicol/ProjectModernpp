@@ -57,12 +57,23 @@ void ConnectWindow::OnGenerateClicked()
 {
     QString roomCode = m_insertCode->text();
 
-    if (roomCode.isEmpty()) 
+    if (roomCode.isEmpty())
     {
         QMessageBox::warning(this, "Error", "The code field is empty!");
+        return;
+    }
+
+    bool isCodeValid = CheckServerCode("http://localhost:8080/checkRoom?code=" + roomCode.toStdString());
+
+    if (isCodeValid)
+    {
+        QMessageBox::information(this, "Success", "Room code is valid. Joining room...");
+        accept();
     }
     else
-        accept();
+    {
+        QMessageBox::warning(this, "Error", "Invalid room code!");
+    }
 }
 
 ConnectWindow::~ConnectWindow() 

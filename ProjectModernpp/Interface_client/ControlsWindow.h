@@ -8,8 +8,8 @@
 #include <QGridLayout>
 #include <QKeyEvent>
 #include <QMessageBox>
-#include <QPalette>
 #include <QColor>
+#include <QPixmap>
 
 class ControlsWindow : public QDialog
 {

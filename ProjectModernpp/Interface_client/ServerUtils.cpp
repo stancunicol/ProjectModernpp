@@ -46,7 +46,7 @@ void SendRegisterToServer(const std::string& username) {
     curl = curl_easy_init();
 
     if (curl) {
-        std::string url = "http://localhost:8080/register"; // Endpoint-ul serverului pentru înregistrare
+        std::string url = "http://localhost:8080/register"; // Endpoint server for register
         std::string jsonPayload = "{\"username\": \"" + username + "\"}";
 
         struct curl_slist* headers = nullptr;
@@ -72,7 +72,7 @@ void SendRegisterToServer(const std::string& username) {
     curl_global_cleanup();
 }
 
-// Funcție pentru recepționarea unui răspuns de la server
+//function for reception answer from the server
 static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* response)
 {
     size_t totalSize = size * nmemb;
@@ -149,3 +149,54 @@ void PostServerData(const std::string& url, const std::string& jsonPayload)
     curl_global_cleanup();
 
 }
+
+
+// verify if the code exist on the server
+bool CheckServerCode(const std::string& url)
+{
+    CURL* curl;
+    CURLcode res;
+    std::string response;
+
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+    curl = curl_easy_init();
+
+    if (curl)
+    {
+        //GET configuration task
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+        // verify the task and the result
+        res = curl_easy_perform(curl);
+        if (res != CURLE_OK)
+        {
+            qDebug() << "Failed to check code on server: " << curl_easy_strerror(res);
+        }
+        else
+        {
+            qDebug() << "Server response for code check: " << QString::fromStdString(response);
+        }
+
+        curl_easy_cleanup(curl);
+    }
+
+    curl_global_cleanup();
+
+    try {
+        auto jsonResponse = nlohmann::json::parse(response);  
+        qDebug() << "Parsed JSON: " << QString::fromStdString(jsonResponse.dump());
+
+        if (jsonResponse.contains("status") && jsonResponse["status"] == "success")
+        {
+            return true;
+        }
+    }
+    catch (const std::exception& e) {
+        qDebug() << "Error parsing JSON: " << e.what();
+    }
+
+    return false;
+}
+

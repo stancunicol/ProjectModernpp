@@ -17,10 +17,12 @@ ControlsWindow::ControlsWindow(QWidget* parent)
     setWindowTitle("Game Controls");
     setFixedSize(600, 500);
 
-    QPalette palette;
-    palette.setColor(QPalette::Window, QColor(20, 20, 20, 245));
-    setPalette(palette);
-    setAutoFillBackground(true);
+    setStyleSheet(
+        "ControlsWindow {"
+        "background-image: url(background.jpg);" 
+        "background-repeat: no-repeat;"
+        "background-position: center;"
+        "}");
 
     QLabel* instructionLabel = new QLabel(
         "<b>Set Your Game Controls</b><br>"

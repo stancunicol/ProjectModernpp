@@ -186,6 +186,7 @@
     <QtMoc Include="LoginWindow.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="background.jpg" />
     <Image Include="Battle_city.jpg" />
   </ItemGroup>
   <ItemGroup>
