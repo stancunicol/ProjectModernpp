@@ -14,7 +14,7 @@ DataBase::~DataBase() {
 }
 
 void DataBase::Initialize() {
-    
+
     const std::string createTableQuery = R"(
         CREATE TABLE IF NOT EXISTS GameData (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -100,8 +100,8 @@ void DataBase::UpdateLevel(const std::string& playerName, int level)
         return;
     }
 
-    sqlite3_bind_int(stmt, 1, level);  
-    sqlite3_bind_text(stmt, 2, playerName.c_str(), -1, SQLITE_STATIC); 
+    sqlite3_bind_int(stmt, 1, level);
+    sqlite3_bind_text(stmt, 2, playerName.c_str(), -1, SQLITE_STATIC);
 
     rc = sqlite3_step(stmt);
     if (rc != SQLITE_DONE) {
@@ -115,6 +115,21 @@ void DataBase::UpdateLevel(const std::string& playerName, int level)
 
 void DataBase::InsertRoomCode(const std::string& playerName, const std::string& roomCode)
 {
+    const std::string checkRoomQuery = "SELECT COUNT(*) FROM GameData WHERE roomCode = '" + roomCode + "';";
+    sqlite3_stmt* stmt;
+    int playerCount = 0;
+
+    if (sqlite3_prepare_v2(db, checkRoomQuery.c_str(), -1, &stmt, nullptr) == SQLITE_OK) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            playerCount = sqlite3_column_int(stmt, 0);
+        }
+    }
+    sqlite3_finalize(stmt);
+
+    if (playerCount >= 4) {
+        throw std::runtime_error("Room is full. Cannot join.");
+    }
+
     const std::string addCodeQuery =
         "UPDATE GameData "
         "SET roomCode = '" + roomCode + "', "
@@ -123,31 +138,53 @@ void DataBase::InsertRoomCode(const std::string& playerName, const std::string& 
         "ELSE level END "
         "WHERE playerName = '" + playerName + "';";
 
-    sqlite3_stmt* stmt;
-    int rc = sqlite3_prepare_v2(db, addCodeQuery.c_str(), -1, &stmt, nullptr);
+    sqlite3_stmt* stmtAdd;
+    int rc = sqlite3_prepare_v2(db, addCodeQuery.c_str(), -1, &stmtAdd, nullptr);
 
     if (rc != SQLITE_OK) {
         std::cerr << "Eroare la pregătirea interogării: " << sqlite3_errmsg(db) << std::endl;
         return;
     }
 
-    sqlite3_bind_text(stmt, 1, roomCode.c_str(), -1, SQLITE_STATIC);  // roomCode
-    sqlite3_bind_text(stmt, 2, roomCode.c_str(), -1, SQLITE_STATIC);  // roomCode în subinterogare
-    sqlite3_bind_text(stmt, 3, playerName.c_str(), -1, SQLITE_STATIC); // playerName
+    sqlite3_bind_text(stmtAdd, 1, roomCode.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmtAdd, 2, roomCode.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmtAdd, 3, playerName.c_str(), -1, SQLITE_STATIC);
 
-    rc = sqlite3_step(stmt);
+    rc = sqlite3_step(stmtAdd);
     if (rc != SQLITE_DONE) {
         std::cerr << "Eroare la executarea interogării: " << sqlite3_errmsg(db) << std::endl;
     }
 
-    sqlite3_finalize(stmt);
-    //executeQuery(addCodeQuery);
+    sqlite3_finalize(stmtAdd);
     updateLastConnected(playerName);
 }
 
 
+
+
 std::optional<std::string> DataBase::FindRoomByCode(const std::string& code)
 {
+    const std::string countQuery = "SELECT COUNT(*) FROM GameData WHERE roomCode = '" + code + "';";
+    sqlite3_stmt* countStmt;
+    int playerCount = 0;
+
+    if (sqlite3_prepare_v2(db, countQuery.c_str(), -1, &countStmt, nullptr) == SQLITE_OK) {
+        if (sqlite3_step(countStmt) == SQLITE_ROW) {
+            playerCount = sqlite3_column_int(countStmt, 0);
+        }
+    }
+    else {
+        std::cerr << "Eroare la verificarea numărului de jucători: " << sqlite3_errmsg(db) << '\n';
+    }
+
+    sqlite3_finalize(countStmt);
+
+    if (playerCount >= 4) {
+        std::cerr << "Camera este plină: " << code << '\n';
+        return {};
+    }
+
+    // Continuă cu căutarea jucătorului
     const std::string findQuery = "SELECT playerName FROM GameData WHERE roomCode = '" + code + "';";
     sqlite3_stmt* stmt;
     std::optional<std::string> result;
@@ -164,6 +201,7 @@ std::optional<std::string> DataBase::FindRoomByCode(const std::string& code)
     sqlite3_finalize(stmt);
     return result;
 }
+
 
 std::optional<std::string> DataBase::GetRecentPlayer() {
     const std::string getPlayerQuery = R"(
@@ -188,7 +226,7 @@ std::optional<std::string> DataBase::GetRecentPlayer() {
     return result;
 }
 
-void DataBase::updateLastConnected(const std::string& playerName){
+void DataBase::updateLastConnected(const std::string& playerName) {
 
     const std::string updateQuery = R"(
         UPDATE GameData
@@ -198,8 +236,32 @@ void DataBase::updateLastConnected(const std::string& playerName){
     executeQuery(updateQuery);
 }
 
+sqlite3* DataBase::GetDatabaseConnection() const
+{
+    return db;
+}
 
-std::vector<std::tuple<std::string, int, int, std::string>> DataBase::GetGameData() const{
+std::vector<std::string> DataBase::GetPlayersForRoom(const std::string& roomCode) {
+    std::vector<std::string> players;
+    const std::string query = "SELECT playerName FROM GameData WHERE roomCode = '" + roomCode + "';";
+
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) == SQLITE_OK) {
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            std::string playerName = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+            players.push_back(playerName);
+        }
+    }
+    else {
+        std::cerr << "Error querying database: " << sqlite3_errmsg(db) << std::endl;
+    }
+    sqlite3_finalize(stmt);
+    return players;
+}
+
+
+
+std::vector<std::tuple<std::string, int, int, std::string>> DataBase::GetGameData() const {
 
     const std::string selectQuery = "SELECT playerName, score, level, roomCode FROM GameData;";
     sqlite3_stmt* stmt;

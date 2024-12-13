@@ -6,7 +6,7 @@
 #include <optional>
 
 
-class DataBase{
+class DataBase {
 private:
 	sqlite3* db;
 
@@ -15,7 +15,7 @@ public:
 	DataBase(const std::string& dbName);
 	~DataBase();
 
-	void Initialize(); 
+	void Initialize();
 
 	void InsertGameData(const std::string& playerName, uint32_t score, uint8_t level);
 	void UpdateGameData(const std::string& playerName, uint32_t score);
@@ -32,6 +32,9 @@ public:
 	std::optional<std::string> GetRecentPlayer();
 	void updateLastConnected(const std::string& playerName);
 
+	sqlite3* GetDatabaseConnection() const;
+
+	std::vector<std::string> GetPlayersForRoom(const std::string& roomCode);
 
 	std::vector<std::tuple<std::string, int, int, std::string>> GetGameData() const;
 

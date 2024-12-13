@@ -1,5 +1,6 @@
 ﻿#include "Player.h"
 #include <cstdlib>
+#include <random>
 
 Player::Player(const std::string& name, const GameMap& grid)
     : m_name{ name }, m_points{ 0 }, m_score{ 0 } {
@@ -10,20 +11,24 @@ Player::Player(const std::string& name, const GameMap& grid)
 }
 
 void Player::PlaceCharacter() {
-    srand(time(NULL));
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, 3);
+
     bool found = false;
 
     do {
-        size_t randomIndex = rand() % 4; // generate a random index between 0 and 3
+        size_t randomIndex = dis(gen);
+        Point potentialPosition = m_positions[randomIndex].first;
 
-        if (!m_positions[randomIndex].second) {
-            m_position = m_positions[randomIndex].first;  // we set the position of the player
-            m_positions[randomIndex].second = true;        //we set the position as marked
+        if (m_occupiedPositions.find(potentialPosition) == m_occupiedPositions.end()) {
+            m_position = potentialPosition;
+            m_occupiedPositions.insert(m_position);
             found = true;
         }
     } while (!found);
-
 }
+
 
 void Player::MoveCharacter(const Point& direction, GameMap& grid) {
     Point newPos = m_position + direction;

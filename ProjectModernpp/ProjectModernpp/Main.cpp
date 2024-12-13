@@ -29,7 +29,7 @@ void StartServer(Game& game) {
 
             auto recentPlayer = db.GetRecentPlayer();
             if (recentPlayer) {
-                db.UpdateLevel(*recentPlayer, level);  
+                db.UpdateLevel(*recentPlayer, level);
             }
             return crow::response(200, "Level updated successfully.");
         }
@@ -40,7 +40,7 @@ void StartServer(Game& game) {
 
     CROW_ROUTE(serverApp, "/checkUser").methods(crow::HTTPMethod::GET)([&game](const crow::request& req) {
         try {
-           
+
             auto params = req.url_params;
             if (!params.get("username")) {
                 return crow::response(400, "Missing 'username' parameter.");
@@ -48,8 +48,8 @@ void StartServer(Game& game) {
 
             std::string username = params.get("username");
 
-            auto& db = game.GetDatabase(); 
-            if (db.UserExists(username)) { 
+            auto& db = game.GetDatabase();
+            if (db.UserExists(username)) {
                 return crow::response(200, "success");
             }
             else {
@@ -132,7 +132,14 @@ void StartServer(Game& game) {
             if (playerName) {
                 auto recentPlayer = db.GetRecentPlayer();
                 if (recentPlayer) {
-                    db.InsertRoomCode(*recentPlayer, code);
+                    try {
+                        db.InsertRoomCode(*recentPlayer, code);
+                    }
+
+                    //TODO: Cand camera este plina tot cod invalid returneaza
+                    catch (const std::runtime_error& e) {
+                        return crow::response(403, "Room is full. Cannot join.");
+                    }
                 }
 
                 crow::json::wvalue response;
@@ -149,6 +156,9 @@ void StartServer(Game& game) {
             return crow::response(500, std::string("Error processing request: ") + e.what());
         }
         });
+
+
+
 
 
     serverApp.port(8080).multithreaded().run();

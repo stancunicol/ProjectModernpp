@@ -1,5 +1,6 @@
 ﻿#include "Game.h"
 #include <Windows.h>
+#include <random>
 
 Game::Game()
     : m_map(), m_entityManager(m_map), m_database("GameData.db"), m_setLevel(false) {
@@ -10,18 +11,21 @@ Game::Game()
 Game::~Game() {}
 
 void Game::InitializeGame() { //here, we initialize the game
-    srand(time(NULL)); // Seed pentru generarea pozițiilor aleatoare
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> disX(0, m_map.GetWidth() - 1);
+    std::uniform_int_distribution<> disY(0, m_map.GetHeight() - 1);
+    Point randomPos(disX(gen), disY(gen));
 
     m_entityManager.PlaceBase(m_map);
 
-    m_entityManager.AddPlayer(Player("Player1", m_map));
-    //m_database.InsertGameData(m_entityManager.GetPlayers()[0].GetName(), m_entityManager.GetPlayers()[0].GetScore(), m_map.GetLevel());
+    auto& db = m_database;
+    std::vector<std::string> players = db.GetPlayersForRoom("23496");
 
-    // TODO: Multiplayer; playerii se spameaza pe aceeasi pozitie, posibila problema: srand
-
-    //m_entityManager.AddPlayer(Player("Player2", m_map));
-    //m_entityManager.AddPlayer(Player("Player3", m_map));
-    //m_entityManager.AddPlayer(Player("Player4", m_map));
+    for (const auto& playerName : players) {
+        Player newPlayer(playerName, m_map);
+        m_entityManager.AddPlayer(newPlayer);
+    }
 
     for (int i = 0; i < 3; ++i) {
         Enemy enemy(m_map);
@@ -103,7 +107,7 @@ void Game::EndGame(const std::string& winner)
 void Game::SetLevel(int newLevel) {
     {
         std::lock_guard<std::mutex> lock(mutex);
-        m_map.Reset(newLevel); 
+        m_map.Reset(newLevel);
         m_setLevel = true;
     }
     // Reinitializam jocul

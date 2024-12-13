@@ -2,6 +2,13 @@
 #include "Character.h"
 #include "GameMap.h"
 #include <vector>
+#include <unordered_set>
+
+struct PointHash {
+    size_t operator()(const Point& p) const {
+        return std::hash<int>()(p.GetX()) ^ (std::hash<int>()(p.GetY()) << 1);
+    }
+};
 
 class  Player : virtual public Character {
 private:
@@ -14,6 +21,8 @@ private:
     std::vector<std::pair<Point, bool>> m_positions;
 
     Point m_shootDirection = Point(0, 0);
+
+    std::unordered_set<Point, PointHash> m_occupiedPositions;
 
 public:
     Player(const std::string& name, const GameMap& grid);//constructor
