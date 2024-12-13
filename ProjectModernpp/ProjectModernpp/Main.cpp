@@ -157,9 +157,32 @@ void StartServer(Game& game) {
         }
         });
 
+    CROW_ROUTE(serverApp, "/getPlayerScore").methods(crow::HTTPMethod::GET)([&game](const crow::request& req) {
+        try {
+            auto params = req.url_params;
+            if (!params.get("playerId")) {
+                return crow::response(400, "Missing 'playerId' parameter.");
+            }
 
+            int playerId = std::stoi(params.get("playerId"));
 
+            auto& db = game.GetDatabase();
+            auto playerData = db.GetPlayerDataById(playerId);
 
+            if (!playerData) {
+                return crow::response(404, "Player not found.");
+            }
+
+            crow::json::wvalue response;
+            response["name"] = std::get<0>(*playerData);
+            response["score"] = std::get<1>(*playerData);
+
+            return crow::response{ response };
+        }
+        catch (const std::exception& e) {
+            return crow::response(500, std::string("Error processing request: ") + e.what());
+        }
+        });
 
     serverApp.port(8080).multithreaded().run();
 }

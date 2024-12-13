@@ -200,3 +200,33 @@ bool CheckServerCode(const std::string& url)
     return false;
 }
 
+std::string GetPlayerDataByIdFromServer(int playerId)
+{
+    std::string url = "http://localhost:8080/getPlayerScore?playerId=" + std::to_string(playerId);
+
+    std::string response = GetServerData(url);
+
+    if (response.empty()) {
+        qDebug() << "No data received from server.";
+        return "";
+    }
+
+    try {
+        auto jsonResponse = nlohmann::json::parse(response);
+
+        if (jsonResponse.contains("error")) {
+            qDebug() << "Error: " << QString::fromStdString(jsonResponse["error"]);
+            return "";
+        }
+
+        std::string name = jsonResponse["name"];
+        int score = jsonResponse["score"];
+        qDebug() << "Player Name: " << QString::fromStdString(name);
+        qDebug() << "Player Score: " << score;
+    }
+    catch (const std::exception& e) {
+        qDebug() << "Error parsing server response: " << e.what();
+    }
+
+    return response;
+}

@@ -36,6 +36,7 @@ public:
 
 	std::vector<std::string> GetPlayersForRoom(const std::string& roomCode);
 
+	std::optional<std::tuple<std::string, int>> GetPlayerDataById(int playerId) const;
 	std::vector<std::tuple<std::string, int, int, std::string>> GetGameData() const;
 
 	friend std::ostream& operator<<(std::ostream& out, const DataBase& db);

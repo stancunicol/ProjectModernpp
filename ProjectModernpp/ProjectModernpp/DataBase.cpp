@@ -259,7 +259,29 @@ std::vector<std::string> DataBase::GetPlayersForRoom(const std::string& roomCode
     return players;
 }
 
+std::optional<std::tuple<std::string, int>> DataBase::GetPlayerDataById(int playerId) const {
+    const std::string selectQuery = "SELECT playerName, score FROM GameData WHERE id = ?;";
+    sqlite3_stmt* stmt;
 
+    if (sqlite3_prepare_v2(db, selectQuery.c_str(), -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, playerId);
+
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            std::string name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+            int score = sqlite3_column_int(stmt, 1);
+
+            sqlite3_finalize(stmt);
+
+            return std::make_tuple(name, score);
+        }
+    }
+    else {
+        std::cerr << "Eroare la executarea interogării: " << sqlite3_errmsg(db) << '\n';
+    }
+
+    sqlite3_finalize(stmt);
+    return std::nullopt;
+}
 
 std::vector<std::tuple<std::string, int, int, std::string>> DataBase::GetGameData() const {
 
