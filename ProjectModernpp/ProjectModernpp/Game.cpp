@@ -15,7 +15,7 @@ void Game::InitializeGame() { //here, we initialize the game
     m_entityManager.PlaceBase(m_map);
 
     m_entityManager.AddPlayer(Player("Player1", m_map));
-    m_database.InsertGameData(m_entityManager.GetPlayers()[0].GetName(), m_entityManager.GetPlayers()[0].GetScore(), m_map.GetLevel());
+    //m_database.InsertGameData(m_entityManager.GetPlayers()[0].GetName(), m_entityManager.GetPlayers()[0].GetScore(), m_map.GetLevel());
 
     // TODO: Multiplayer; playerii se spameaza pe aceeasi pozitie, posibila problema: srand
 
@@ -103,7 +103,7 @@ void Game::EndGame(const std::string& winner)
 void Game::SetLevel(int newLevel) {
     {
         std::lock_guard<std::mutex> lock(mutex);
-        m_map.Reset(newLevel);
+        m_map.Reset(newLevel); 
         m_setLevel = true;
     }
     // Reinitializam jocul
