@@ -105,6 +105,8 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,6 +142,7 @@
     <ClInclude Include="GameMap.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="Room.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Base.cpp" />
@@ -154,6 +157,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Point.cpp" />
+    <ClCompile Include="Room.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

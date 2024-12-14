@@ -184,6 +184,78 @@ void StartServer(Game& game) {
         }
         });
 
+    CROW_ROUTE(serverApp, "/createRoom").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
+        auto jsonBody = crow::json::load(req.body);
+        if (!jsonBody || !jsonBody.has("capacity")) {
+            return crow::response(400, "Invalid JSON payload. Expected 'capacity'.");
+        }
+
+        int capacity = jsonBody["capacity"].i();
+        if (capacity < 1 || capacity > 10) {
+            return crow::response(400, "Invalid capacity. Must be between 1 and 10.");
+        }
+
+        std::string roomCode = game.CreateRoom(capacity);
+        crow::json::wvalue response;
+        response["status"] = "success";
+        response["roomCode"] = roomCode;
+        return crow::response(response);
+        });
+
+    CROW_ROUTE(serverApp, "/joinRoom").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
+        auto jsonBody = crow::json::load(req.body);
+        if (!jsonBody || !jsonBody.has("code") || !jsonBody.has("username")) {
+            return crow::response(400, "Invalid JSON payload. Expected 'code' and 'username'.");
+        }
+
+        std::string roomCode = jsonBody["code"].s();
+        std::string username = jsonBody["username"].s();
+
+        auto result = game.JoinRoom(roomCode, username);
+        if (result) {
+            return crow::response(200, "Joined room successfully.");
+        }
+        else {
+            return crow::response(403, "Room is full or doesn't exist.");
+        }
+        });
+
+    CROW_ROUTE(serverApp, "/leaveRoom").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
+        auto jsonBody = crow::json::load(req.body);
+        if (!jsonBody || !jsonBody.has("code") || !jsonBody.has("username")) {
+            return crow::response(400, "Invalid JSON payload. Expected 'code' and 'username'.");
+        }
+
+        std::string roomCode = jsonBody["code"].s();
+        std::string username = jsonBody["username"].s();
+
+        if (game.LeaveRoom(roomCode, username)) {
+            return crow::response(200, "Left room successfully.");
+        }
+        else {
+            return crow::response(404, "Room or user not found.");
+        }
+        });
+
+    CROW_ROUTE(serverApp, "/roomStatus").methods(crow::HTTPMethod::GET)([&game](const crow::request& req) {
+        auto params = req.url_params;
+        if (!params.get("code")) {
+            return crow::response(400, "Missing 'code' parameter.");
+        }
+
+        std::string roomCode = params.get("code");
+        auto room = game.GetRoom(roomCode);
+        if (room) {
+            crow::json::wvalue response;
+            response["roomCode"] = room->m_code;
+            response["capacity"] = room->m_capacity;
+            response["players"] = crow::json::wvalue::list(room->m_players.begin(), room->m_players.end());
+            return crow::response(response);
+        }
+        return crow::response(404, "Room not found.");
+        });
+
+
     serverApp.port(8080).multithreaded().run();
 }
 

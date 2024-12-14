@@ -2,6 +2,15 @@
 #include <Windows.h>
 #include <random>
 
+std::string Game::GenerateRoomCode()
+{
+    const char characters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    std::string code;
+    for (int i = 0; i < 8; i++)
+        code += characters[rand() % (sizeof(characters) - 1)];
+    return code;
+}
+
 Game::Game()
     : m_map(), m_entityManager(m_map), m_database("GameData.db"), m_setLevel(false) {
     //m_database.DeleteGameData();
@@ -134,4 +143,38 @@ crow::json::wvalue Game::TranformInJson() {
 
 crow::json::wvalue Game::GetGameStateAsJson() {
     return TranformInJson();
+}
+
+std::string Game::CreateRoom(const uint8_t& capacity) {
+    std::lock_guard<std::mutex> lock(roomMutex);
+    std::string code = GenerateRoomCode();
+    m_rooms.emplace(code, Room(code, capacity));
+    return code;
+}
+
+std::optional<std::string> Game::JoinRoom(const std::string& code, const std::string& playerName) {
+    std::lock_guard<std::mutex> lock(roomMutex);
+    auto it = m_rooms.find(code);
+    if (it != m_rooms.end() && it->second.AddPlayer(playerName))
+        return it->second.m_code;
+    return std::nullopt;
+}
+
+bool Game::LeaveRoom(const std::string& code, const std::string& playerName) {
+    std::lock_guard<std::mutex> lock(roomMutex);
+    auto it = m_rooms.find(code);
+    if (it != m_rooms.end() && it->second.RemovePlayer(playerName)) {
+        if (it->second.m_players.empty())
+            m_rooms.erase(it);
+        return true;
+    }
+    return false;
+}
+
+std::optional<Room> Game::GetRoom(const std::string& code) {
+    std::lock_guard<std::mutex> lock(roomMutex);
+    auto it = m_rooms.find(code);
+    if (it != m_rooms.end())
+        return it->second;
+    return std::nullopt;
 }
