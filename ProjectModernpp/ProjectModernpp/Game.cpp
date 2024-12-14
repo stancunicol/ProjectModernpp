@@ -145,10 +145,10 @@ crow::json::wvalue Game::GetGameStateAsJson() {
     return TranformInJson();
 }
 
-std::string Game::CreateRoom(const uint8_t& capacity) {
+std::string Game::CreateRoom() {
     std::lock_guard<std::mutex> lock(roomMutex);
     std::string code = GenerateRoomCode();
-    m_rooms.emplace(code, Room(code, capacity));
+    m_rooms.emplace(code, Room(code));
     return code;
 }
 
@@ -156,7 +156,7 @@ std::optional<std::string> Game::JoinRoom(const std::string& code, const std::st
     std::lock_guard<std::mutex> lock(roomMutex);
     auto it = m_rooms.find(code);
     if (it != m_rooms.end() && it->second.AddPlayer(playerName))
-        return it->second.m_code;
+        return it->second.GetCode();
     return std::nullopt;
 }
 
@@ -164,7 +164,7 @@ bool Game::LeaveRoom(const std::string& code, const std::string& playerName) {
     std::lock_guard<std::mutex> lock(roomMutex);
     auto it = m_rooms.find(code);
     if (it != m_rooms.end() && it->second.RemovePlayer(playerName)) {
-        if (it->second.m_players.empty())
+        if (it->second.GetPlayers().empty())
             m_rooms.erase(it);
         return true;
     }

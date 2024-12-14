@@ -49,7 +49,7 @@ public:
 
     crow::json::wvalue GetGameStateAsJson();
 
-    std::string CreateRoom(const uint8_t& capacity);
+    std::string CreateRoom();
 
     std::optional<std::string> JoinRoom(const std::string& code, const std::string& playerName);
 

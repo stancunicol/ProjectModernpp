@@ -3,12 +3,13 @@
 #include <unordered_set>
 
 class Room {
-public:
+private:
 	std::string m_code;
-	uint8_t m_capacity;
+	static const uint8_t m_capacity = 4;
 	std::unordered_set<std::string> m_players;
 
-	Room(std::string code, uint8_t maxCapacity);
+public:
+	Room(const std::string& code);
 
 	bool IsFull() const;
 
@@ -17,5 +18,11 @@ public:
 	bool RemovePlayer(const std::string& playerName);
 
 	bool HasPlayer(const std::string& playerName) const;
+
+	const std::string GetCode() const;
+
+	const std::unordered_set<std::string> GetPlayers() const;
+
+	const uint8_t GetCapacity() const;
 };
 

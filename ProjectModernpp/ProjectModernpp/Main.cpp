@@ -190,12 +190,7 @@ void StartServer(Game& game) {
             return crow::response(400, "Invalid JSON payload. Expected 'capacity'.");
         }
 
-        int capacity = jsonBody["capacity"].i();
-        if (capacity < 1 || capacity > 10) {
-            return crow::response(400, "Invalid capacity. Must be between 1 and 10.");
-        }
-
-        std::string roomCode = game.CreateRoom(capacity);
+        std::string roomCode = game.CreateRoom();
         crow::json::wvalue response;
         response["status"] = "success";
         response["roomCode"] = roomCode;
@@ -247,9 +242,10 @@ void StartServer(Game& game) {
         auto room = game.GetRoom(roomCode);
         if (room) {
             crow::json::wvalue response;
-            response["roomCode"] = room->m_code;
-            response["capacity"] = room->m_capacity;
-            response["players"] = crow::json::wvalue::list(room->m_players.begin(), room->m_players.end());
+            response["roomCode"] = room->GetCode();
+            response["capacity"] = room->GetCapacity();
+            response["players"] = crow::json::wvalue::list(room->GetPlayers().begin(), room->GetPlayers().end());
+            response["slotsRemaining"] = 4 - room->GetPlayers().size();
             return crow::response(response);
         }
         return crow::response(404, "Room not found.");

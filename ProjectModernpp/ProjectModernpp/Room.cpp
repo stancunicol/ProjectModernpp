@@ -1,7 +1,7 @@
 #include "Room.h"
 
-Room::Room(std::string code, uint8_t maxCapacity)
-	: m_code{ code }, m_capacity{ maxCapacity } {}
+Room::Room(const std::string& code)
+	: m_code{ code } {}
 
 bool Room::IsFull() const
 {
@@ -24,4 +24,19 @@ bool Room::RemovePlayer(const std::string& playerName)
 bool Room::HasPlayer(const std::string& playerName) const
 {
 	return m_players.count(playerName) > 0;
+}
+
+const std::string Room::GetCode() const
+{
+	return m_code;
+}
+
+const std::unordered_set<std::string> Room::GetPlayers() const
+{
+	return m_players;
+}
+
+const uint8_t Room::GetCapacity() const
+{
+	return m_capacity;
 }
