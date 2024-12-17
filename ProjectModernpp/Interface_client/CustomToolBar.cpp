@@ -121,25 +121,36 @@ void CustomTitleBar::setImage(const QString& imagePath) {
 }
 
 void CustomTitleBar::mousePressEvent(QMouseEvent* event) {
-    
+    m_dragging = true;
+    m_dragPosition = event->globalPosition().toPoint() - parentWidget()->geometry().topLeft();
 }
 
 void CustomTitleBar::mouseMoveEvent(QMouseEvent* event) {
-    
+    if (m_dragging) {
+        parentWidget()->move(event->globalPosition().toPoint() - m_dragPosition);
+    }
 }
 
 void CustomTitleBar::mouseReleaseEvent(QMouseEvent* event) {
-    
+    m_dragging = false;
 }
 void CustomTitleBar::onCloseButtonClicked() {
-    
+    // close de window
+    qApp->quit();
 }
 
 void CustomTitleBar::onMaximizeButtonClicked() {
-   
+    // Maximize the window
+    if (parentWidget()->isMaximized()) {
+        parentWidget()->showNormal();
+    }
+    else {
+        parentWidget()->showMaximized();
+    }
 }
 
 void CustomTitleBar::onMinimizeButtonClicked() {
-    
+    // Minimize the window
+    parentWidget()->showMinimized();
 }
 

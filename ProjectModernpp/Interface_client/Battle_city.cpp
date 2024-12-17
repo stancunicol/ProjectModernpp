@@ -1,9 +1,23 @@
 #include "Battle_city.h"
+#include "CustomToolBar.h"
 
 Battle_city::Battle_city(QWidget* parent)
 	: QMainWindow(parent)
 {
-	setWindowTitle("Battle City");//title
+	setWindowFlags(Qt::FramelessWindowHint);//hide the default tool bar
+
+	// create a custom title bar
+	CustomTitleBar* titleBar = new CustomTitleBar(this);
+	setMenuWidget(titleBar);  // add the bar as main widget of the window
+
+	QPixmap pixmap1("./logo_tank2.jpg");
+	titleBar->setIcon(pixmap1);  // set the icon
+	titleBar->setImage("./include_girls_logo13.jpg");// set the logo image
+
+	// create a widget for the rest of the window
+	QWidget* centralWidget = new QWidget(this);
+	setCentralWidget(centralWidget);
+
 	resize(1200, 700);//window 1500X775
 	m_background = new QLabel(this);
 	QPixmap pixmap("./Battle_city.jpg");
