@@ -169,6 +169,7 @@
     </ClCompile>
     <ClCompile Include="ConnectWindow.cpp" />
     <ClCompile Include="ControlsWindow.cpp" />
+    <ClCompile Include="CustomToolBar.cpp" />
     <ClCompile Include="GameMapInterface.cpp" />
     <ClCompile Include="LevelsWindow.cpp" />
     <ClCompile Include="LoginWindow.cpp" />
@@ -205,6 +206,7 @@
     <QtMoc Include="GameMapInterface.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="CustomToolBar.h" />
     <ClInclude Include="ServerUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

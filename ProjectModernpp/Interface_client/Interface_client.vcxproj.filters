@@ -42,6 +42,9 @@
     <ClCompile Include="ServerUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CustomToolBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="PlayWindow.h">
@@ -63,6 +66,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="GameMapInterface.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="CustomToolBar.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
