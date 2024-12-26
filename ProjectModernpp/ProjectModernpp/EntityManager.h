@@ -14,8 +14,8 @@ private:
     std::vector<Player> m_players;
     std::vector<Enemy> m_enemies;
     std::vector<Bullet> m_bullets;
-    std::vector<Bullet> m_playerBullets;
     std::vector<Bomb> m_bombs;
+    std::vector<std::vector<Bullet>> m_playersBullets;
 
     std::vector<float> m_enemyShootTimers; // Timpurile scurse pentru fiecare inamic
     const float m_enemyShootInterval = 0.3f; // Intervalul între trageri
@@ -33,7 +33,7 @@ public:
     void AddPlayer(const Player& player);
     void AddEnemy(const Enemy& enemy);
     void AddBullet(const Bullet& bullet);
-    void AddPlayerBullet(const Bullet& bullet);
+    void AddPlayerBullet(const Bullet& bullet, int playerIndex);
     void PlaceBase(GameMap& map);
 
     void RemoveBullet(size_t index);
@@ -43,7 +43,7 @@ public:
 
 
     void EnemyShoots(const Point& direction, const Point& position);
-    void PlayerShoot(GameMap& map);
+    void PlayerShoot(GameMap& map, Player& player);
 
     void ExplodeBomb(const Bomb& bomb, GameMap& map);
 

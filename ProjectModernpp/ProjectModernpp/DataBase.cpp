@@ -17,7 +17,7 @@ void DataBase::Initialize() {
 
     const std::string createTableQuery = R"(
         CREATE TABLE IF NOT EXISTS GameData (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id INTEGER PRIMARY KEY,
             playerName TEXT UNIQUE,
             score INTEGER, 
             level INTEGER,
@@ -243,18 +243,37 @@ sqlite3* DataBase::GetDatabaseConnection() const
 
 std::vector<std::string> DataBase::GetPlayersForRoom(const std::string& roomCode) {
     std::vector<std::string> players;
-    const std::string query = "SELECT playerName FROM GameData WHERE roomCode = '" + roomCode + "';";
+    const std::string query = "SELECT playerName FROM GameData WHERE roomCode = ?;";
 
-    sqlite3_stmt* stmt;
-    if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) == SQLITE_OK) {
-        while (sqlite3_step(stmt) == SQLITE_ROW) {
-            std::string playerName = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
-            players.push_back(playerName);
+    sqlite3_stmt* stmt = nullptr;
+
+    // Pregătește interogarea SQL
+    if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+        return players;
+    }
+
+    // Asociază parametrii interogării
+    if (sqlite3_bind_text(stmt, 1, roomCode.c_str(), -1, SQLITE_STATIC) != SQLITE_OK) {
+        std::cerr << "Error binding parameter: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_finalize(stmt);
+        return players;
+    }
+
+    // Execută interogarea și extrage datele
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        const char* playerName = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+        if (playerName) {
+            players.emplace_back(playerName);
         }
     }
-    else {
-        std::cerr << "Error querying database: " << sqlite3_errmsg(db) << std::endl;
+
+    // Verifică eventuale erori
+    if (sqlite3_errcode(db) != SQLITE_DONE && sqlite3_errcode(db) != SQLITE_OK) {
+        std::cerr << "Error executing query: " << sqlite3_errmsg(db) << std::endl;
     }
+
+    // Curăță resursele
     sqlite3_finalize(stmt);
     return players;
 }

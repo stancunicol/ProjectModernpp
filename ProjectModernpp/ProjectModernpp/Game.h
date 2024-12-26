@@ -43,7 +43,9 @@ public:
 
     void SetLevel(int level);
 
+    GameMap& GetMap() { return m_map; };
     DataBase& GetDatabase() { return m_database; };
+    EntityManager& GetEntityManager() { return m_entityManager; };
 
     crow::json::wvalue TranformInJson();
 
@@ -56,4 +58,7 @@ public:
     bool LeaveRoom(const std::string& code, const std::string& playerName);
 
     std::optional<Room> GetRoom(const std::string& code);
+
+    void UpdatePlayerMovements();
+
 };

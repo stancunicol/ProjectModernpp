@@ -278,27 +278,27 @@ void StartServer(Game& game) {
                 return crow::response(400, "Invalid direction. Must be 'up', 'down', 'left', or 'right'.");
             }
 
-            //if (playerId >= 0 && playerId < game.GetEntityManager().GetPlayersMutable().size()) {
-            //    game.GetEntityManager().GetPlayersMutable()[playerId].MoveCharacter(moveDirection, game.GetMap());
+            if (playerId >= 0 && playerId < game.GetEntityManager().GetPlayersMutable().size()) {
+                game.GetEntityManager().GetPlayersMutable()[playerId].MoveCharacter(moveDirection, game.GetMap());
 
-            //    // Obținem poziția jucătorului după mișcare
-            //    Point currentPosition = game.GetEntityManager().GetPlayersMutable()[playerId].GetPosition();
+                // Obținem poziția jucătorului după mișcare
+                Point currentPosition = game.GetEntityManager().GetPlayersMutable()[playerId].GetPosition();
 
-            //    // Pregătim răspunsul JSON cu poziția actualizată
-            //    crow::json::wvalue response;
-            //    response["playerId"] = playerId;
-            //    response["newPosition"]["x"] = currentPosition.GetX();
-            //    response["newPosition"]["y"] = currentPosition.GetY();
+                // Pregătim răspunsul JSON cu poziția actualizată
+                crow::json::wvalue response;
+                response["playerId"] = playerId;
+                response["newPosition"]["x"] = currentPosition.GetX();
+                response["newPosition"]["y"] = currentPosition.GetY();
 
-            //    // Afișează în log pentru debug
-            //    std::cout << "Player " << playerId << " moved to position: ("
-            //        << currentPosition.GetX() << ", " << currentPosition.GetY() << ")\n";
+                // Afișează în log pentru debug
+                std::cout << "Player " << playerId << " moved to position: ("
+                    << currentPosition.GetX() << ", " << currentPosition.GetY() << ")\n";
 
-            //    return crow::response(200, response);
-            //}
-            //else {
-            //    return crow::response(404, "Player not found.");
-            //}
+                return crow::response(200, response);
+            }
+            else {
+                return crow::response(404, "Player not found.");
+            }
         }
         catch (const std::exception& e) {
             return crow::response(500, std::string("Error processing request: ") + e.what());

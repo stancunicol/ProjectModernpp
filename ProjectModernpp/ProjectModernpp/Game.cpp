@@ -28,8 +28,7 @@ void Game::InitializeGame() { //here, we initialize the game
 
     m_entityManager.PlaceBase(m_map);
 
-    auto& db = m_database;
-    std::vector<std::string> players = db.GetPlayersForRoom("23496");
+    std::vector<std::string> players(4);
 
     for (const auto& playerName : players) {
         Player newPlayer(playerName, m_map);
@@ -68,40 +67,36 @@ void Game::Run() {
     while (m_entityManager.GetBase().GetLife()) {
         system("CLS");
 
-        if (_kbhit()) {
-            char input = _getch();
-            Point direction;
-            switch (input) {
-            case 'w': case 'W': direction = Point(-1, 0); break;
-            case 'a': case 'A': direction = Point(0, -1); break;
-            case 's': case 'S': direction = Point(1, 0); break;
-            case 'd': case 'D': direction = Point(0, 1); break;
-            case ' ':
-                m_entityManager.PlayerShoot(m_map);
-                break;
-            default: break;
-            }
-            m_entityManager.GetPlayersMutable()[0].MoveCharacter(direction, m_map);
+        // Here we should check if the player movement data is updated by the server
+        // For example, update the player's movement based on the server's handling
+        UpdatePlayerMovements();
 
-            //m_entityManager.GetPlayersMutable()[1].MoveCharacter(Point(0, 0), m_map);
-            //m_entityManager.GetPlayersMutable()[2].MoveCharacter(Point(0, 0), m_map);
-            //m_entityManager.GetPlayersMutable()[3].MoveCharacter(Point(0, 0), m_map);
-        }
-
-        // Actualizarea timerului pentru intervalul de tragere al inamicilor
+        // Update entities (e.g., enemies, bombs)
         elapsedTime += 0.15f;
-
         if (elapsedTime >= shootInterval) {
             m_entityManager.UpdateEntities(m_map, elapsedTime);
             elapsedTime = 0.0f;
         }
 
+        // Display the game map and entities
         m_map.Display();
 
+        // Sleep to control the game loop speed
         std::this_thread::sleep_for(std::chrono::milliseconds(150));
     }
+
     std::cout << m_database;
     EndGame(m_entityManager.GetWinner());
+}
+
+void Game::UpdatePlayerMovements() {
+    // Loop through all the players and move them based on the server commands
+    for (auto& player : m_entityManager.GetPlayersMutable()) {
+        if (player.HasMovementCommand()) {
+            Point direction = player.GetMoveDirection();
+            player.MoveCharacter(direction, m_map);
+        }
+    }
 }
 
 void Game::EndGame(const std::string& winner)
