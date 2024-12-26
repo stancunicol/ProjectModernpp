@@ -251,7 +251,59 @@ void StartServer(Game& game) {
         return crow::response(404, "Room not found.");
         });
 
+    CROW_ROUTE(serverApp, "/move").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
+        try {
+            auto jsonBody = crow::json::load(req.body);
+            if (!jsonBody || !jsonBody.has("playerId") || !jsonBody.has("direction")) {
+                return crow::response(400, "Invalid JSON payload. Expected 'playerId' and 'direction'.");
+            }
 
+            int playerId = jsonBody["playerId"].i();
+            std::string direction = jsonBody["direction"].s();
+
+            Point moveDirection;
+            if (direction == "up") {
+                moveDirection = Point(-1, 0);
+            }
+            else if (direction == "down") {
+                moveDirection = Point(1, 0);
+            }
+            else if (direction == "left") {
+                moveDirection = Point(0, -1);
+            }
+            else if (direction == "right") {
+                moveDirection = Point(0, 1);
+            }
+            else {
+                return crow::response(400, "Invalid direction. Must be 'up', 'down', 'left', or 'right'.");
+            }
+
+            //if (playerId >= 0 && playerId < game.GetEntityManager().GetPlayersMutable().size()) {
+            //    game.GetEntityManager().GetPlayersMutable()[playerId].MoveCharacter(moveDirection, game.GetMap());
+
+            //    // Obținem poziția jucătorului după mișcare
+            //    Point currentPosition = game.GetEntityManager().GetPlayersMutable()[playerId].GetPosition();
+
+            //    // Pregătim răspunsul JSON cu poziția actualizată
+            //    crow::json::wvalue response;
+            //    response["playerId"] = playerId;
+            //    response["newPosition"]["x"] = currentPosition.GetX();
+            //    response["newPosition"]["y"] = currentPosition.GetY();
+
+            //    // Afișează în log pentru debug
+            //    std::cout << "Player " << playerId << " moved to position: ("
+            //        << currentPosition.GetX() << ", " << currentPosition.GetY() << ")\n";
+
+            //    return crow::response(200, response);
+            //}
+            //else {
+            //    return crow::response(404, "Player not found.");
+            //}
+        }
+        catch (const std::exception& e) {
+            return crow::response(500, std::string("Error processing request: ") + e.what());
+        }
+        });
     serverApp.port(8080).multithreaded().run();
 }
 
