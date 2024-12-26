@@ -200,6 +200,44 @@ bool CheckServerCode(const std::string& url)
     return false;
 }
 
+void SendMoveToServer(int playerId, const std::string& direction)
+{
+    CURL* curl;
+    CURLcode res;
+
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+    curl = curl_easy_init();
+
+    if (curl)
+    {
+        std::string url = "http://localhost:8080/move";  
+        std::string jsonPayload = "{\"playerId\": " + std::to_string(playerId) + ", \"direction\": \"" + direction + "\"}";
+
+        struct curl_slist* headers = nullptr;
+        headers = curl_slist_append(headers, "Content-Type: application/json");
+
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonPayload.c_str());
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+        res = curl_easy_perform(curl);
+
+        if (res != CURLE_OK)
+        {
+            qDebug() << "Failed to send move: " << curl_easy_strerror(res);
+        }
+        else
+        {
+            qDebug() << "Movement sent successfully for playerId " << playerId << " direction: " << QString::fromStdString(direction);
+        }
+
+        curl_slist_free_all(headers);
+        curl_easy_cleanup(curl);
+    }
+
+    curl_global_cleanup();
+}
+
 std::string GetPlayerDataByIdFromServer(int playerId)
 {
     std::string url = "http://localhost:8080/getPlayerScore?playerId=" + std::to_string(playerId);

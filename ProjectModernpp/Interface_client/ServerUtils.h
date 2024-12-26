@@ -12,4 +12,5 @@ static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::stri
 std::string GetServerData(const std::string& url);
 void PostServerData(const std::string& url, const std::string& jsonPayload);
 bool CheckServerCode(const std::string& url);
+void SendMoveToServer(int playerId, const std::string& direction);
 std::string GetPlayerDataByIdFromServer(int playerId);
