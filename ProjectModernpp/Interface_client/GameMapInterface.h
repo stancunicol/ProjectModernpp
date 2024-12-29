@@ -9,6 +9,6 @@ class GameMapInterface : public QMainWindow
 public:
 	GameMapInterface(QWidget *parent = nullptr);
 	~GameMapInterface();
-
+	void keyPressEvent(QKeyEvent* event);
 private:
 };
