@@ -1,14 +1,8 @@
 #pragma once
 #include "Character.h"
 #include "GameMap.h"
-#include <vector>
-#include <unordered_set>
-
-struct PointHash {
-    size_t operator()(const Point& p) const {
-        return std::hash<int>()(p.GetX()) ^ (std::hash<int>()(p.GetY()) << 1);
-    }
-};
+#include <array>
+#include <memory>
 
 class  Player : virtual public Character {
 private:
@@ -18,11 +12,10 @@ private:
 
     uint32_t m_score;//the number of score points
 
-    std::vector<std::pair<Point, bool>> m_positions;
+    static std::shared_ptr<std::array<std::pair<Point, bool>, 4>> m_positions;
 
     Point m_shootDirection = Point(0, 0);
 
-    std::unordered_set<Point, PointHash> m_occupiedPositions;
     Point m_moveDirection = Point(0, 0);
     bool m_isActive = true;
 

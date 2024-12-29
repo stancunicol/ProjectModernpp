@@ -2,12 +2,17 @@
 #include <cstdlib>
 #include <random>
 
+std::shared_ptr<std::array<std::pair<Point, bool>, 4>> Player::m_positions = nullptr;
+
 Player::Player(const std::string& name, const GameMap& grid)
     : m_name{ name }, m_points{ 0 }, m_score{ 0 } {
-    m_positions.push_back({ Point(0, 0), false });                                 // corner letf-up
-    m_positions.push_back({ Point(0, grid.GetWidth() - 1), false });               // corner right-up
-    m_positions.push_back({ Point(grid.GetHeight() - 1, 0), false });             // corner left-downs
-    m_positions.push_back({ Point(grid.GetHeight() - 1, grid.GetWidth() - 1), false }); // corner right-down
+    if (!m_positions) {
+        m_positions = std::make_shared<std::array<std::pair<Point, bool>, 4>>();
+        (*m_positions)[0] = { Point(0, 0), false };
+        (*m_positions)[1] = { Point(0, grid.GetWidth() - 1), false };
+        (*m_positions)[2] = { Point(grid.GetHeight() - 1, 0), false };
+        (*m_positions)[3] = { Point(grid.GetHeight() - 1, grid.GetWidth() - 1), false };
+    }
 }
 
 void Player::PlaceCharacter() {
@@ -19,11 +24,12 @@ void Player::PlaceCharacter() {
 
     do {
         size_t randomIndex = dis(gen);
-        Point potentialPosition = m_positions[randomIndex].first;
 
-        if (m_occupiedPositions.find(potentialPosition) == m_occupiedPositions.end()) {
-            m_position = potentialPosition;
-            m_occupiedPositions.insert(m_position);
+        if (!(*m_positions)[randomIndex].second) {
+            m_position = (*m_positions)[randomIndex].first;
+
+            (*m_positions)[randomIndex].second = true;
+
             found = true;
         }
     } while (!found);
