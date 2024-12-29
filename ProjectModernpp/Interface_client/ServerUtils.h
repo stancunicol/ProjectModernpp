@@ -24,3 +24,10 @@ struct Enemy {
 
 std::vector<Enemy> GetEnemiesFromServer();
 std::pair<int, int> GetBaseFromServer();
+
+struct Bomb {
+    int id;
+    int x;
+    int y;
+};
+std::vector<Bomb> GetBombsFromServer();

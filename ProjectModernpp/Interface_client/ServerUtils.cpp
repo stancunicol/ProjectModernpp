@@ -340,3 +340,44 @@ std::pair<int, int> GetBaseFromServer()
         return std::make_pair(-1, -1);
     }
 }
+
+std::vector<Bomb> GetBombsFromServer()
+{
+    std::vector<Bomb> bombs;
+    std::string url = "http://localhost:8080/getBombs"; // URL-ul endpoint-ului serverului pentru obținerea bombelor
+
+    std::string response = GetServerData(url); // Folosim funcția GetServerData pentru a trimite cererea GET
+
+    if (response.empty()) {
+        qDebug() << "No bomb data received from server.";
+        return bombs;
+    }
+
+    try {
+        auto jsonResponse = nlohmann::json::parse(response);
+
+        if (jsonResponse.contains("bombs") && jsonResponse["bombs"].is_array()) {
+            // Iterăm prin fiecare bombă din răspunsul serverului
+            for (const auto& bomb : jsonResponse["bombs"]) {
+                if (bomb.contains("id") && bomb.contains("x") && bomb.contains("y")) {
+                    bombs.push_back({
+                        bomb["id"].get<int>(),
+                        bomb["x"].get<int>(),
+                        bomb["y"].get<int>()
+                        });
+                }
+                else {
+                    qDebug() << "Incomplete bomb data. Skipping this entry.";
+                }
+            }
+        }
+        else {
+            qDebug() << "Invalid JSON structure. Bomb data not found.";
+        }
+    }
+    catch (const std::exception& e) {
+        qDebug() << "Error parsing bomb data: " << e.what();
+    }
+
+    return bombs;
+}

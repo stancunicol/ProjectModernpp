@@ -21,6 +21,17 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
     std::pair<int, int> basePosition = GetBaseFromServer();
     qDebug() << "Base Position - X:" << basePosition.first << " Y:" << basePosition.second;
 
+    std::vector<Bomb> bombs = GetBombsFromServer();
+    if (!bombs.empty()) {
+        qDebug() << "Received " << bombs.size() << " bombs from server.";
+        for (const auto& bomb : bombs) {
+            qDebug() << "Bomb ID: " << bomb.id << " Position: (" << bomb.x << ", " << bomb.y << ")";
+        }
+    }
+    else {
+        qDebug() << "No bomb data available.";
+    }
+
     std::vector<Enemy> enemies = GetEnemiesFromServer();
     qDebug() << "Enemy Positions:";
     for (const auto& enemy : enemies) {
