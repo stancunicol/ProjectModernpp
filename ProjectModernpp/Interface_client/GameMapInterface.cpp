@@ -12,10 +12,19 @@ GameMapInterface::GameMapInterface(QWidget* parent)
 
 GameMapInterface::~GameMapInterface()
 {
+
 }
 
 void GameMapInterface::keyPressEvent(QKeyEvent* event)
 {
+
+    std::vector<Enemy> enemies = GetEnemiesFromServer();
+
+    qDebug() << "Enemy Positions:";
+    for (const auto& enemy : enemies) {
+        qDebug() << "Enemy ID:" << enemy.id << "Position: (" << enemy.x << "," << enemy.y << ")";
+    }
+
     // Check which key was pressed and send the corresponding direction to the server
     if (event->key() == Qt::Key_W)
     {
