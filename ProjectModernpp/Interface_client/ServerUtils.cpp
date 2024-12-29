@@ -308,3 +308,35 @@ std::vector<Enemy> GetEnemiesFromServer()
 
     return enemies;
 }
+
+std::pair<int, int> GetBaseFromServer()
+{
+    std::string url = "http://localhost:8080/getBase";
+
+    std::string response = GetServerData(url);
+
+    if (response.empty()) {
+        qDebug() << "No data received for base position.";
+        return std::make_pair(-1, -1);
+    }
+    try {
+        auto jsonResponse = nlohmann::json::parse(response);
+
+        if (jsonResponse.contains("position") &&
+            jsonResponse["position"].contains("x") &&
+            jsonResponse["position"].contains("y")) {
+
+            int x = jsonResponse["position"]["x"];
+            int y = jsonResponse["position"]["y"];
+            return std::make_pair(x, y);
+        }
+        else {
+            qDebug() << "Invalid JSON structure for base position.";
+            return std::make_pair(-1, -1);
+        }
+    }
+    catch (const std::exception& e) {
+        qDebug() << "Error parsing base position data: " << e.what();
+        return std::make_pair(-1, -1);
+    }
+}

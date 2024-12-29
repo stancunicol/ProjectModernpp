@@ -23,3 +23,4 @@ struct Enemy {
 };
 
 std::vector<Enemy> GetEnemiesFromServer();
+std::pair<int, int> GetBaseFromServer();

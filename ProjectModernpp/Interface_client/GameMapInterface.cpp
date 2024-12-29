@@ -15,21 +15,22 @@ GameMapInterface::~GameMapInterface()
 
 }
 
+
 void GameMapInterface::keyPressEvent(QKeyEvent* event)
 {
+    std::pair<int, int> basePosition = GetBaseFromServer();
+    qDebug() << "Base Position - X:" << basePosition.first << " Y:" << basePosition.second;
 
     std::vector<Enemy> enemies = GetEnemiesFromServer();
-
     qDebug() << "Enemy Positions:";
     for (const auto& enemy : enemies) {
         qDebug() << "Enemy ID:" << enemy.id << "Position: (" << enemy.x << "," << enemy.y << ")";
     }
 
-    // Check which key was pressed and send the corresponding direction to the server
     if (event->key() == Qt::Key_W)
     {
         qDebug() << "W key pressed - Moving Up";
-        SendMoveToServer(1, "up");  // Sending the move command to the server
+        SendMoveToServer(1, "up");
     }
     else if (event->key() == Qt::Key_S)
     {
@@ -48,6 +49,7 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
     }
     else
     {
-        QMainWindow::keyPressEvent(event);  // Default key handling
+        QMainWindow::keyPressEvent(event);
     }
 }
+
