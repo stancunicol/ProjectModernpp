@@ -52,6 +52,7 @@ public:
     const std::vector<Player>& GetPlayers() const;
     const std::vector<Enemy>& GetEnemies() const;
     const std::vector<Bullet>& GetBullets() const;
+    const std::vector<Bomb>& GetBombs() const;
 
     std::vector<Player>& GetPlayersMutable();
     std::vector<Enemy>& GetEnemiesMutable();

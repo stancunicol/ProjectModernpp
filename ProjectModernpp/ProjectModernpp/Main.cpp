@@ -346,6 +346,34 @@ void StartServer(Game& game) {
         }
         });
 
+    CROW_ROUTE(serverApp, "/getBombs").methods(crow::HTTPMethod::GET)([&game]() {
+        try {
+            auto& bombs = game.GetEntityManager().GetBombs();
+
+            crow::json::wvalue response;
+            response["bombCount"] = bombs.size();
+
+            crow::json::wvalue::list bombList;
+            for (size_t i = 0; i < bombs.size(); ++i) {
+                const auto& bomb = bombs[i];
+
+                crow::json::wvalue bombData;
+                bombData["id"] = static_cast<int>(i);
+                bombData["x"] = bomb.GetPosition().GetX();
+                bombData["y"] = bomb.GetPosition().GetY();
+
+                bombList.push_back(bombData);
+            }
+
+            response["bombs"] = std::move(bombList);
+
+            return crow::response(200, response);
+        }
+        catch (const std::exception& e) {
+            return crow::response(500, std::string("Error retrieving bombs: ") + e.what());
+        }
+        });
+
 
     serverApp.port(8080).multithreaded().run();
 }

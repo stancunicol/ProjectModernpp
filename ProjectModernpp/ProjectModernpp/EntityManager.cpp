@@ -273,6 +273,11 @@ const std::vector<Bullet>& EntityManager::GetBullets() const
     return m_bullets;
 }
 
+const std::vector<Bomb>& EntityManager::GetBombs() const
+{
+    return m_bombs;
+}
+
 std::vector<Player>& EntityManager::GetPlayersMutable()
 {
     return m_players;
