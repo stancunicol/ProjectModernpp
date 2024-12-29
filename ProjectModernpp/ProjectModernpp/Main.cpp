@@ -330,6 +330,23 @@ void StartServer(Game& game) {
         }
         });
 
+    CROW_ROUTE(serverApp, "/getBase").methods(crow::HTTPMethod::GET)([&game]() {
+        try {
+            auto& base = game.GetEntityManager().GetBase();
+
+            crow::json::wvalue response;
+
+            response["position"]["x"] = base.GetPosition().GetX();
+            response["position"]["y"] = base.GetPosition().GetY();
+
+            return crow::response(200, response);
+        }
+        catch (const std::exception& e) {
+            return crow::response(500, std::string("Error retrieving base: ") + e.what());
+        }
+        });
+
+
     serverApp.port(8080).multithreaded().run();
 }
 
