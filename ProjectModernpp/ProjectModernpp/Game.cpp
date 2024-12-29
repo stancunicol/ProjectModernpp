@@ -35,10 +35,13 @@ void Game::InitializeGame() { //here, we initialize the game
         m_entityManager.AddPlayer(newPlayer);
     }
 
-    for (int i = 0; i < 3; ++i) {
+    int enemiesToPlace = 1 + m_map.GetLevel();
+
+    while (enemiesToPlace > 0) {
         Enemy enemy(m_map);
         enemy.PlaceCharacter(m_map);
         m_entityManager.AddEnemy(enemy);
+        enemiesToPlace--;
     }
 
     int bombsToPlace = m_map.GetLevel();

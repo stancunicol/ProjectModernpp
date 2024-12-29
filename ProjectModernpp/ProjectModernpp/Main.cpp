@@ -281,16 +281,13 @@ void StartServer(Game& game) {
             if (playerId >= 0 && playerId < game.GetEntityManager().GetPlayersMutable().size()) {
                 game.GetEntityManager().GetPlayersMutable()[playerId].MoveCharacter(moveDirection, game.GetMap());
 
-                // Obținem poziția jucătorului după mișcare
                 Point currentPosition = game.GetEntityManager().GetPlayersMutable()[playerId].GetPosition();
 
-                // Pregătim răspunsul JSON cu poziția actualizată
                 crow::json::wvalue response;
                 response["playerId"] = playerId;
                 response["newPosition"]["x"] = currentPosition.GetX();
                 response["newPosition"]["y"] = currentPosition.GetY();
 
-                // Afișează în log pentru debug
                 std::cout << "Player " << playerId << " moved to position: ("
                     << currentPosition.GetX() << ", " << currentPosition.GetY() << ")\n";
 
@@ -304,6 +301,35 @@ void StartServer(Game& game) {
             return crow::response(500, std::string("Error processing request: ") + e.what());
         }
         });
+
+    CROW_ROUTE(serverApp, "/getEnemies").methods(crow::HTTPMethod::GET)([&game]() {
+        try {
+            auto& enemies = game.GetEntityManager().GetEnemies();
+
+            crow::json::wvalue response;
+            response["enemyCount"] = enemies.size();
+
+            crow::json::wvalue::list enemyList;
+            for (size_t i = 0; i < enemies.size(); ++i) {
+                const auto& enemy = enemies[i];
+
+                crow::json::wvalue enemyData;
+                enemyData["id"] = static_cast<int>(i);
+                enemyData["x"] = enemy.GetPosition().GetX();
+                enemyData["y"] = enemy.GetPosition().GetY();
+
+                enemyList.push_back(enemyData);
+            }
+
+            response["enemies"] = std::move(enemyList);
+
+            return crow::response(200, response);
+        }
+        catch (const std::exception& e) {
+            return crow::response(500, std::string("Error retrieving enemies: ") + e.what());
+        }
+        });
+
     serverApp.port(8080).multithreaded().run();
 }
 
