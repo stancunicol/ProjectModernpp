@@ -7,27 +7,49 @@
 #include <nlohmann/json.hpp>
 #include <vector>
 
-void SendLevelToServer(int level);
-void SendRegisterToServer(const std::string& username);
-static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* response);
-std::string GetServerData(const std::string& url);
-void PostServerData(const std::string& url, const std::string& jsonPayload);
-bool CheckServerCode(const std::string& url);
-void SendMoveToServer(int playerId, const std::string& direction);
-std::string GetPlayerDataByIdFromServer(int playerId);
-
 struct Enemy {
     int id;
     int x;
     int y;
 };
-
-std::vector<Enemy> GetEnemiesFromServer();
-std::pair<int, int> GetBaseFromServer();
-
 struct Bomb {
     int id;
     int x;
     int y;
 };
-std::vector<Bomb> GetBombsFromServer();
+
+class ServerUtils {
+private:
+
+    std::string lastStatus;
+    static int userId;
+
+public:
+
+    void SendLevelToServer(int level);
+
+    void SendUserRequestToServer(const std::string& username);
+
+    static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* response);
+
+    std::string GetServerData(const std::string& url);
+
+    void PostServerData(const std::string& url, const std::string& jsonPayload);
+
+    bool CheckServerCode(const std::string& url);
+
+    void SendMoveToServer(const std::string& direction);
+
+    std::string GetPlayerDataByIdFromServer();
+    std::vector<Enemy> GetEnemiesFromServer();
+    std::pair<int, int> GetBaseFromServer();
+    std::vector<Bomb> GetBombsFromServer();
+
+    void SetUserId(int id);
+    int GetUserId() const { return userId; }
+
+    void SetStatus(const std::string& status) { lastStatus = status; }
+    std::string GetStatus() const { return lastStatus; }
+
+};
+

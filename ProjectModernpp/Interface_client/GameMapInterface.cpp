@@ -8,20 +8,10 @@ GameMapInterface::GameMapInterface(QWidget* parent)
 {
     setWindowTitle("Game Map");
     setFixedSize(600, 600);
-}
-
-GameMapInterface::~GameMapInterface()
-{
-
-}
-
-
-void GameMapInterface::keyPressEvent(QKeyEvent* event)
-{
-    std::pair<int, int> basePosition = GetBaseFromServer();
+    std::pair<int, int> basePosition = m_serverObject.GetBaseFromServer();
     qDebug() << "Base Position - X:" << basePosition.first << " Y:" << basePosition.second;
 
-    std::vector<Bomb> bombs = GetBombsFromServer();
+    std::vector<Bomb> bombs = m_serverObject.GetBombsFromServer();
     if (!bombs.empty()) {
         qDebug() << "Received " << bombs.size() << " bombs from server.";
         for (const auto& bomb : bombs) {
@@ -31,36 +21,45 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
     else {
         qDebug() << "No bomb data available.";
     }
-
-    std::vector<Enemy> enemies = GetEnemiesFromServer();
+    std::vector<Enemy> enemies = m_serverObject.GetEnemiesFromServer();
     qDebug() << "Enemy Positions:";
     for (const auto& enemy : enemies) {
         qDebug() << "Enemy ID:" << enemy.id << "Position: (" << enemy.x << "," << enemy.y << ")";
     }
+}
+
+GameMapInterface::~GameMapInterface()
+{
+
+}
+
+void GameMapInterface::keyPressEvent(QKeyEvent* event)
+{
+
+
 
     if (event->key() == Qt::Key_W)
     {
         qDebug() << "W key pressed - Moving Up";
-        SendMoveToServer(1, "up");
+        m_serverObject.SendMoveToServer("up");
     }
     else if (event->key() == Qt::Key_S)
     {
         qDebug() << "S key pressed - Moving Down";
-        SendMoveToServer(1, "down");
+        m_serverObject.SendMoveToServer("down");
     }
     else if (event->key() == Qt::Key_A)
     {
         qDebug() << "A key pressed - Moving Left";
-        SendMoveToServer(1, "left");
+        m_serverObject.SendMoveToServer("left");
     }
     else if (event->key() == Qt::Key_D)
     {
         qDebug() << "D key pressed - Moving Right";
-        SendMoveToServer(1, "right");
+        m_serverObject.SendMoveToServer("right");
     }
     else
     {
         QMainWindow::keyPressEvent(event);
     }
 }
-

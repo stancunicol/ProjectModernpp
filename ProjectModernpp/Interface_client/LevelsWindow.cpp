@@ -7,7 +7,7 @@ LevelsWindow::LevelsWindow(QWidget* parent)
     setFixedSize(300, 300);
 
     QPalette palette;
-    QColor customColor(20, 20, 20, 245); 
+    QColor customColor(20, 20, 20, 245);
     palette.setColor(QPalette::Window, customColor);
     palette.setColor(QPalette::WindowText, Qt::white);
     setPalette(palette);
@@ -40,7 +40,7 @@ LevelsWindow::LevelsWindow(QWidget* parent)
     m_hardLevelButton->setFont(font);
 
     m_easyLevelButton->setStyleSheet("QPushButton {"
-        "background-color: rgba(34, 177, 76, 0.5);"  
+        "background-color: rgba(34, 177, 76, 0.5);"
         "color: white;"
         "border: none;"
         "padding: 10px;"
@@ -48,16 +48,16 @@ LevelsWindow::LevelsWindow(QWidget* parent)
         "font-size: 16px;"
         "}"
         "QPushButton:hover {"
-        "background-color: rgba(0, 128, 0, 0.4);"  
-        "color: rgba(255, 255, 255, 1);"  
+        "background-color: rgba(0, 128, 0, 0.4);"
+        "color: rgba(255, 255, 255, 1);"
         "}"
         "QPushButton:pressed {"
-        "background-color: rgba(0, 100, 0, 0.6);"  
-        "color: rgba(255, 255, 255, 1);"  
+        "background-color: rgba(0, 100, 0, 0.6);"
+        "color: rgba(255, 255, 255, 1);"
         "}");
 
     m_mediumLevelButton->setStyleSheet("QPushButton {"
-        "background-color: rgba(255, 204, 0, 0.5);" 
+        "background-color: rgba(255, 204, 0, 0.5);"
         "color: black;"
         "border: none;"
         "padding: 10px;"
@@ -66,11 +66,11 @@ LevelsWindow::LevelsWindow(QWidget* parent)
         "}"
         "QPushButton:hover {"
         "background-color: rgba(255, 165, 0, 0.4);"
-        "color: rgba(255, 255, 255, 1);"  
+        "color: rgba(255, 255, 255, 1);"
         "}"
         "QPushButton:pressed {"
-        "background-color: rgba(255, 140, 0, 0.6);"  
-        "color: rgba(255, 255, 255, 1);"  
+        "background-color: rgba(255, 140, 0, 0.6);"
+        "color: rgba(255, 255, 255, 1);"
         "}");
 
     m_hardLevelButton->setStyleSheet("QPushButton {"
@@ -82,12 +82,12 @@ LevelsWindow::LevelsWindow(QWidget* parent)
         "font-size: 16px;"
         "}"
         "QPushButton:hover {"
-        "background-color: rgba(178, 0, 0, 0.4);" 
-        "color: rgba(255, 255, 255, 1);"  
+        "background-color: rgba(178, 0, 0, 0.4);"
+        "color: rgba(255, 255, 255, 1);"
         "}"
         "QPushButton:pressed {"
-        "background-color: rgba(153, 0, 0, 0.6);"  
-        "color: rgba(255, 255, 255, 1);"  
+        "background-color: rgba(153, 0, 0, 0.6);"
+        "color: rgba(255, 255, 255, 1);"
         "}");
 
     //add buttons and text in Vertical Layout
@@ -109,7 +109,7 @@ LevelsWindow::~LevelsWindow()
 void LevelsWindow::OnEasyLevelClicked()
 {
     m_level = 1;
-    SendLevelToServer(m_level);
+    m_serverObject.SendLevelToServer(m_level);
     emit levelSelected(m_level);
     accept();
 }
@@ -117,7 +117,7 @@ void LevelsWindow::OnEasyLevelClicked()
 void LevelsWindow::OnMediumLevelClicked()
 {
     m_level = 2;
-    SendLevelToServer(m_level);
+    m_serverObject.SendLevelToServer(m_level);
     emit levelSelected(m_level);
     accept();
 }
@@ -125,7 +125,7 @@ void LevelsWindow::OnMediumLevelClicked()
 void LevelsWindow::OnHardLevelClicked()
 {
     m_level = 3;
-    SendLevelToServer(m_level);
+    m_serverObject.SendLevelToServer(m_level);
     emit levelSelected(m_level);
     accept();
 }

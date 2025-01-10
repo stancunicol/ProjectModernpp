@@ -29,6 +29,10 @@ public:
 
     const Point& GetShootDirection() const;
 
+    void ResetPositions() {
+        m_positions.reset();
+    }
+
     std::string GetName() const;
     uint32_t GetPoints() const;
     uint32_t GetScore() const;

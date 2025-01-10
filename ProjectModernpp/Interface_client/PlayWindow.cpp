@@ -1,16 +1,16 @@
 ﻿#include "PLayWindow.h"
 
 PlayWindow::PlayWindow(QWidget* parent)
-    : QDialog(parent) 
+    : QDialog(parent)
 {
     // Set title and size for window
     setWindowTitle("Generate Code");
     setFixedSize(300, 200);
 
     QPalette palette;
-    QColor customColor(20, 20, 20, 245); 
+    QColor customColor(20, 20, 20, 245);
     palette.setColor(QPalette::Window, customColor);
-    palette.setColor(QPalette::WindowText, Qt::white); // Text 
+    palette.setColor(QPalette::WindowText, Qt::white); // Text
     setPalette(palette);
     setAutoFillBackground(true);
 
@@ -30,34 +30,34 @@ PlayWindow::PlayWindow(QWidget* parent)
     m_generateButton = new QPushButton("Generate code", this);
     m_generateButton->setStyleSheet("QPushButton {"
         "background-color: rgba(0, 191, 255, 0.7);" // light blue
-        "color: white;" 
+        "color: white;"
         "border: none;"
-        "padding: 10px;" 
+        "padding: 10px;"
         "border-radius: 5px;"
         "font-size: 16px;"
         "}"
         "QPushButton:hover {"
         "background-color: rgba(0, 0, 255, 0.7);" // dark blue
-        "color: rgba(255, 255, 255, 0.5);" 
+        "color: rgba(255, 255, 255, 0.5);"
         "}"
         "QPushButton:pressed {"
         "background-color: rgba(0, 0, 139, 0.7);" // even darker blue (dark blue shade)
-        "color: rgba(255, 255, 255, 0.7);" 
+        "color: rgba(255, 255, 255, 0.7);"
         "}");
     layout->addWidget(m_generateButton);
 
     m_forwardButton = new QPushButton("Start game", this);
     m_forwardButton->setStyleSheet("QPushButton {"
         "background-color: rgba(144, 238, 144, 0.7);" // light green
-        "color: white;" 
+        "color: white;"
         "border: none;"
-        "padding: 10px;" 
+        "padding: 10px;"
         "border-radius: 5px;"
         "font-size: 16px;"
         "}"
         "QPushButton:hover {"
         "background-color: rgba(34, 139, 34, 0.7);" // dark green
-        "color: rgba(255, 255, 255, 0.5);" 
+        "color: rgba(255, 255, 255, 0.5);"
         "}"
         "QPushButton:pressed {"
         "background-color: rgba(0, 100, 0, 0.7);" // even darker green (dark green shade)
@@ -68,9 +68,9 @@ PlayWindow::PlayWindow(QWidget* parent)
     connect(m_forwardButton, &QPushButton::clicked, this, &PlayWindow::OnForwardClicked);
 }
 
-PlayWindow::~PlayWindow() 
+PlayWindow::~PlayWindow()
 {
-    
+
 }
 
 //function for generate random numbers
@@ -78,12 +78,12 @@ QString PlayWindow::GenerateRandomNumber()
 {
     QString number;
 
-    
+
     srand(time(NULL));
     for (int i = 0; i < 5; ++i) {
 
-        int digit = rand() % 10; 
-        number.append(QString::number(digit)); 
+        int digit = rand() % 10;
+        number.append(QString::number(digit));
     }
     return number;
 
@@ -97,12 +97,12 @@ void PlayWindow::OnForwardClicked()
         accept();
 }
 
-void PlayWindow::OnGenerateClicked() 
+void PlayWindow::OnGenerateClicked()
 {
     QString randomNumber = GenerateRandomNumber();
     m_generate = true;
     m_generateCode->setText(randomNumber);
 
-    PostServerData("http://localhost:8080/registerRoom", "{\"code\": \"" + randomNumber.toStdString() + "\"}");
+    m_serverObject.PostServerData("http://localhost:8080/registerRoom", "{\"code\": \"" + randomNumber.toStdString() + "\"}");
 }
 

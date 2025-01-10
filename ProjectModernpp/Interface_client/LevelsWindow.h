@@ -27,11 +27,12 @@ signals:
     void levelSelected(int level);
 
 private:
-    QPushButton* m_easyLevelButton= nullptr;
+    QPushButton* m_easyLevelButton = nullptr;
     QPushButton* m_mediumLevelButton = nullptr;
     QPushButton* m_hardLevelButton = nullptr;
     QLabel* m_messageLabel = nullptr;
     size_t m_level = 0;
+
+private:
+    ServerUtils m_serverObject;
 };
-
-

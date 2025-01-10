@@ -12,19 +12,18 @@ std::string Game::GenerateRoomCode()
 }
 
 Game::Game()
-    : m_map(), m_entityManager(m_map), m_database("GameData.db"), m_setLevel(false) {
+    : m_map(), m_entityManager(m_map), m_database("GameData.db") {
     //m_database.DeleteGameData();
     m_database.Initialize();
 }
 
 Game::~Game() {}
 
-void Game::InitializeGame() { //here, we initialize the game
+void Game::InitializeGame() {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> disX(0, m_map.GetWidth() - 1);
     std::uniform_int_distribution<> disY(0, m_map.GetHeight() - 1);
-    Point randomPos(disX(gen), disY(gen));
 
     m_entityManager.PlaceBase(m_map);
 
@@ -34,6 +33,7 @@ void Game::InitializeGame() { //here, we initialize the game
         Player newPlayer(playerName, m_map);
         m_entityManager.AddPlayer(newPlayer);
     }
+    m_entityManager.GetPlayersMutable()[0].ResetPositions();
 
     int enemiesToPlace = 1 + m_map.GetLevel();
 
@@ -45,6 +45,7 @@ void Game::InitializeGame() { //here, we initialize the game
     }
 
     int bombsToPlace = m_map.GetLevel();
+
     while (bombsToPlace > 0) {
         Point randomPos(rand() % m_map.GetHeight(), rand() % m_map.GetWidth());
 
@@ -61,11 +62,6 @@ void Game::Run() {
     const float shootInterval = 0.3f;
     static float enemyShootTimer = 0.0f;
 
-    // Așteaptă până când nivelul este setat
-    {
-        std::unique_lock<std::mutex> lock(mutex);
-        condition.wait(lock, [this]() { return m_setLevel; });
-    }
 
     while (m_entityManager.GetBase().GetLife()) {
         system("CLS");
@@ -111,18 +107,14 @@ void Game::EndGame(const std::string& winner)
     std::cout << "The game is over! " << winner << " WON!\n";
 }
 
-void Game::SetLevel(int newLevel) {
-    {
-        std::lock_guard<std::mutex> lock(mutex);
-        m_map.Reset(newLevel);
-        m_setLevel = true;
-    }
-    // Reinitializam jocul
-    InitializeGame();
+std::mutex m_levelMutex;
 
-    condition.notify_all(); // Notifică bucla principală că poate continua
-    std::cout << "Game level updated to: " << newLevel << '\n';
+void Game::SetLevel(int newLevel) {
+    std::lock_guard<std::mutex> lock(m_levelMutex);
+    m_map.Reset(newLevel);
+    InitializeGame();
 }
+
 
 crow::json::wvalue Game::TranformInJson() {
     crow::json::wvalue jsonMap;

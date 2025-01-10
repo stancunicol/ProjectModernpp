@@ -27,9 +27,6 @@ private:
     std::mutex roomMutex;
 
 public:
-    bool m_setLevel;
-    std::mutex mutex;
-    std::condition_variable condition;
 
     Game();
 
@@ -42,6 +39,7 @@ public:
     void EndGame(const std::string& winner);
 
     void SetLevel(int level);
+
 
     GameMap& GetMap() { return m_map; };
     DataBase& GetDatabase() { return m_database; };

@@ -6,62 +6,46 @@
 void StartServer(Game& game) {
     crow::SimpleApp serverApp;
 
-    /*CROW_ROUTE(serverApp, "/game")([&game]() {
+    CROW_ROUTE(serverApp, "/game")([&game]() {
         crow::json::wvalue gameState = game.GetGameStateAsJson();
         std::cout << "Game state: " << gameState.dump(4) << '\n';
         return gameState;
-        });*/
+        });
 
     CROW_ROUTE(serverApp, "/submitLevel").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
         try {
             auto jsonBody = crow::json::load(req.body);
             if (!jsonBody || !jsonBody.has("level")) {
+                std::cerr << "Invalid JSON payload. Expected a 'level' field." << std::endl;
                 return crow::response(400, "Invalid JSON payload. Expected a 'level' field.");
             }
 
             int level = jsonBody["level"].i();
             if (level < 1 || level > 3) {
+                std::cerr << "Invalid level. Level must be between 1 and 3." << std::endl;
                 return crow::response(400, "Invalid level. Must be 1, 2, or 3.");
             }
 
             game.SetLevel(level);
+
             auto& db = game.GetDatabase();
 
             auto recentPlayer = db.GetRecentPlayer();
+
             if (recentPlayer) {
+                std::cout << "Updating level for player: " << *recentPlayer << std::endl;
                 db.UpdateLevel(*recentPlayer, level);
             }
             return crow::response(200, "Level updated successfully.");
         }
         catch (const std::exception& e) {
+            std::cerr << "Error processing request: " << e.what() << std::endl;
             return crow::response(500, std::string("Error processing request: ") + e.what());
         }
         });
 
-    CROW_ROUTE(serverApp, "/checkUser").methods(crow::HTTPMethod::GET)([&game](const crow::request& req) {
-        try {
 
-            auto params = req.url_params;
-            if (!params.get("username")) {
-                return crow::response(400, "Missing 'username' parameter.");
-            }
-
-            std::string username = params.get("username");
-
-            auto& db = game.GetDatabase();
-            if (db.UserExists(username)) {
-                return crow::response(200, "success");
-            }
-            else {
-                return crow::response(404, "User not found.");
-            }
-        }
-        catch (const std::exception& e) {
-            return crow::response(500, std::string("Error processing request: ") + e.what());
-        }
-        });
-
-    CROW_ROUTE(serverApp, "/register").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
+    CROW_ROUTE(serverApp, "/user").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
         try {
             auto jsonBody = crow::json::load(req.body);
             if (!jsonBody || !jsonBody.has("username")) {
@@ -70,21 +54,30 @@ void StartServer(Game& game) {
 
             std::string username = jsonBody["username"].s();
 
-            bool validUsername = true;
             std::regex usernameRegex("^[a-zA-Z]([a-zA-Z]*[0-9]*)*$");
             if (!std::regex_match(username, usernameRegex)) {
-                validUsername = false;
                 return crow::response(400, "Invalid 'username' format.");
             }
-            if (validUsername) {
-                auto& db = game.GetDatabase();
-                if (db.UserExists(username)) {
-                    return crow::response(409, "User already exists.");
-                }
-                else {
-                    db.AddUser(username);
-                    return crow::response(200, "registered");
-                }
+
+            auto& db = game.GetDatabase();
+            int userId;
+
+            if (db.UserExists(username)) {
+                userId = db.GetUserId(username);
+
+                crow::json::wvalue jsonResponse;
+                jsonResponse["status"] = "login";
+                jsonResponse["userId"] = userId;
+                return crow::response(200, jsonResponse);
+            }
+            else {
+                db.AddUser(username);
+                userId = db.GetUserId(username);
+
+                crow::json::wvalue jsonResponse;
+                jsonResponse["status"] = "register";
+                jsonResponse["userId"] = userId;
+                return crow::response(200, jsonResponse);
             }
         }
         catch (const std::exception& e) {
@@ -115,8 +108,6 @@ void StartServer(Game& game) {
             return crow::response(500, std::string("Error processing request: ") + e.what());
         }
         });
-
-
 
     CROW_ROUTE(serverApp, "/checkRoom").methods(crow::HTTPMethod::GET)([&game](const crow::request& req) {
         try {

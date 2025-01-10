@@ -23,6 +23,7 @@ public:
 
 	bool UserExists(const std::string& username);
 	void AddUser(const std::string& username);
+	int GetUserId(const std::string& username);
 
 	void UpdateLevel(const std::string& playerName, int level);
 
@@ -41,4 +42,3 @@ public:
 
 	friend std::ostream& operator<<(std::ostream& out, const DataBase& db);
 };
-

@@ -1,24 +1,24 @@
 ﻿#include "ConnectWindow.h"
 
 ConnectWindow::ConnectWindow(QWidget* parent)
-    : QDialog(parent) 
+    : QDialog(parent)
 {
     // set size and title for window
     setWindowTitle("Join Room");
     setFixedSize(300, 200);
 
     QPalette palette;
-    QColor customColor(20, 20, 20, 245); 
+    QColor customColor(20, 20, 20, 245);
     palette.setColor(QPalette::Window, customColor);
-    palette.setColor(QPalette::WindowText, Qt::white); 
+    palette.setColor(QPalette::WindowText, Qt::white);
     setPalette(palette);
-    setAutoFillBackground(true); 
+    setAutoFillBackground(true);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     QLabel* label = new QLabel("Insert code:", this);
     QFont font;
-    font.setPointSize(14); 
-    font.setBold(true);  
+    font.setPointSize(14);
+    font.setBold(true);
 
     label->setFont(font);
     layout->addWidget(label, 0, Qt::AlignCenter);
@@ -63,7 +63,7 @@ void ConnectWindow::OnGenerateClicked()
         return;
     }
 
-    bool isCodeValid = CheckServerCode("http://localhost:8080/checkRoom?code=" + roomCode.toStdString());
+    bool isCodeValid = m_serverObject.CheckServerCode("http://localhost:8080/checkRoom?code=" + roomCode.toStdString());
 
     if (isCodeValid)
     {
@@ -76,7 +76,7 @@ void ConnectWindow::OnGenerateClicked()
     }
 }
 
-ConnectWindow::~ConnectWindow() 
-{ 
+ConnectWindow::~ConnectWindow()
+{
 
 }

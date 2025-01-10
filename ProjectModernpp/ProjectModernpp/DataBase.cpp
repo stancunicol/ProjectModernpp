@@ -84,11 +84,34 @@ void DataBase::AddUser(const std::string& username)
     updateLastConnected(username);
 }
 
+int DataBase::GetUserId(const std::string& playerName) {
+    const std::string query = "SELECT id FROM GameData WHERE playerName = ?";
+    sqlite3_stmt* stmt;
+    int rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
+
+    if (rc != SQLITE_OK) {
+        std::cerr << "Error preparing query: " << sqlite3_errmsg(db) << std::endl;
+        return -1;  // Return an invalid ID
+    }
+
+    sqlite3_bind_text(stmt, 1, playerName.c_str(), -1, SQLITE_STATIC);
+    rc = sqlite3_step(stmt);
+
+    int userId = -1;
+    if (rc == SQLITE_ROW) {
+        userId = sqlite3_column_int(stmt, 0);
+    }
+
+    sqlite3_finalize(stmt);
+    return userId;
+}
+
+
 void DataBase::UpdateLevel(const std::string& playerName, int level)
 {
     const std::string updateLevelQuery = R"(
         UPDATE GameData
-        SET level = ?
+        SET level = ? 
         WHERE playerName = ?;
     )";
 

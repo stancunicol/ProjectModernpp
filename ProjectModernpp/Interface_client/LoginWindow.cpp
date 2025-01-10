@@ -1,13 +1,13 @@
 #include "LoginWindow.h"
 
 LoginWindow::LoginWindow(QWidget* parent)
-	: QDialog(parent)
+    : QDialog(parent)
 {
     setWindowTitle("Login");//title
     setFixedSize(400, 300);//400X300
 
     QPalette palette;
-    QColor customColor(20, 20, 20, 245); 
+    QColor customColor(20, 20, 20, 245);
     palette.setColor(QPalette::Window, customColor);
     setPalette(palette);
     setAutoFillBackground(true);
@@ -95,55 +95,60 @@ LoginWindow::~LoginWindow()
 
 }
 
-void LoginWindow::OnLoginClicked()
-{
-	QString username = m_usernameLineEdit->text();//get your username and password
-
-	if (username.isEmpty()) 
-    {
-		QMessageBox::warning(this, "Login Failed", "Please enter username.");
-		return;
-	}
-
-    //Send the username to server
-    std::string response = GetServerData("http://localhost:8080/checkUser?username=" + username.toStdString());
-
-    if (response == "success") {
-        QMessageBox::information(this, "Login Successful", "User " + username + " logged in successfully!");
-        accept();
+void LoginWindow::OnLoginClicked() {
+    QString username = m_usernameLineEdit->text();
+    if (username.isEmpty()) {
+        QMessageBox::warning(this, "Login Failed", "Please enter username.");
+        return;
     }
-    else {
-        QMessageBox::warning(this, "Login Failed", "Invalid username or server error.");
+
+    m_serverObject.SendUserRequestToServer(username.toStdString());
+
+    try {
+        if (m_serverObject.GetStatus() == "login") {
+            QMessageBox::information(this, "Login Successful", "User " + username + " logged in successfully!");
+            accept();
+        }
+        else if (m_serverObject.GetStatus() == "register") {
+            QMessageBox::information(this, "Login Successful", "User " + username + " registered successfully!");
+            accept();
+        }
+        else {
+            QMessageBox::warning(this, "Login Failed", "Invalid username or server error.");
+        }
     }
-    m_usernameLineEdit->clear();//reset fields after registration
+    catch (const std::exception& e) {
+        QMessageBox::warning(this, "Login Failed", "Error processing server response: " + QString::fromStdString(e.what()));
+    }
+
+    m_usernameLineEdit->clear();
 }
 
-void LoginWindow::OnRegisterClicked()
-{
-	QString username = m_usernameLineEdit->text();//get your username and password
+void LoginWindow::OnRegisterClicked() {
+    QString username = m_usernameLineEdit->text();
 
-	if (username.isEmpty()) 
-    {
-		QMessageBox::warning(this, "Registration Failed", "Please enter username.");
-		return;
-	}
-
-    SendRegisterToServer(username.toStdString());
-
-    std::string response = GetServerData("http://localhost:8080/checkUser?username=" + username.toStdString());
-
-    if (response == "success") {
-        QMessageBox::information(this, "Registration Successful", "User " + username + " registered and logged in successfully!");
-        accept();
-    }
-    else if (response == "registered") {
-        QMessageBox::information(this, "Registration Successful", "User " + username + " registered. Please login.");
-    }
-    else {
-        QMessageBox::warning(this, "Registration Failed", "Failed to register user.");
+    if (username.isEmpty()) {
+        QMessageBox::warning(this, "Registration Failed", "Please enter username.");
+        return;
     }
 
+    m_serverObject.SendUserRequestToServer(username.toStdString());
 
-    m_usernameLineEdit->clear();//reset fields after registration
+    try {
+        if (m_serverObject.GetStatus() == "register") {
+            QMessageBox::information(this, "Registration Successful", "User " + username + " registered successfully!");
+            accept();
+        }
+        else if (m_serverObject.GetStatus() == "login") {
+            QMessageBox::information(this, "Registration Failed", "User " + username + " already exists. Please log in.");
+        }
+        else {
+            QMessageBox::warning(this, "Registration Failed", "Failed to register user.");
+        }
+    }
+    catch (const std::exception& e) {
+        QMessageBox::warning(this, "Registration Failed", "Error processing server response: " + QString::fromStdString(e.what()));
+    }
+
+    m_usernameLineEdit->clear();
 }
-

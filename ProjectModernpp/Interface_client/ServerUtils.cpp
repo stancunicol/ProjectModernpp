@@ -1,6 +1,14 @@
 ﻿#include "ServerUtils.h"
 
-void SendLevelToServer(int level)
+int ServerUtils::userId = -1;
+
+void ServerUtils::SetUserId(int userId) {
+    qDebug() << "About to set User ID to:" << userId;
+    this->userId = userId;
+    qDebug() << "User ID set to:" << this->userId;
+}
+
+void ServerUtils::SendLevelToServer(int level)
 {
     CURL* curl;
     CURLcode res;
@@ -38,48 +46,72 @@ void SendLevelToServer(int level)
     curl_global_cleanup();
 }
 
-void SendRegisterToServer(const std::string& username) {
-    CURL* curl;
-    CURLcode res;
+void ServerUtils::SendUserRequestToServer(const std::string& username) {
+    try {
+        CURL* curl;
+        CURLcode res;
+        std::string response;
 
-    curl_global_init(CURL_GLOBAL_DEFAULT);
-    curl = curl_easy_init();
+        curl_global_init(CURL_GLOBAL_DEFAULT);
+        curl = curl_easy_init();
 
-    if (curl) {
-        std::string url = "http://localhost:8080/register"; // Endpoint server for register
-        std::string jsonPayload = "{\"username\": \"" + username + "\"}";
+        if (curl) {
+            std::string url = "http://localhost:8080/user";
 
-        struct curl_slist* headers = nullptr;
-        headers = curl_slist_append(headers, "Content-Type: application/json");
+            nlohmann::json jsonPayload;
+            jsonPayload["username"] = username;
+            std::string jsonPayloadStr = jsonPayload.dump();
 
-        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonPayload.c_str());
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+            struct curl_slist* headers = nullptr;
+            headers = curl_slist_append(headers, "Content-Type: application/json");
 
-        res = curl_easy_perform(curl);
+            curl_easy_setopt(curl, CURLoption::CURLOPT_URL, url.c_str());
+            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonPayloadStr.c_str());
+            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &ServerUtils::WriteCallback);
+            curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
-        if (res != CURLE_OK) {
-            qDebug() << "Failed to send register data: " << curl_easy_strerror(res);
+            res = curl_easy_perform(curl);
+
+            long httpCode = 0;
+            curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
+
+            if (res == CURLE_OK && httpCode == 200) {
+                try {
+                    auto jsonResponse = nlohmann::json::parse(response);
+                    if (jsonResponse.contains("status") && jsonResponse.contains("userId") && jsonResponse["userId"].is_number()) {
+                        (*this).SetStatus(jsonResponse["status"].get<std::string>());
+
+                        (*this).SetUserId(jsonResponse["userId"].get<int>());
+
+                        qDebug() << "Request successful. Status:" << QString::fromStdString(GetStatus())
+                            << "User ID:" << GetUserId();
+                    }
+                    else {
+                        qDebug() << "Invalid JSON response. Missing 'status' or 'userId'.";
+                    }
+                }
+                catch (const std::exception& e) {
+                    qDebug() << "Error parsing server response:" << e.what();
+                }
+            }
+            else {
+                qDebug() << "Failed to connect. HTTP Code:" << httpCode;
+                qDebug() << "Error:" << curl_easy_strerror(res);
+            }
+
+            curl_slist_free_all(headers);
+            curl_easy_cleanup(curl);
         }
-        else {
-            qDebug() << "Register data sent successfully for user: " << QString::fromStdString(username);
-        }
 
-        curl_slist_free_all(headers);
-        curl_easy_cleanup(curl);
+        curl_global_cleanup();
     }
-
-    curl_global_cleanup();
+    catch (const std::exception& e) {
+        qDebug() << "Exception occurred in SendUserRequestToServer: " << e.what();
+    }
 }
 
-//function for reception answer from the server
-static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* response)
-{
-    size_t totalSize = size * nmemb;
-    response->append((char*)contents, totalSize);
-    return totalSize;
-}
-std::string GetServerData(const std::string& url) {
+std::string ServerUtils::GetServerData(const std::string& url) {
     CURL* curl;
     CURLcode res;
     std::string response;
@@ -89,7 +121,7 @@ std::string GetServerData(const std::string& url) {
 
     if (curl) {
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &ServerUtils::WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
         curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L); // Timeout de 10 secunde
 
@@ -114,8 +146,15 @@ std::string GetServerData(const std::string& url) {
     return response;
 }
 
-void PostServerData(const std::string& url, const std::string& jsonPayload)
-{
+size_t ServerUtils::WriteCallback(void* contents, size_t size, size_t nmemb, std::string* userData) {
+    if (userData) {
+        userData->append((char*)contents, size * nmemb);
+        return size * nmemb;
+    }
+    return 0;
+}
+
+void ServerUtils::PostServerData(const std::string& url, const std::string& jsonPayload) {
     CURL* curl;
     CURLcode res;
 
@@ -123,7 +162,7 @@ void PostServerData(const std::string& url, const std::string& jsonPayload)
     curl = curl_easy_init();
 
     if (!curl) {
-        qDebug() << "Failed to initialize CURL.";
+        qCritical() << "Failed to initialize CURL.";
         curl_global_cleanup();
         return;
     }
@@ -138,10 +177,10 @@ void PostServerData(const std::string& url, const std::string& jsonPayload)
     res = curl_easy_perform(curl);
 
     if (res != CURLE_OK) {
-        qDebug() << "Failed to post data to server: " << curl_easy_strerror(res);
+        qWarning() << "Failed to post data to server:" << curl_easy_strerror(res);
     }
     else {
-        qDebug() << "Data posted successfully to server: " << QString::fromStdString(jsonPayload);
+        qDebug() << "Data posted successfully to server:" << QString::fromStdString(jsonPayload);
     }
 
     curl_slist_free_all(headers);
@@ -149,9 +188,7 @@ void PostServerData(const std::string& url, const std::string& jsonPayload)
     curl_global_cleanup();
 }
 
-
-// verify if the code exist on the server
-bool CheckServerCode(const std::string& url)
+bool ServerUtils::CheckServerCode(const std::string& url)
 {
     CURL* curl;
     CURLcode res;
@@ -162,12 +199,10 @@ bool CheckServerCode(const std::string& url)
 
     if (curl)
     {
-        //GET configuration task
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &ServerUtils::WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
-        // verify the task and the result
         res = curl_easy_perform(curl);
         if (res != CURLE_OK)
         {
@@ -199,18 +234,24 @@ bool CheckServerCode(const std::string& url)
     return false;
 }
 
-void SendMoveToServer(int playerId, const std::string& direction)
-{
+void ServerUtils::SendMoveToServer(const std::string& direction) {
+
+    if (GetUserId() == 0) {
+        qDebug() << "No connected user. Cannot send move.";
+        return;
+    }
+
     CURL* curl;
     CURLcode res;
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
     curl = curl_easy_init();
 
-    if (curl)
-    {
-        std::string url = "http://localhost:8080/move";  // URL to the server's move endpoint
-        std::string jsonPayload = "{\"playerId\": " + std::to_string(playerId) + ", \"direction\": \"" + direction + "\"}";
+    if (curl) {
+        std::string url = "http://localhost:8080/move";
+        std::string jsonPayload = "{\"playerId\": " + std::to_string(GetUserId()) + ", \"direction\": \"" + direction + "\"}";
+
+        qDebug() << "Sending move request. Payload: " << QString::fromStdString(jsonPayload);
 
         struct curl_slist* headers = nullptr;
         headers = curl_slist_append(headers, "Content-Type: application/json");
@@ -221,13 +262,11 @@ void SendMoveToServer(int playerId, const std::string& direction)
 
         res = curl_easy_perform(curl);
 
-        if (res != CURLE_OK)
-        {
+        if (res != CURLE_OK) {
             qDebug() << "Failed to send move: " << curl_easy_strerror(res);
         }
-        else
-        {
-            qDebug() << "Movement sent successfully for playerId " << playerId << " direction: " << QString::fromStdString(direction);
+        else {
+            qDebug() << "Movement sent successfully for ConnectedUserId " << GetUserId() << " direction: " << QString::fromStdString(direction);
         }
 
         curl_slist_free_all(headers);
@@ -237,9 +276,9 @@ void SendMoveToServer(int playerId, const std::string& direction)
     curl_global_cleanup();
 }
 
-std::string GetPlayerDataByIdFromServer(int playerId)
+std::string ServerUtils::GetPlayerDataByIdFromServer()
 {
-    std::string url = "http://localhost:8080/getPlayerScore?playerId=" + std::to_string(playerId);
+    std::string url = "http://localhost:8080/getPlayerScore?playerId=" + std::to_string(GetUserId());
 
     std::string response = GetServerData(url);
 
@@ -268,7 +307,7 @@ std::string GetPlayerDataByIdFromServer(int playerId)
     return response;
 }
 
-std::vector<Enemy> GetEnemiesFromServer()
+std::vector<Enemy> ServerUtils::GetEnemiesFromServer()
 {
     std::vector<Enemy> enemies;
     std::string url = "http://localhost:8080/getEnemies";
@@ -309,7 +348,7 @@ std::vector<Enemy> GetEnemiesFromServer()
     return enemies;
 }
 
-std::pair<int, int> GetBaseFromServer()
+std::pair<int, int> ServerUtils::GetBaseFromServer()
 {
     std::string url = "http://localhost:8080/getBase";
 
@@ -341,12 +380,12 @@ std::pair<int, int> GetBaseFromServer()
     }
 }
 
-std::vector<Bomb> GetBombsFromServer()
+std::vector<Bomb> ServerUtils::GetBombsFromServer()
 {
     std::vector<Bomb> bombs;
-    std::string url = "http://localhost:8080/getBombs"; // URL-ul endpoint-ului serverului pentru obținerea bombelor
+    std::string url = "http://localhost:8080/getBombs";
 
-    std::string response = GetServerData(url); // Folosim funcția GetServerData pentru a trimite cererea GET
+    std::string response = GetServerData(url);
 
     if (response.empty()) {
         qDebug() << "No bomb data received from server.";
@@ -357,7 +396,6 @@ std::vector<Bomb> GetBombsFromServer()
         auto jsonResponse = nlohmann::json::parse(response);
 
         if (jsonResponse.contains("bombs") && jsonResponse["bombs"].is_array()) {
-            // Iterăm prin fiecare bombă din răspunsul serverului
             for (const auto& bomb : jsonResponse["bombs"]) {
                 if (bomb.contains("id") && bomb.contains("x") && bomb.contains("y")) {
                     bombs.push_back({
