@@ -1,12 +1,8 @@
 ﻿#include "CustomToolBar.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QPalette>
-#include <QPixmap>
 
 CustomTitleBar::CustomTitleBar(QWidget* parent)
-    : QWidget(parent), m_dragging(false) {
+    : QWidget(parent), m_dragging(false)
+{
 
     setAutoFillBackground(true);
     QPalette palette = this->palette();
@@ -15,10 +11,8 @@ CustomTitleBar::CustomTitleBar(QWidget* parent)
 
     setFixedHeight(35);
 
-    // main horizontal layout
     QHBoxLayout* mainLayout = new QHBoxLayout(this);
 
-    // Layout for the title and icon
     QHBoxLayout* leftLayout = new QHBoxLayout();
     m_iconLabel = new QLabel(this);
     leftLayout->addWidget(m_iconLabel);
@@ -26,17 +20,15 @@ CustomTitleBar::CustomTitleBar(QWidget* parent)
 
     leftLayout->addSpacerItem(new QSpacerItem(500, 500, QSizePolicy::Expanding, QSizePolicy::Expanding));
 
-    // Layout for the logo (image)
     m_imageLabel = new QLabel(this);
     leftLayout->addWidget(m_imageLabel);
 
-    // layout for the buttons
     QHBoxLayout* rightLayout = new QHBoxLayout();
     rightLayout->addStretch();
 
 
-    m_minimizeButton = new QPushButton("_", this);
-    m_minimizeButton->setFixedSize(30, 20);
+    m_minimizeButton = new QPushButton("⎯", this);
+    m_minimizeButton->setFixedSize(40, 35);
     m_minimizeButton->setStyleSheet("QPushButton {"
         "background-color: transparent;"
         "color: white;"
@@ -48,12 +40,12 @@ CustomTitleBar::CustomTitleBar(QWidget* parent)
         "}"
         "QPushButton:pressed {"
         "background-color: rgba(0,0,0,0.4) "
-        "color: rgba(0, 0, 0,0.5);"//black
+        "color: rgba(0, 0, 0,0.5);"
         "}");
     rightLayout->addWidget(m_minimizeButton);
 
-    m_maximizeButton = new QPushButton("□", this);
-    m_maximizeButton->setFixedSize(30, 20);
+    m_maximizeButton = new QPushButton("❒", this);
+    m_maximizeButton->setFixedSize(40, 35);
     m_maximizeButton->setStyleSheet("QPushButton {"
         "background-color: transparent;"
         "color: white;"
@@ -70,7 +62,7 @@ CustomTitleBar::CustomTitleBar(QWidget* parent)
     rightLayout->addWidget(m_maximizeButton);
 
     m_closeButton = new QPushButton("X", this);
-    m_closeButton->setFixedSize(30, 20);
+    m_closeButton->setFixedSize(40, 35);
     m_closeButton->setStyleSheet("QPushButton {"
         "background-color: transparent;"
         "color: white;"
@@ -86,70 +78,94 @@ CustomTitleBar::CustomTitleBar(QWidget* parent)
         "}");
     rightLayout->addWidget(m_closeButton);
 
-    // Conectarea semnalelor pentru butoane
     connect(m_minimizeButton, &QPushButton::clicked, this, &CustomTitleBar::onMinimizeButtonClicked);
     connect(m_maximizeButton, &QPushButton::clicked, this, &CustomTitleBar::onMaximizeButtonClicked);
     connect(m_closeButton, &QPushButton::clicked, this, &CustomTitleBar::onCloseButtonClicked);
 
-    // addi
-    mainLayout->addLayout(leftLayout);   // Stânga
-    mainLayout->addLayout(rightLayout);  // Dreapta
-
+    mainLayout->addLayout(leftLayout);   
+    mainLayout->addLayout(rightLayout);  
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setSpacing(0);
     setLayout(mainLayout);
 }
-CustomTitleBar::~CustomTitleBar() {
-    // Destructor
+
+CustomTitleBar::~CustomTitleBar() 
+{
+   
 }
 
 
-void CustomTitleBar::setIcon(const QPixmap& pixmap1) {
+void CustomTitleBar::setIcon(const QPixmap& pixmap1) 
+{
 
-    if (pixmap1.isNull()) {
-        qDebug() << "Fișierul nu a fost incărcat corect!";
+    if (pixmap1.isNull()) 
+    {
+        qDebug() << "Error in opening the file!";
     }
-
     QPixmap scaledPixmap = pixmap1.scaled(40, 50, Qt::KeepAspectRatio);
 
     m_iconLabel->setPixmap(scaledPixmap);
 }
 
-void CustomTitleBar::setImage(const QString& imagePath) {
+void CustomTitleBar::setImage(const QString& imagePath) 
+{
     QPixmap pixmap(imagePath);
-    if (!pixmap.isNull()) {
-        m_imageLabel->setPixmap(pixmap.scaled(200, 15, Qt::KeepAspectRatio));//resize the image
+    if (!pixmap.isNull()) 
+    {
+        pixmap = pixmap.scaledToHeight(35, Qt::SmoothTransformation);
+
+        m_imageLabel->setPixmap(pixmap);
+
+        m_imageLabel->setFixedHeight(35);
+
+        m_imageLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+        m_imageLabel->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
     }
+    else
+        qDebug() << "Error in opening the file!";
 }
 
-void CustomTitleBar::mousePressEvent(QMouseEvent* event) {
+void CustomTitleBar::mousePressEvent(QMouseEvent* event) 
+{
     m_dragging = true;
     m_dragPosition = event->globalPosition().toPoint() - parentWidget()->geometry().topLeft();
 }
 
-void CustomTitleBar::mouseMoveEvent(QMouseEvent* event) {
-    if (m_dragging) {
+void CustomTitleBar::mouseMoveEvent(QMouseEvent* event) 
+{
+    if (m_dragging) 
+    {
         parentWidget()->move(event->globalPosition().toPoint() - m_dragPosition);
     }
 }
 
-void CustomTitleBar::mouseReleaseEvent(QMouseEvent* event) {
+void CustomTitleBar::mouseReleaseEvent(QMouseEvent* event) 
+{
     m_dragging = false;
 }
-void CustomTitleBar::onCloseButtonClicked() {
+
+void CustomTitleBar::onCloseButtonClicked() 
+{
     // close de window
     qApp->quit();
 }
 
-void CustomTitleBar::onMaximizeButtonClicked() {
+void CustomTitleBar::onMaximizeButtonClicked() 
+{
     // Maximize the window
-    if (parentWidget()->isMaximized()) {
+    if (parentWidget()->isMaximized()) 
+    {
         parentWidget()->showNormal();
     }
-    else {
+    else 
+    {
         parentWidget()->showMaximized();
     }
 }
 
-void CustomTitleBar::onMinimizeButtonClicked() {
+void CustomTitleBar::onMinimizeButtonClicked() 
+{
     // Minimize the window
     parentWidget()->showMinimized();
 }

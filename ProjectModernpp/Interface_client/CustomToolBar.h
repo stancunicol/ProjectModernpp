@@ -1,10 +1,18 @@
+#pragma once
+
 #include <QWidget>
 #include <QLabel>
 #include <QMouseEvent>
 #include <QIcon>
-#include<QPushButton>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QPalette>
+#include <QPixmap>
 
-class CustomTitleBar : public QWidget {
+class CustomTitleBar : public QWidget 
+{
     Q_OBJECT
 
 public:
@@ -24,12 +32,13 @@ private slots:
     void onMaximizeButtonClicked();
     void onMinimizeButtonClicked();
 
+
 private:
-    QLabel* m_iconLabel;
-    QLabel* m_imageLabel;
-    QPushButton* m_closeButton;
-    QPushButton* m_maximizeButton;
-    QPushButton* m_minimizeButton;
+    QLabel* m_iconLabel = nullptr;
+    QLabel* m_imageLabel = nullptr;
+    QPushButton* m_closeButton = nullptr;
+    QPushButton* m_maximizeButton = nullptr;
+    QPushButton* m_minimizeButton = nullptr;
 
     bool m_dragging;
     QPoint m_dragPosition;

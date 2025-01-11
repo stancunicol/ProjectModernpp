@@ -192,6 +192,7 @@
   <ItemGroup>
     <Image Include="background.jpg" />
     <Image Include="Battle_city.jpg" />
+    <Image Include="include_girls_logo.jpg" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Battle_city.h" />

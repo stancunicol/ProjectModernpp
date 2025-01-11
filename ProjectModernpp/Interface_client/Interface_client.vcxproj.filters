@@ -79,6 +79,9 @@
     <Image Include="background.jpg">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="include_girls_logo.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="Battle_city.ui">

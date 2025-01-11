@@ -6,19 +6,17 @@ Battle_city::Battle_city(QWidget* parent)
 {
 	setWindowFlags(Qt::FramelessWindowHint);//hide the default tool bar
 
-	// create a custom title bar
 	CustomTitleBar* titleBar = new CustomTitleBar(this);
-	setMenuWidget(titleBar);  // add the bar as main widget of the window
+	setMenuWidget(titleBar);  
 
 	QPixmap pixmap1("./logo_tank2.jpg");
 	titleBar->setIcon(pixmap1);  // set the icon
-	titleBar->setImage("./include_girls_logo13.jpg");// set the logo image
+	titleBar->setImage("./include_girls_logo.jpg");// set the logo image
 
-	// create a widget for the rest of the window
 	QWidget* centralWidget = new QWidget(this);
 	setCentralWidget(centralWidget);
 
-	resize(1200, 700);//window 1500X775
+	resize(1200, 700);
 	m_background = new QLabel(this);
 	QPixmap pixmap("./Battle_city.jpg");
 	if (pixmap.isNull())
@@ -30,12 +28,12 @@ Battle_city::Battle_city(QWidget* parent)
 	m_background->setGeometry(this->rect());//Set the geometry of the QLabel to occupy the entire window
 	setCentralWidget(m_background);//Set the QLabel as the centre widget
 
-	QVBoxLayout* layout = new QVBoxLayout(m_background);//vertical layout
-	QHBoxLayout* otherLayout = new QHBoxLayout;// horizontal layout
+	QVBoxLayout* layout = new QVBoxLayout(m_background);
+	QHBoxLayout* otherLayout = new QHBoxLayout;
 
-	m_playButton = new QPushButton("Play", this);//play button
-	m_connectButton = new QPushButton("Connect", this);//connect button
-	m_controlsButton = new QPushButton("Controls", this);//controls button
+	m_playButton = new QPushButton("Play", this);
+	m_connectButton = new QPushButton("Connect", this);
+	m_controlsButton = new QPushButton("Controls", this);
 
 	m_playButton->setFixedSize(320, 55);
 	m_connectButton->setFixedSize(270, 40);
