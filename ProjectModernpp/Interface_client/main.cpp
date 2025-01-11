@@ -7,6 +7,7 @@
 #include <nlohmann/json.hpp>
 #include <curl/curl.h>
 #include <thread>
+#include <vector>
 
 using json = nlohmann::json;
 
@@ -17,7 +18,7 @@ size_t WriteCallBack(void* content, size_t size, size_t memb, void* user)
     return totalSize;
 }
 
-void FetchGameState() 
+void FetchGameState(std::vector<std::vector<int>>& matrix)
 {
     CURL* curl;
     CURLcode res;
@@ -25,7 +26,7 @@ void FetchGameState()
     curl_global_init(CURL_GLOBAL_DEFAULT);
     curl = curl_easy_init();
 
-    if (curl) 
+    if (curl)
     {
         std::string readBuffer;
 
@@ -35,17 +36,17 @@ void FetchGameState()
 
         res = curl_easy_perform(curl);
 
-        if (res != CURLE_OK) 
+        if (res != CURLE_OK)
         {
             qDebug() << "CURL error: " << curl_easy_strerror(res);
         }
-        else 
+        else
         {
-            try 
+            try
             {
                 json jsonResponse = json::parse(readBuffer);
 
-                int level = jsonResponse.value("level", -1); 
+                int level = jsonResponse.value("level", -1);
                 int rows = jsonResponse.value("rows", -1);
                 int columns = jsonResponse.value("columns", -1);
 
@@ -53,29 +54,45 @@ void FetchGameState()
                 qDebug() << "Rows:" << rows;
                 qDebug() << "Columns:" << columns;
 
-                if (jsonResponse.contains("matrix")) 
+                if (jsonResponse.contains("matrix"))
                 {
-                    auto matrix = jsonResponse["matrix"];
+                    auto jsonMatrix = jsonResponse["matrix"];
 
-                    qDebug() << "Matrix:";
-                    for (const auto& row : matrix) 
+                    if (!jsonMatrix.is_array())
                     {
-                        QString rowString;
+                        qDebug() << "Error: Matrix is not an array.";
+                        return;
+                    }
+
+                    for (const auto& row : jsonMatrix)
+                    {
+                        if (!row.is_array())
+                        {
+                            qDebug() << "Error: Row in matrix is not an array.";
+                            return;
+                        }
+
+                        std::vector<int> rowVector;
                         for (const auto& cell : row)
                         {
-                            rowString += QString::number(cell.get<int>()) + " "; // Convertește valorile la întregi și le concatenează
+                            if (cell.is_number_integer())
+                            {
+                                rowVector.push_back(cell.get<int>());
+                            }
+                            else
+                            {
+                                qDebug() << "Error: Cell is not an integer.";
+                            }
                         }
-                        rowString.chop(1);
-                        rowString += "]";
-                        qDebug() << rowString;
+                        matrix.push_back(rowVector);
                     }
                 }
-                else 
+                else
                 {
                     qDebug() << "Matrix not found in response.";
                 }
             }
-            catch (const json::parse_error& e) 
+            catch (const json::parse_error& e)
             {
                 qDebug() << "JSON Parsing error: " << e.what();
             }
@@ -85,19 +102,30 @@ void FetchGameState()
     curl_global_cleanup();
 }
 
-
 int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
     Battle_city* game = new Battle_city();
     GameMapInterface* gameMap = new GameMapInterface();
-    
-    std::thread fetchThread([]() 
+
+    std::vector<std::vector<int>> matrix;
+
+    std::thread fetchThread([&matrix]() 
         {
-        FetchGameState();
+        FetchGameState(matrix);
         });
 
     fetchThread.join();
+
+    std::cout << "Matrix:" << '\n';
+    for (const auto& row : matrix)
+    {
+        for (const auto& cell : row)
+        {
+            std::cout << cell << " ";
+        }
+        std::cout << std::endl;
+    }
 
     game->show();
 
