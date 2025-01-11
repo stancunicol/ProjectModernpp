@@ -15,18 +15,10 @@ CustomTitleBar::CustomTitleBar(QWidget* parent)
 
     QHBoxLayout* leftLayout = new QHBoxLayout();
     m_iconLabel = new QLabel(this);
-    leftLayout->addWidget(m_iconLabel);
-
-
-    leftLayout->addSpacerItem(new QSpacerItem(500, 500, QSizePolicy::Expanding, QSizePolicy::Expanding));
-
-    m_imageLabel = new QLabel(this);
-    leftLayout->addWidget(m_imageLabel);
+    leftLayout->addWidget(m_iconLabel); 
+    leftLayout->setContentsMargins(0, 0, 0, 0);  
 
     QHBoxLayout* rightLayout = new QHBoxLayout();
-    rightLayout->addStretch();
-
-
     m_minimizeButton = new QPushButton("⎯", this);
     m_minimizeButton->setFixedSize(40, 35);
     m_minimizeButton->setStyleSheet("QPushButton {"
@@ -34,13 +26,10 @@ CustomTitleBar::CustomTitleBar(QWidget* parent)
         "color: white;"
         "border: none;"
         "font-size: 15px"
-        "}"
-        "QPushButton:hover {"
+        "} QPushButton:hover {"
         "background-color: rgba(0,0,0,0.10);"
-        "}"
-        "QPushButton:pressed {"
-        "background-color: rgba(0,0,0,0.4) "
-        "color: rgba(0, 0, 0,0.5);"
+        "} QPushButton:pressed {"
+        "background-color: rgba(0,0,0,0.4); color: rgba(0, 0, 0,0.5);"
         "}");
     rightLayout->addWidget(m_minimizeButton);
 
@@ -51,13 +40,10 @@ CustomTitleBar::CustomTitleBar(QWidget* parent)
         "color: white;"
         "border: none;"
         "font-size: 15px;"
-        "}"
-        "QPushButton:hover {"
+        "} QPushButton:hover {"
         "background-color: rgba(0,0,0,0.10);"
-        "}"
-        "QPushButton:pressed {"
-        "background-color: rgba(0,0,0,0.4) "
-        "color: rgba(0, 0, 0,0.5);"
+        "} QPushButton:pressed {"
+        "background-color: rgba(0,0,0,0.4); color: rgba(0, 0, 0,0.5);"
         "}");
     rightLayout->addWidget(m_maximizeButton);
 
@@ -68,23 +54,35 @@ CustomTitleBar::CustomTitleBar(QWidget* parent)
         "color: white;"
         "border: none;"
         "font-size: 15px"
-        "}"
-        "QPushButton:hover {"
-        "background-color: red;"
-        "}"
-        "QPushButton:pressed {"
-        "background-color: rgba(255, 77, 77, 0.69); "
-        "color: rgba(0, 0, 0,0.5);"
+        "} QPushButton:hover {"
+        "background-color: red; "
+        "} QPushButton:pressed {"
+        "background-color: rgba(255, 77, 77, 0.69); color: rgba(0, 0, 0,0.5);"
         "}");
     rightLayout->addWidget(m_closeButton);
+    rightLayout->setContentsMargins(0, 0, 0, 0);  
 
     connect(m_minimizeButton, &QPushButton::clicked, this, &CustomTitleBar::onMinimizeButtonClicked);
     connect(m_maximizeButton, &QPushButton::clicked, this, &CustomTitleBar::onMaximizeButtonClicked);
     connect(m_closeButton, &QPushButton::clicked, this, &CustomTitleBar::onCloseButtonClicked);
 
-    mainLayout->addLayout(leftLayout);   
+    QHBoxLayout* centerLayout = new QHBoxLayout();
+
+    centerLayout->addStretch();  //spacer for moving the image to the center
+
+    m_imageLabel = new QLabel(this);
+    centerLayout->setContentsMargins(0, 0, 0, 0);  
+    m_imageLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter); 
+    centerLayout->addWidget(m_imageLabel); 
+
+    centerLayout->addStretch();  // to maintain the picture in the center
+  
+    mainLayout->addLayout(leftLayout);  
+    mainLayout->addSpacing(75);
+    mainLayout->addLayout(centerLayout); 
     mainLayout->addLayout(rightLayout);  
-    mainLayout->setContentsMargins(0, 0, 0, 0);
+
+    mainLayout->setContentsMargins(0, 0, 0, 0); 
     mainLayout->setSpacing(0);
     setLayout(mainLayout);
 }
