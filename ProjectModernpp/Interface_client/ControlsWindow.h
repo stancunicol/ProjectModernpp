@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QColor>
 #include <QPixmap>
+#include <QSettings>
 
 class ControlsWindow : public QDialog
 {
@@ -17,11 +18,12 @@ class ControlsWindow : public QDialog
 
 public:
     ControlsWindow(QWidget* parent = nullptr);
+    void saveSettings();
+    void loadSettings();
+    void resetToDefaults();
     void setupKeyEdit(QLineEdit* keyEdit);
+    bool eventFilter(QObject* watched, QEvent* event);
     ~ControlsWindow();
-
-protected:
-    void keyPressEvent(QKeyEvent* event) override;
 
 private:
     QLabel* m_instructionLabel=nullptr;

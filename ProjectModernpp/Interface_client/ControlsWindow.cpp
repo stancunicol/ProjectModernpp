@@ -1,25 +1,20 @@
 ﻿#include "ControlsWindow.h"
-#include <QKeyEvent>
-#include <QMessageBox>
-#include <QVBoxLayout>
-#include <QGridLayout>
-#include <QLabel>
-#include <QPushButton>
 
 ControlsWindow::ControlsWindow(QWidget* parent)
     : QDialog(parent),
-    m_upKeyEdit(new QLineEdit("W", this)),
-    m_downKeyEdit(new QLineEdit("S", this)),
-    m_leftKeyEdit(new QLineEdit("A", this)),
-    m_rightKeyEdit(new QLineEdit("D", this)),
-    m_fireKeyEdit(new QLineEdit("Space", this))
+    m_upKeyEdit(new QLineEdit(this)),
+    m_downKeyEdit(new QLineEdit(this)),
+    m_leftKeyEdit(new QLineEdit(this)),
+    m_rightKeyEdit(new QLineEdit(this)),
+    m_fireKeyEdit(new QLineEdit(this))
 {
+    this->setFocus();
     setWindowTitle("Game Controls");
     setFixedSize(600, 500);
 
     setStyleSheet(
         "ControlsWindow {"
-        "background-image: url(background.jpg);" 
+        "background-image: url(background.jpg);"
         "background-repeat: no-repeat;"
         "background-position: center;"
         "}");
@@ -68,55 +63,102 @@ ControlsWindow::ControlsWindow(QWidget* parent)
     gridLayout->addWidget(new QLabel("Fire:", this), 4, 0);
     gridLayout->addWidget(m_fireKeyEdit, 4, 1);
 
+    QPushButton* resetButton = new QPushButton("Reset to Defaults", this);
+    connect(resetButton, &QPushButton::clicked, this, &ControlsWindow::resetToDefaults);
+
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(instructionLabel);
     mainLayout->addWidget(gameLegendLabel);
     mainLayout->addLayout(gridLayout);
+    mainLayout->addWidget(resetButton);
+
+    ControlsWindow::loadSettings();
+    //Aply event filter for every QLineEdit to capture the event
+    m_upKeyEdit->installEventFilter(this);
+    m_downKeyEdit->installEventFilter(this);
+    m_leftKeyEdit->installEventFilter(this);
+    m_rightKeyEdit->installEventFilter(this);
+    m_fireKeyEdit->installEventFilter(this);
 }
 
-void ControlsWindow::setupKeyEdit(QLineEdit * keyEdit)
+void ControlsWindow::saveSettings()
+{
+    QSettings settings("MyCompany", "BattleCity");
+    settings.setValue("UpKey", m_upKeyEdit->text());
+    settings.setValue("DownKey", m_downKeyEdit->text());
+    settings.setValue("LeftKey", m_leftKeyEdit->text());
+    settings.setValue("RightKey", m_rightKeyEdit->text());
+    settings.setValue("FireKey", m_fireKeyEdit->text());
+}
+
+void ControlsWindow::loadSettings()
+{
+    QSettings settings("MyCompany", "BattleCity");
+    m_upKeyEdit->setText(settings.value("UpKey", "W").toString());
+    m_downKeyEdit->setText(settings.value("DownKey", "S").toString());
+    m_leftKeyEdit->setText(settings.value("LeftKey", "A").toString());
+    m_rightKeyEdit->setText(settings.value("RightKey", "D").toString());
+    m_fireKeyEdit->setText(settings.value("FireKey", "Space").toString());
+}
+
+void ControlsWindow::resetToDefaults()
+{
+    m_upKeyEdit->setText("W");
+    m_downKeyEdit->setText("S");
+    m_leftKeyEdit->setText("A");
+    m_rightKeyEdit->setText("D");
+    m_fireKeyEdit->setText("Space");
+
+    saveSettings(); 
+}
+
+void ControlsWindow::setupKeyEdit(QLineEdit* keyEdit)
 {
     keyEdit->setAlignment(Qt::AlignCenter);
     keyEdit->setFocusPolicy(Qt::StrongFocus);
-    keyEdit->setReadOnly(true); 
+    keyEdit->setReadOnly(true);  
 }
 
-void ControlsWindow::keyPressEvent(QKeyEvent * event)
+bool ControlsWindow::eventFilter(QObject* watched, QEvent* event)
 {
-    QWidget* focusedWidget = focusWidget();
-    if (!focusedWidget)
-        return;
+    if (event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
 
-    QString pressedKey;
-    switch (event->key()) {
-    case Qt::Key_Up: pressedKey = "↑"; break;
-    case Qt::Key_Down: pressedKey = "↓"; break;
-    case Qt::Key_Left: pressedKey = "←"; break;
-    case Qt::Key_Right: pressedKey = "→"; break;
-    default: pressedKey = event->text().toUpper(); break;
+        QLineEdit* keyEdit = qobject_cast<QLineEdit*>(watched);
+        if (keyEdit) 
+        {
+            QString pressedKey;
+            switch (keyEvent->key()) 
+            {
+            case Qt::Key_Up: pressedKey = "↑"; break;
+            case Qt::Key_Down: pressedKey = "↓"; break;
+            case Qt::Key_Left: pressedKey = "←"; break;
+            case Qt::Key_Right: pressedKey = "→"; break;
+            case Qt::Key_Space: pressedKey = "Space"; break;
+            default: pressedKey = keyEvent->text().toUpper(); break;
+            }
+
+            if (pressedKey != m_upKeyEdit->text() && pressedKey != m_downKeyEdit->text() &&
+                pressedKey != m_leftKeyEdit->text() && pressedKey != m_rightKeyEdit->text() &&
+                pressedKey != m_fireKeyEdit->text()) 
+            {
+                keyEdit->setText(pressedKey);
+                saveSettings(); 
+            }
+            else 
+            {
+                QMessageBox::warning(this, "Duplicate Key", "This key is already assigned to another action!");
+            }
+
+            return true;
+        }
     }
-
-    if (pressedKey == m_upKeyEdit->text() ||
-        pressedKey == m_downKeyEdit->text() ||
-        pressedKey == m_leftKeyEdit->text() ||
-        pressedKey == m_rightKeyEdit->text() ||
-        pressedKey == m_fireKeyEdit->text()) {
-        QMessageBox::warning(this, "Duplicate Key", "This key is already assigned to another action!");
-        return;
-    }
-
-    if (focusedWidget == m_upKeyEdit)
-        m_upKeyEdit->setText(pressedKey);
-    else if (focusedWidget == m_downKeyEdit)
-        m_downKeyEdit->setText(pressedKey);
-    else if (focusedWidget == m_leftKeyEdit)
-        m_leftKeyEdit->setText(pressedKey);
-    else if (focusedWidget == m_rightKeyEdit)
-        m_rightKeyEdit->setText(pressedKey);
-    else if (focusedWidget == m_fireKeyEdit)
-        m_fireKeyEdit->setText(pressedKey);
+    //let the QWidget to proces the event
+    return QDialog::eventFilter(watched, event);
 }
+
 ControlsWindow::~ControlsWindow()
 {
-
+    saveSettings();
 }
