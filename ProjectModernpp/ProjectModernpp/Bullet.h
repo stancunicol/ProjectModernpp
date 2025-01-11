@@ -6,7 +6,7 @@ class Bullet {
 private:
     bool m_active;                // The bullet is active or not
     Point m_direction;            // The direction of the bullet
-    float m_speed;                // The speed of the bullet (cells on second)
+    float m_speed;         // The speed of the bullet (cells on second)
     Point m_position;             // The current position of the bullet
 
     float m_progress;
@@ -30,4 +30,6 @@ public:
     void Move(GameMap& map);
 
     bool operator==(const Bullet& other) const;
+
+    void SetSpeed(float speed);
 };

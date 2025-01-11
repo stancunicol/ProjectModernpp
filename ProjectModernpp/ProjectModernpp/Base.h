@@ -24,5 +24,6 @@ public:
     void SetPosition(const Point& point);
 
     int GetLife() const;
+
     const Point& GetPosition() const;
 };

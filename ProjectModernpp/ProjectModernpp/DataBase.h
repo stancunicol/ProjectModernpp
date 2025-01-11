@@ -4,11 +4,12 @@
 #include <iostream>
 #include <vector>
 #include <optional>
-
+#include <mutex>
 
 class DataBase {
 private:
 	sqlite3* db;
+	std::mutex dbMutex;
 
 	void executeQuery(const std::string& query);
 public:

@@ -66,3 +66,7 @@ bool Bullet::operator==(const Bullet& other) const
     return (m_position == other.m_position && m_active == other.m_active);
 }
 
+void Bullet::SetSpeed(float speed) {
+    m_speed = speed;
+}
+

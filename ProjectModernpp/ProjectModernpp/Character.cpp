@@ -34,3 +34,13 @@ void Character::SetLives(uint8_t lives)
 {
 	m_lives = lives;
 }
+
+void Character::DecreaseLives(uint8_t amount) {
+	if (m_lives > amount)
+		m_lives -= amount;
+	else m_lives = 0;
+}
+
+bool Character::isDead() const {
+	return m_lives == 0;
+}

@@ -11,13 +11,12 @@
 #include <crow.h>
 #include <unordered_map>
 #include "Room.h"
-
+#include <mutex>
 
 class  Game {
 private:
     GameMap m_map;
     EntityManager m_entityManager;
-
     DataBase m_database;
 
     std::unordered_map<std::string, Room> m_rooms;
@@ -25,6 +24,9 @@ private:
     std::string GenerateRoomCode();
 
     std::mutex roomMutex;
+
+    std::mutex gameMutex;
+
 
 public:
 
@@ -59,4 +61,5 @@ public:
 
     void UpdatePlayerMovements();
 
+    std::mutex& GetGameMutex();
 };

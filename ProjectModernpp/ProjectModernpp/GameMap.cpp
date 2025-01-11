@@ -3,18 +3,19 @@
 #include <iostream>
 #include "Bullet.h"
 #include <cassert>
+#include <random>
 
-void GameMap::MatrixSizeGenerator()
-{
-    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+void GameMap::MatrixSizeGenerator() {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> disHeight(19, 27);
+    std::uniform_int_distribution<> disWidth(19, 27);
 
-    do {
-        m_height = 19 + (std::rand() % ((27 - 19) + 1));
-    } while (m_height % 2 == 0);
+    m_height = disHeight(gen);
+    m_width = disWidth(gen);
 
-    do {
-        m_width = 19 + (std::rand() % ((27 - 19) + 1));
-    } while (m_width % 2 == 0 || m_width == m_height);
+    while (m_height % 2 == 0) m_height = disHeight(gen);
+    while (m_width % 2 == 0 || m_width == m_height) m_width = disWidth(gen);
 }
 
 GameMap::GameMap(uint8_t level)
@@ -28,7 +29,7 @@ GameMap::GameMap(uint8_t level)
 
 void GameMap::Initialize()
 {
-    int breakableWallChance, unbreakableWallChance, safeZoneSize = 3;
+    int breakableWallChance = 0, unbreakableWallChance = 0, safeZoneSize = 3;
 
     switch (m_level) {
     case 1: breakableWallChance = 15; unbreakableWallChance = 5; break;
@@ -145,6 +146,7 @@ uint32_t GameMap::GetLevel() const
 void GameMap::Reset(uint8_t level) {
     m_level = level;
 
+    MatrixSizeGenerator();
     m_grid.clear();
     m_grid.resize(m_height, std::vector<CellType>(m_width, CellType::EMPTY));
 

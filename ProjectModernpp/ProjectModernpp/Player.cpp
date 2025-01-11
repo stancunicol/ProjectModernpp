@@ -5,7 +5,8 @@
 std::shared_ptr<std::array<std::pair<Point, bool>, 4>> Player::m_positions = nullptr;
 
 Player::Player(const std::string& name, const GameMap& grid)
-    : m_name{ name }, m_points{ 0 }, m_score{ 0 } {
+    : m_name{ name }, m_points{ 0 }, m_score{ 0 }, m_shootDirection(0,0), m_moveDirection(0,0)
+{
     if (!m_positions) {
         m_positions = std::make_shared<std::array<std::pair<Point, bool>, 4>>();
         (*m_positions)[0] = { Point(0, 0), false };

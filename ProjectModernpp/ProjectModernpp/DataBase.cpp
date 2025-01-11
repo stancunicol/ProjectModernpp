@@ -53,6 +53,7 @@ void DataBase::DeleteGameData()
 }
 
 bool DataBase::UserExists(const std::string& username) {
+    std::lock_guard<std::mutex> lock(dbMutex);
     const std::string query = "SELECT EXISTS(SELECT 1 FROM GameData WHERE playerName = ?);";
     sqlite3_stmt* stmt = nullptr;
     bool exists = false;
@@ -78,6 +79,7 @@ bool DataBase::UserExists(const std::string& username) {
 
 void DataBase::AddUser(const std::string& username)
 {
+    std::lock_guard<std::mutex> lock(dbMutex);
     const std::string insertQuery = "INSERT INTO GameData (playerName, score, level, roomCode) "
         "VALUES ('" + username + "', 0, 0, NULL);";
     executeQuery(insertQuery);
@@ -85,6 +87,7 @@ void DataBase::AddUser(const std::string& username)
 }
 
 int DataBase::GetUserId(const std::string& playerName) {
+    std::lock_guard<std::mutex> lock(dbMutex);
     const std::string query = "SELECT id FROM GameData WHERE playerName = ?";
     sqlite3_stmt* stmt;
     int rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);

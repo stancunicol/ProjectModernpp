@@ -5,6 +5,7 @@ Base::Base(const Point& position, uint8_t initialLife)
 
 void Base::Destroyed() 
 {
+    m_life = 0;
     m_destroyed = true;
 }
 
@@ -15,9 +16,11 @@ bool Base::IsDestroyed() const
 
 void Base::TakeHit() 
 {
-    m_life--;
-    if (m_life == 0) {
-        m_destroyed = true;
+    if (m_life > 0) {
+        m_life--;
+        if (m_life == 0) {
+            m_destroyed = true;
+        }
     }
 }
 

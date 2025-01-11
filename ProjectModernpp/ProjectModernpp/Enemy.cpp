@@ -3,7 +3,10 @@
 #include <random>
 
 Enemy::Enemy(GameMap& map) //constructor
-    : Character(Point(0, 0), Point(0, 0))  {}
+    : Character(Point(0, 0), Point(0, 0))  
+{
+    PlaceCharacter(map);
+}
 
 
 void Enemy::PlaceCharacter(GameMap& map) 
@@ -40,6 +43,7 @@ void Enemy::MoveRandom(GameMap& map)
         }
     }
     m_shootDirection = Point(0, 0);
+
     if (!validPositions.empty()) {  //if we have valid positions
         int randomIndex = rand() % validPositions.size();  //we take a random index so we can take a random valid position from the vector
         Point randomFreePos = validPositions[randomIndex];

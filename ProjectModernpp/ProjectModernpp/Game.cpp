@@ -13,8 +13,6 @@ std::string Game::GenerateRoomCode()
 
 Game::Game()
     : m_map(), m_entityManager(m_map), m_database("GameData.db") {
-    //m_database.DeleteGameData();
-    m_database.Initialize();
 }
 
 Game::~Game() {}
@@ -98,19 +96,25 @@ void Game::UpdatePlayerMovements() {
     }
 }
 
+std::mutex& Game::GetGameMutex()
+{
+    return gameMutex;
+}
+
 void Game::EndGame(const std::string& winner)
 {
-    for (size_t i = 0; i < m_entityManager.GetPlayers().size(); i++) {
-        std::cout << m_entityManager.GetPlayers()[i].GetName() << " score: "
-            << static_cast<int>(m_entityManager.GetPlayers()[i].GetScore()) << '\n'; \
+    std::cout << "Final Scores: \n";
+    for (const auto& player : m_entityManager.GetPlayers()) {
+        std::cout << player.GetName() << " scored " << player.GetScore() << " points.\n";
     }
-    std::cout << "The game is over! " << winner << " WON!\n";
+    std::cout << "Game Over! " << winner << " Wins!\n";
 }
 
 std::mutex m_levelMutex;
 
 void Game::SetLevel(int newLevel) {
-    std::lock_guard<std::mutex> lock(m_levelMutex);
+    std::lock_guard<std::mutex> lock(gameMutex);
+    //std::lock_guard<std::mutex> lock(m_levelMutex);
     m_map.Reset(newLevel);
     InitializeGame();
 }
