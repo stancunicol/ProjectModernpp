@@ -8,6 +8,61 @@ void ServerUtils::SetUserId(int userId) {
     qDebug() << "User ID set to:" << this->userId;
 }
 
+
+void ServerUtils::GetGeneratedCodeFromServer() {
+    CURL* curl;
+    CURLcode res;
+    std::string response;
+
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+    curl = curl_easy_init();
+
+    if (curl) {
+        std::string url = "http://localhost:8080/generateCode";
+
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &ServerUtils::WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
+
+        res = curl_easy_perform(curl);
+
+        long httpCode = 0;
+        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
+
+        if (res == CURLE_OK && httpCode == 200) {
+            try {
+                auto jsonResponse = nlohmann::json::parse(response);
+                if (jsonResponse.contains("code") && jsonResponse.contains("message")) {
+                    int code = jsonResponse["code"].get<int>();
+                    std::string message = jsonResponse["message"].get<std::string>();
+
+                    qDebug() << "Code received from server:" << code;
+                    qDebug() << "Message:" << QString::fromStdString(message);
+
+                    this->SetRoomCode(code);
+                }
+                else {
+                    qDebug() << "Invalid JSON response. Missing 'code' or 'message'.";
+                }
+            }
+            catch (const std::exception& e) {
+                qDebug() << "Error parsing server response:" << e.what();
+            }
+        }
+        else {
+            qDebug() << "Request failed. HTTP Code:" << httpCode;
+            qDebug() << "Error:" << curl_easy_strerror(res);
+        }
+
+        curl_easy_cleanup(curl);
+    }
+
+    curl_global_cleanup();
+}
+
+
+
 void ServerUtils::SendLevelToServer(int level)
 {
     CURL* curl;

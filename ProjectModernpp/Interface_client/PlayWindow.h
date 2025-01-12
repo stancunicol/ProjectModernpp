@@ -20,7 +20,6 @@ public:
 
 protected:
     void OnGenerateClicked();
-    QString GenerateRandomNumber();
     void OnForwardClicked();
 
 private:

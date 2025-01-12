@@ -73,22 +73,6 @@ PlayWindow::~PlayWindow()
 
 }
 
-//function for generate random numbers
-QString PlayWindow::GenerateRandomNumber()
-{
-    QString number;
-
-
-    srand(time(NULL));
-    for (int i = 0; i < 5; ++i) {
-
-        int digit = rand() % 10;
-        number.append(QString::number(digit));
-    }
-    return number;
-
-}
-
 void PlayWindow::OnForwardClicked()
 {
     if (m_generate == false)
@@ -99,7 +83,8 @@ void PlayWindow::OnForwardClicked()
 
 void PlayWindow::OnGenerateClicked()
 {
-    QString randomNumber = GenerateRandomNumber();
+    m_serverObject.GetGeneratedCodeFromServer();
+    QString randomNumber = QString::number(m_serverObject.GetRoomCode());
     m_generate = true;
     m_generateCode->setText(randomNumber);
 

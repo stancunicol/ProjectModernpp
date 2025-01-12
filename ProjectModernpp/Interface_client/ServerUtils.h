@@ -23,8 +23,10 @@ private:
 
     std::string lastStatus;
     static int userId;
+    int roomCode;
 
 public:
+    void GetGeneratedCodeFromServer();
 
     void SendLevelToServer(int level);
 
@@ -47,6 +49,9 @@ public:
 
     void SetUserId(int id);
     int GetUserId() const { return userId; }
+
+    void SetRoomCode(int code) { this->roomCode = code; }
+    int GetRoomCode() const { return roomCode; }
 
     void SetStatus(const std::string& status) { lastStatus = status; }
     std::string GetStatus() const { return lastStatus; }
