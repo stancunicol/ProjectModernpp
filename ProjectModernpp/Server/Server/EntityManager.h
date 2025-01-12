@@ -1,6 +1,7 @@
 #pragma once
 #include <thread>
 #include <chrono>
+#include <unordered_map>
 #include "Player.h"
 #include "Enemy.h"
 #include "Bullet.h"
@@ -11,7 +12,7 @@
 
 class EntityManager {
 private:
-    std::vector<Player> m_players;
+    std::unordered_map<int, Player> m_players;
     std::vector<Enemy> m_enemies;
     std::vector<Bullet> m_bullets;
     std::vector<Bomb> m_bombs;
@@ -37,28 +38,29 @@ public:
     void PlaceBase(GameMap& map);
 
     void RemoveBullet(size_t index);
-    void RemovePlayer(size_t index);
+    void RemovePlayer(size_t playerId);
     void RemoveEnemy(size_t index);
     void RemoveBomb(size_t index);
 
 
     void EnemyShoots(const Point& direction, const Point& position);
-    void PlayerShoot(GameMap& map, Player& player);
+    void PlayerShoot(GameMap& map, int playerId);
 
     void ExplodeBomb(const Bomb& bomb, GameMap& map);
 
     void UpdateEntities(GameMap& map, float deltaTime);   // Updates the positions and states of all entities
 
-    const std::vector<Player>& GetPlayers() const;
+    const std::unordered_map<int, Player>& GetPlayers() const;
     const std::vector<Enemy>& GetEnemies() const;
     const std::vector<Bullet>& GetBullets() const;
     const std::vector<Bomb>& GetBombs() const;
 
-    std::vector<Player>& GetPlayersMutable();
+    std::unordered_map<int, Player>& GetPlayersMutable();
     std::vector<Enemy>& GetEnemiesMutable();
     std::vector<Bullet>& GetBulletsMutable();
     const Base& GetBase() const;
     std::string GetWinner() const;
 
+    Player* GetPlayerById(int playerId);
 };
 

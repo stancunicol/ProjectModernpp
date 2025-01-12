@@ -25,13 +25,13 @@ void Game::InitializeGame() {
 
     m_entityManager.PlaceBase(m_map);
 
-    std::vector<std::string> players(4);
+    /*std::vector<std::string> players(4);
 
     for (const auto& playerName : players) {
         Player newPlayer(playerName, m_map);
         m_entityManager.AddPlayer(newPlayer);
     }
-    m_entityManager.GetPlayersMutable()[0].ResetPositions();
+    m_entityManager.GetPlayersMutable()[0].ResetPositions();*/
 
     int enemiesToPlace = 1 + m_map.GetLevel();
 
@@ -89,9 +89,9 @@ void Game::Run() {
 void Game::UpdatePlayerMovements() {
     // Loop through all the players and move them based on the server commands
     for (auto& player : m_entityManager.GetPlayersMutable()) {
-        if (player.HasMovementCommand()) {
-            Point direction = player.GetMoveDirection();
-            player.MoveCharacter(direction, m_map);
+        if (player.second.HasMovementCommand()) {
+            Point direction = player.second.GetMoveDirection();
+            player.second.MoveCharacter(direction, m_map);
         }
     }
 }
@@ -105,7 +105,7 @@ void Game::EndGame(const std::string& winner)
 {
     std::cout << "Final Scores: \n";
     for (const auto& player : m_entityManager.GetPlayers()) {
-        std::cout << player.GetName() << " scored " << player.GetScore() << " points.\n";
+        std::cout << player.second.GetName() << " scored " << player.second.GetScore() << " points.\n";
     }
     std::cout << "Game Over! " << winner << " Wins!\n";
 }

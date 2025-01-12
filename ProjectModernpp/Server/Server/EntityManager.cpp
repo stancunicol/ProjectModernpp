@@ -12,9 +12,10 @@ void EntityManager::AddBomb(const Bomb& bomb)
 }
 
 void EntityManager::AddPlayer(const Player& player) {
-    m_players.push_back(player);
-    m_playersBullets.emplace_back(); // Adăugăm un nou vector pentru gloanțele acestui jucător
-    m_players.back().PlaceCharacter();
+    int playerId = m_database.GetUserId(player.GetName());
+    m_players[playerId] = player;
+    m_playersBullets[playerId] = {};
+    m_players[playerId].PlaceCharacter();
 }
 
 void EntityManager::AddEnemy(const Enemy& enemy)
@@ -50,18 +51,14 @@ void EntityManager::PlaceBase(GameMap& m_map)
     map[centerX - 1][centerY + 1] = CellType::BREAKABLE_WALL;
 }
 
-void EntityManager::RemovePlayer(size_t index)
+void EntityManager::RemovePlayer(size_t playerId)
 {
-    if (index < m_players.size()) {
-        // Dezactivăm jucătorul
-        m_players[index].Deactivate();
+    auto it = m_players.find(playerId);
+    if (it != m_players.end()) {
+        it->second.Deactivate();
 
-        // Poți adăuga un timer sau un delay pentru a-l reactiva mai târziu
-        // Aici presupunem că jucătorul va reapărea după un anumit timp
-        std::this_thread::sleep_for(std::chrono::seconds(5));  // De exemplu, 5 secunde
-
-        // Reactivăm jucătorul
-        m_players[index].Activate();
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+        it->second.Activate();
     }
 }
 
@@ -87,32 +84,25 @@ void EntityManager::EnemyShoots(const Point& direction, const Point& position)
     AddBullet(newBullet);
 }
 
-void EntityManager::PlayerShoot(GameMap& map, Player& player) {
-    Point shootDirection = player.GetShootDirection();
-    int index = -1;
-
-    for (size_t i = 0; i < m_players.size(); ++i) {
-        if (m_players[i].GetName() == player.GetName()) {
-            index = static_cast<int>(i);
-            break;
-        }
-    }
-
-    if (index == -1) {
+void EntityManager::PlayerShoot(GameMap& map, int playerId) {
+    auto it = m_players.find(playerId);
+    if (it == m_players.end()) {
         std::cerr << "Error: Player not found.\n";
         return;
     }
 
+    Player& player = it->second;
+    Point shootDirection = player.GetShootDirection();
+
     if (shootDirection != Point(0, 0)) {
         Point bulletStartPos = player.GetPosition();
 
-        // Verificăm dacă poziția glonțului este validă pe hartă
         if (bulletStartPos.GetX() >= 0 && bulletStartPos.GetX() < map.GetHeight() &&
             bulletStartPos.GetY() >= 0 && bulletStartPos.GetY() < map.GetWidth() &&
             map.GetMap()[bulletStartPos.GetX()][bulletStartPos.GetY()] == CellType::EMPTY) {
 
             Bullet bullet(bulletStartPos, shootDirection);
-            AddPlayerBullet(bullet, index);
+            AddPlayerBullet(bullet, playerId);
         }
         else {
             std::cerr << "Error: Invalid bullet start position.\n";
@@ -232,8 +222,7 @@ void EntityManager::RemoveBullet(size_t index)
     }
 }
 
-const std::vector<Player>& EntityManager::GetPlayers() const
-{
+const std::unordered_map<int, Player>& EntityManager::GetPlayers() const {
     return m_players;
 }
 
@@ -252,7 +241,7 @@ const std::vector<Bomb>& EntityManager::GetBombs() const
     return m_bombs;
 }
 
-std::vector<Player>& EntityManager::GetPlayersMutable()
+std::unordered_map<int, Player>& EntityManager::GetPlayersMutable()
 {
     return m_players;
 }
@@ -354,4 +343,9 @@ void EntityManager::HandleCollisions(GameMap& map)
     //        }
     //    }
     //}
+}
+
+Player* EntityManager::GetPlayerById(int playerId) {
+    auto it = m_players.find(playerId);
+    return (it != m_players.end()) ? &it->second : nullptr;
 }
