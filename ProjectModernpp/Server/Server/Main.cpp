@@ -1,4 +1,5 @@
-﻿#include "Game.h"
+﻿#include "..\RandomMove\RandomMove.h"
+#include "Game.h"
 #include <iostream>
 #include <crow.h>
 #include <regex>

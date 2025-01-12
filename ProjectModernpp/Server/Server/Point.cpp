@@ -1,4 +1,4 @@
-﻿#include "Point.h"
+#include "Point.h"
 
 Point::Point(int x, int y)
 	: m_x{ x }, m_y{ y }, m_data{ nullptr } {}
@@ -11,18 +11,18 @@ Point::~Point()
 	delete m_data;
 }
 
-void Point::SetPosition(const Point& position) 
+void Point::SetPosition(const Point& position)
 {
 	m_x = position.m_x;
 	m_y = position.m_y;
 }
 
-Point Point::GetPosition() const 
+Point Point::GetPosition() const
 {
 	return { m_x, m_y };
 }
 
-Point& Point::operator=(const Point& position) 
+Point& Point::operator=(const Point& position)
 {
 	if (this == &position) {
 		return *this;
@@ -52,7 +52,7 @@ Point Point::operator-(const Point& position) const
 	return Point(m_x - position.m_x, m_y - position.m_y);
 }
 
-Point Point::operator+=(const Point& position) 
+Point Point::operator+=(const Point& position)
 {
 	m_x = m_x + position.m_x;
 	m_y = m_y + position.m_y;
@@ -68,12 +68,12 @@ bool Point::operator!=(const Point& other) const
 	return !(*this == other);
 }
 
-size_t Point::GetX() const 
+size_t Point::GetX() const
 {
 	return m_x;
 }
 
-size_t Point::GetY() const 
+size_t Point::GetY() const
 {
 	return m_y;
 }

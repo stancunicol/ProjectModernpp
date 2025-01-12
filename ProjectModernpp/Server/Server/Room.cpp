@@ -2,7 +2,7 @@
 #include <iostream>
 
 Room::Room(const std::string& code)
-	: m_code{ code }, m_state{RoomState::WAITING_FOR_PLAYERS}, m_lastActivityTime{ std::chrono::steady_clock::now() } {}
+	: m_code{ code }, m_state{ RoomState::WAITING_FOR_PLAYERS }, m_lastActivityTime{ std::chrono::steady_clock::now() } {}
 
 bool Room::IsFull() const
 {

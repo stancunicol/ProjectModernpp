@@ -9,7 +9,7 @@ private:
 	static const uint8_t m_capacity = 4;
 	std::unordered_set<std::string> m_players;
 
-	enum class RoomState {WAITING_FOR_PLAYERS, IN_PROGRESS, FINISHED, INACTIVE};
+	enum class RoomState { WAITING_FOR_PLAYERS, IN_PROGRESS, FINISHED, INACTIVE };
 	RoomState m_state;
 
 	std::chrono::steady_clock::time_point m_lastActivityTime;

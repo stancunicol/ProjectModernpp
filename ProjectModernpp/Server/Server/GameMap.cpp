@@ -1,4 +1,4 @@
-﻿#include "GameMap.h"
+#include "GameMap.h"
 #include <cstdlib>
 #include <iostream>
 #include "Bullet.h"
