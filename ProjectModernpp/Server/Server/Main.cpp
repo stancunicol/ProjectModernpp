@@ -85,6 +85,24 @@ void StartServer(Game& game) {
             });
         });
 
+    // GET generateCode
+    CROW_ROUTE(serverApp, "/generateCode").methods(crow::HTTPMethod::GET)([]() {
+        return handleRequest([]() {
+
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::uniform_int_distribution<int> dis(100000, 999999);
+
+            int code = dis(gen);
+
+            crow::json::wvalue response;
+            response["code"] = code;
+            response["message"] = "Code generated successfully.";
+
+            return crow::response(200, response);
+            });
+        });
+
     // POST registerRoom
     CROW_ROUTE(serverApp, "/registerRoom").methods(crow::HTTPMethod::POST)([&game]() {
         return handleRequest([&game]() {
