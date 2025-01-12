@@ -213,32 +213,6 @@ void EntityManager::UpdateEntities(GameMap& map, float deltaTime)
 
     HandleCollisions(map);
 
-    for (const Player& player : m_players) {
-        map.DrawEntity(player.GetPosition(), 'P');
-    }
-
-    for (const Enemy& enemy : m_enemies) {
-        map.DrawEntity(enemy.GetPosition(), 'E');
-    }
-
-    for (size_t i = 0; i < m_playersBullets.size(); ++i) {
-        for (const Bullet& bullet : m_playersBullets[i]) {
-            if (bullet.IsActive()) {
-                map.DrawEntity(bullet.GetPosition(), 'o'); // Gloanțele jucătorilor
-            }
-        }
-    }
-
-    for (const Bullet& bullet : m_bullets) {
-        if (bullet.IsActive()) {
-            map.DrawEntity(bullet.GetPosition(), 'o');
-        }
-    }
-
-    if (!m_base.IsDestroyed()) {
-        map.DrawEntity(m_base.GetPosition(), 'B');
-    }
-
     m_bullets.erase(std::remove_if(m_bullets.begin(), m_bullets.end(),
         [](const Bullet& bullet) { return !bullet.IsActive(); }),
         m_bullets.end());

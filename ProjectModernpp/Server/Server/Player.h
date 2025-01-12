@@ -20,6 +20,8 @@ private:
     bool m_isActive = true;
 
 public:
+    Player();
+
     Player(const std::string& name, const GameMap& grid);//constructor
 
     void PlaceCharacter();//from "Character"; places the charater
@@ -29,9 +31,7 @@ public:
 
     const Point& GetShootDirection() const;
 
-    void ResetPositions() {
-        m_positions.reset();
-    }
+    void ResetPositions();
 
     std::string GetName() const;
     uint32_t GetPoints() const;
