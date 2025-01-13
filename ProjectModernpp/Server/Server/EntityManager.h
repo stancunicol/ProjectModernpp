@@ -32,7 +32,7 @@ public:
     EntityManager(GameMap& gameMap);
 
     void AddBomb(const Bomb& bomb);
-    void AddPlayer(const Player& player);
+    void AddPlayer(int id, const std::string& playerName, GameMap& map);
     void AddEnemy(const Enemy& enemy);
     void AddBullet(const Bullet& bullet);
     void AddPlayerBullet(const Bullet& bullet, int playerIndex);

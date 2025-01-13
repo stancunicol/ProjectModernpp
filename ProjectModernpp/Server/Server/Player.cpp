@@ -6,6 +6,9 @@ std::shared_ptr<std::array<std::pair<Point, bool>, 4>> Player::m_positions = nul
 
 Player::Player() : m_name("DefaultPlayer"), m_points(0), m_score(0), m_moveDirection(0, 0), m_shootDirection(0, 0), m_isActive(true) { }
 
+Player::Player(const std::string& name)
+    :m_name{ name }, m_points{ 0 }, m_score{ 0 }, m_shootDirection(0, 0), m_moveDirection(0, 0) {}
+
 Player::Player(const std::string& name, const GameMap& grid)
     : m_name{ name }, m_points{ 0 }, m_score{ 0 }, m_shootDirection(0, 0), m_moveDirection(0, 0)
 {

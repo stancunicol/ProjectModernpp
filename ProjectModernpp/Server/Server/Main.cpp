@@ -72,6 +72,7 @@ void StartServer(Game& game) {
                 crow::json::wvalue jsonResponse;
                 jsonResponse["status"] = "login";
                 jsonResponse["userId"] = userId;
+                game.GetEntityManager().AddPlayer(userId, username, game.GetMap());
                 return crow::response(200, jsonResponse);
             }
             else {
@@ -177,15 +178,15 @@ void StartServer(Game& game) {
 
     // POST move
     CROW_ROUTE(serverApp, "/move").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
-        return handleRequest([&game, &req]() {
+        try {
             auto jsonBody = crow::json::load(req.body);
-            if (!jsonBody || !jsonBody.has("playerId") || !jsonBody.has("direction"))
-                return crow::response(400, "Invalid JSON payload. Expected 'playerId' and 'direction' fields.");
+            if (!jsonBody || !jsonBody.has("playerId") || !jsonBody.has("direction")) {
+                return crow::response(400, "Invalid JSON payload. Expected 'playerId' and 'direction'.");
+            }
 
             int playerId = jsonBody["playerId"].i();
             std::string direction = jsonBody["direction"].s();
 
-            // Logica de mișcare pentru jucător
             Point moveDirection;
             if (direction == "up") {
                 moveDirection = Point(-1, 0);
@@ -200,9 +201,35 @@ void StartServer(Game& game) {
                 moveDirection = Point(0, 1);
             }
             else {
-                return crow::response(400, "Invalid movement or player.");
+                return crow::response(400, "Invalid direction. Must be 'up', 'down', 'left', or 'right'.");
             }
-            });
+
+            // Verificăm dacă playerId există în harta m_players
+            auto it = game.GetEntityManager().GetPlayersMutable().find(playerId);
+            if (it != game.GetEntityManager().GetPlayersMutable().end()) {
+                // Dacă playerId există, mutăm jucătorul
+                it->second.MoveCharacter(moveDirection, game.GetMap());
+
+                Point currentPosition = it->second.GetPosition();
+
+                crow::json::wvalue response;
+                response["playerId"] = playerId;
+                response["newPosition"]["x"] = currentPosition.GetX();
+                response["newPosition"]["y"] = currentPosition.GetY();
+
+                std::cout << "Player " << playerId << " moved to position: ("
+                    << currentPosition.GetX() << ", " << currentPosition.GetY() << ")\n";
+
+                return crow::response(200, response);
+            }
+            else {
+                // Dacă playerId nu există în harta m_players
+                return crow::response(404, "Player not found.");
+            }
+        }
+        catch (const std::exception& e) {
+            return crow::response(500, std::string("Error processing request: ") + e.what());
+        }
         });
 
     CROW_ROUTE(serverApp, "/getPlayerScore").methods(crow::HTTPMethod::GET)([&game](const crow::request& req) {

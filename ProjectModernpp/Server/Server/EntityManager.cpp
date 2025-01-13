@@ -11,11 +11,10 @@ void EntityManager::AddBomb(const Bomb& bomb)
     m_bombs.push_back(bomb);
 }
 
-void EntityManager::AddPlayer(const Player& player) {
-    int playerId = m_database.GetUserId(player.GetName());
-    m_players[playerId] = player;
-    m_playersBullets[playerId] = {};
-    m_players[playerId].PlaceCharacter();
+void EntityManager::AddPlayer(int id, const std::string& playerName, GameMap& map) {
+    m_players.emplace(id, Player(playerName, map));
+    //m_playersBullets[id] = {}; 
+    m_players[id].PlaceCharacter();
 }
 
 void EntityManager::AddEnemy(const Enemy& enemy)

@@ -8,7 +8,6 @@ void ServerUtils::SetUserId(int userId) {
     qDebug() << "User ID set to:" << this->userId;
 }
 
-
 void ServerUtils::GetGeneratedCodeFromServer() {
     CURL* curl;
     CURLcode res;
@@ -60,7 +59,6 @@ void ServerUtils::GetGeneratedCodeFromServer() {
 
     curl_global_cleanup();
 }
-
 
 
 void ServerUtils::SendLevelToServer(int level)

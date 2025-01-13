@@ -22,6 +22,8 @@ private:
 public:
     Player();
 
+    Player(const std::string& name);
+
     Player(const std::string& name, const GameMap& grid);//constructor
 
     void PlaceCharacter();//from "Character"; places the charater

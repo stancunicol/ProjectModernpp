@@ -25,14 +25,6 @@ void Game::InitializeGame() {
 
     m_entityManager.PlaceBase(m_map);
 
-    /*std::vector<std::string> players(4);
-
-    for (const auto& playerName : players) {
-        Player newPlayer(playerName, m_map);
-        m_entityManager.AddPlayer(newPlayer);
-    }
-    m_entityManager.GetPlayersMutable()[0].ResetPositions();*/
-
     int enemiesToPlace = 1 + m_map.GetLevel();
 
     while (enemiesToPlace > 0) {
