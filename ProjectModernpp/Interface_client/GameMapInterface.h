@@ -15,4 +15,6 @@ public:
 
 private:
     ServerUtils m_serverObject;
+    std::vector<std::string> playerNames;
+    std::vector<int> playerScores;
 };

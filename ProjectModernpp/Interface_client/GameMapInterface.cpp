@@ -1,4 +1,4 @@
-#include "GameMapInterface.h"
+﻿#include "GameMapInterface.h"
 #include "ServerUtils.h"
 #include <QKeyEvent>
 #include <QDebug>
@@ -8,6 +8,28 @@ GameMapInterface::GameMapInterface(QWidget* parent)
 {
     setWindowTitle("Game Map");
     setFixedSize(600, 600);
+    ServerUtils server;
+    // Inițializăm numele și scorurile jucătorilor cu valori implicite
+    for (int i = 1; i <= 4; i++)
+    {
+        std::string response = m_serverObject.GetPlayerDataByIdFromServer();
+
+        if (!response.empty()) {
+            try {
+                auto jsonResponse = nlohmann::json::parse(response);
+                if (jsonResponse.contains("name") && jsonResponse.contains("score")) {
+                    std::string playerName = jsonResponse["name"];
+                    int score = jsonResponse["score"];
+                    playerNames.push_back(playerName);
+                    playerScores.push_back(score);
+
+                }
+            }
+            catch (const std::exception& e) {
+                qDebug() << "Error parsing server response: " << e.what();
+            }
+        }
+    }
     /*std::pair<int, int> basePosition = m_serverObject.GetBaseFromServer();
     qDebug() << "Base Position - X:" << basePosition.first << " Y:" << basePosition.second;
 
