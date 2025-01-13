@@ -85,6 +85,17 @@ void StartServer(Game& game) {
             });
         });
 
+    // POST registerRoom
+    CROW_ROUTE(serverApp, "/registerRoom").methods(crow::HTTPMethod::POST)([&game]() {
+        return handleRequest([&game]() {
+            std::string roomCode = game.CreateRoom();
+            crow::json::wvalue response;
+            response["code"] = roomCode;
+            response["message"] = "Room registered successfully.";
+            return crow::response(200, response);
+            });
+        });
+
     // GET generateCode
     CROW_ROUTE(serverApp, "/generateCode").methods(crow::HTTPMethod::GET)([]() {
         return handleRequest([]() {
@@ -99,17 +110,6 @@ void StartServer(Game& game) {
             response["code"] = code;
             response["message"] = "Code generated successfully.";
 
-            return crow::response(200, response);
-            });
-        });
-
-    // POST registerRoom
-    CROW_ROUTE(serverApp, "/registerRoom").methods(crow::HTTPMethod::POST)([&game]() {
-        return handleRequest([&game]() {
-            std::string roomCode = game.CreateRoom();
-            crow::json::wvalue response;
-            response["code"] = roomCode;
-            response["message"] = "Room registered successfully.";
             return crow::response(200, response);
             });
         });

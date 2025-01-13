@@ -1,5 +1,7 @@
 #pragma once
-#include "Point.h"
+import Point;
+#include <cstdint>
+
 
 class Character {
 protected:

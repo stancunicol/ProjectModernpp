@@ -1,4 +1,4 @@
-#include "Base.h"
+import Base;
 
 Base::Base(const Point& position, uint8_t initialLife)
     : m_destroyed{ false }, m_life{ initialLife }, m_position{ position } {}

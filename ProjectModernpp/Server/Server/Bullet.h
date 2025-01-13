@@ -1,5 +1,6 @@
 #pragma once
-#include "Point.h"
+import Point;
+
 #include "GameMap.h"
 
 class Bullet {

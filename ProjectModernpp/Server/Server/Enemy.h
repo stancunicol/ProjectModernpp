@@ -1,5 +1,6 @@
 #pragma once
-#include "..\RandomMove\RandomMove.h" 
+#include "..\RandomMove\RandomMove.h"
+
 #include <cstdlib>
 #include "Character.h"
 #include "GameMap.h"

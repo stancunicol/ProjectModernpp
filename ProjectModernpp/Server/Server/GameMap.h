@@ -1,8 +1,9 @@
 #pragma once
+
+import Point;
 #include <vector>
 #include <iostream>
 #include "CellType.h"
-#include "Point.h"
 
 class  GameMap {
 private:
@@ -26,8 +27,6 @@ public:
     void Display() const;//displays the map
 
     void ClearDynamicEntities();
-
-    void DrawEntity(const Point& position, char symbol);
 
     void SetStaticCell(int x, int y, CellType type);
 

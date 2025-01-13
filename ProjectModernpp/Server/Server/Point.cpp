@@ -1,4 +1,4 @@
-#include "Point.h"
+import Point;
 
 Point::Point(int x, int y)
 	: m_x{ x }, m_y{ y }, m_data{ nullptr } {}

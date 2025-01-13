@@ -1,6 +1,8 @@
-#pragma once
-#include "Point.h"
+export module Bomb;
 
+import Point;
+
+export
 class Bomb {
 private:
     Point m_position;
@@ -13,6 +15,6 @@ public:
     void Update(float deltaTime);
 
     bool IsActive() const;
+
     const Point& GetPosition() const;
 };
-

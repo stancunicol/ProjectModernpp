@@ -1,4 +1,7 @@
 #pragma once
+import Base;
+import Bomb;
+
 #include <thread>
 #include <chrono>
 #include <unordered_map>
@@ -6,8 +9,6 @@
 #include "Enemy.h"
 #include "Bullet.h"
 #include "GameMap.h"
-#include "Bomb.h"
-#include "Base.h"
 #include "DataBase.h"
 
 class EntityManager {

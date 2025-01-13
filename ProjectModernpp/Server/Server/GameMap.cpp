@@ -107,15 +107,6 @@ void GameMap::ClearDynamicEntities()
     }
 }
 
-void GameMap::DrawEntity(const Point& position, char symbol)
-{
-    if (position.GetX() >= 0 && position.GetX() < m_height &&
-        position.GetY() >= 0 && position.GetY() < m_width) {
-
-        m_dynamicGrid[position.GetX()][position.GetY()] = static_cast<CellType>(symbol);
-    }
-}
-
 void GameMap::SetStaticCell(int x, int y, CellType type)
 {
     if (x >= 0 && x < m_width && y >= 0 && y < m_height) {
