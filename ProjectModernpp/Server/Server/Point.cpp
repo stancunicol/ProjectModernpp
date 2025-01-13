@@ -1,10 +1,18 @@
 import Point;
 
+#include <utility> 
+
 Point::Point(int x, int y)
 	: m_x{ x }, m_y{ y }, m_data{ nullptr } {}
 
+
 Point::Point(const Point& other)
-	: m_x(other.m_x), m_y(other.m_y), m_data(other.m_data ? new int(*other.m_data) : nullptr) {}
+	: m_x(other.m_x), m_y(other.m_y), m_data(new int[2] {other.m_x, other.m_y}) {}
+
+Point::Point(Point&& other) noexcept
+	: m_x(other.m_x), m_y(other.m_y), m_data(other.m_data) {
+	other.m_data = nullptr;
+}
 
 Point::~Point()
 {

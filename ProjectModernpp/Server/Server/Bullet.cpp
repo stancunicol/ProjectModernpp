@@ -29,14 +29,11 @@ void Bullet::SetPosition(const Point& position)
     m_position = position;
 }
 
-void Bullet::Move(GameMap& map)
-{
-    if (!IsActive()) return; //if the bullet is not active -> return
+void Bullet::Move(GameMap& map) {
+    if (!IsActive()) return;
 
-    Point newPos = m_position + m_direction; //calculates the new position based on the current position and the direction of the bullet
+    Point newPos = m_position + m_direction;
 
-    //if the new position of the bullet is out of the matrix or it is identical with a position of an unbreakable wall or with a breakable wall
-    //the bullet is destroyed
     if (newPos.GetX() < 0 || newPos.GetX() >= map.GetHeight() ||
         newPos.GetY() < 0 || newPos.GetY() >= map.GetWidth()) {
         SetActive(false);
@@ -57,8 +54,7 @@ void Bullet::Move(GameMap& map)
     }
 
     map.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::EMPTY;
-    m_position = newPos;
-
+    m_position = std::move(newPos);
 }
 
 bool Bullet::operator==(const Bullet& other) const

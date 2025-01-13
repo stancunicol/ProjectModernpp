@@ -2,6 +2,7 @@ export module Point;
 
 import <cstdint>;
 
+
 export
 class Point {
 private:
@@ -9,11 +10,13 @@ private:
     int* m_data;
 
 public:
-    Point() = default;
+    Point() : m_x(0), m_y(0), m_data(nullptr) {}
 
     Point(int x, int y);
 
     Point(const Point& other);
+
+    Point(Point&& other) noexcept;
 
     ~Point();
 
