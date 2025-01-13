@@ -2,34 +2,6 @@
 
 int ServerUtils::userId = -1;
 
-size_t ServerUtils::WriteCallBack(void* contents, size_t size, size_t nmemb, std::vector<char>* buffer) {
-    std::lock_guard<std::mutex> lock(bufferMutex);
-
-    if (!buffer) {
-        qDebug() << "Buffer is null. Cannot append data.";
-        return 0;
-    }
-    if (!contents) {
-        qDebug() << "Contents is null. No data to append.";
-        return 0;
-    }
-
-    size_t totalSize = size * nmemb;
-    if (totalSize == 0) {
-        qDebug() << "Total size of data is zero. Nothing to append.";
-        return 0;
-    }
-    try {
-        buffer->insert(buffer->end(), static_cast<const char*>(contents), static_cast<const char*>(contents) + totalSize);
-    }
-    catch (const std::exception& e) {
-        qDebug() << "Exception while appending data to buffer:" << e.what();
-        return 0;
-    }
-
-    return totalSize;
-}
-
 void ServerUtils::SetUserId(int userId) {
     qDebug() << "About to set User ID to:" << userId;
     this->userId = userId;
@@ -78,7 +50,7 @@ void ServerUtils::SendUserRequestToServer(const std::string& username) {
     try {
         CURL* curl;
         CURLcode res;
-        std::vector<char> response;
+        std::string response;
 
         curl_global_init(CURL_GLOBAL_DEFAULT);
         curl = curl_easy_init();
@@ -96,7 +68,7 @@ void ServerUtils::SendUserRequestToServer(const std::string& username) {
             curl_easy_setopt(curl, CURLoption::CURLOPT_URL, url.c_str());
             curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonPayloadStr.c_str());
             curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &ServerUtils::WriteCallBack);
+            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &ServerUtils::WriteCallback);
             curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
             res = curl_easy_perform(curl);
@@ -142,14 +114,14 @@ void ServerUtils::SendUserRequestToServer(const std::string& username) {
 std::string ServerUtils::GetServerData(const std::string& url) {
     CURL* curl;
     CURLcode res;
-    std::vector<char> response;
+    std::string response;
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
     curl = curl_easy_init();
 
     if (curl) {
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &ServerUtils::WriteCallBack);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &ServerUtils::WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
         curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L); // Timeout de 10 secunde
 
@@ -161,17 +133,25 @@ std::string ServerUtils::GetServerData(const std::string& url) {
             qDebug() << "Failed to fetch data from server: " << curl_easy_strerror(res);
         }
         else if (httpCode != 200) {
-            qDebug() << "HTTP Error: " << httpCode << " Response: " << QString::fromStdString(std::string(response.begin(), response.end()));
+            qDebug() << "HTTP Error: " << httpCode << " Response: " << QString::fromStdString(response);
         }
         else {
-            qDebug() << "Data fetched successfully from server: " << QString::fromStdString(std::string(response.begin(), response.end()));
+            qDebug() << "Data fetched successfully from server: " << QString::fromStdString(response);
         }
 
         curl_easy_cleanup(curl);
     }
 
     curl_global_cleanup();
-    return std::string(response.begin(), response.end());
+    return response;
+}
+
+size_t ServerUtils::WriteCallback(void* contents, size_t size, size_t nmemb, std::string* userData) {
+    if (userData) {
+        userData->append((char*)contents, size * nmemb);
+        return size * nmemb;
+    }
+    return 0;
 }
 
 void ServerUtils::PostServerData(const std::string& url, const std::string& jsonPayload) {
@@ -212,7 +192,7 @@ bool ServerUtils::CheckServerCode(const std::string& url)
 {
     CURL* curl;
     CURLcode res;
-    std::vector<char> response;
+    std::string response;
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
     curl = curl_easy_init();
@@ -220,7 +200,7 @@ bool ServerUtils::CheckServerCode(const std::string& url)
     if (curl)
     {
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &ServerUtils::WriteCallBack);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &ServerUtils::WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
         res = curl_easy_perform(curl);
@@ -230,7 +210,7 @@ bool ServerUtils::CheckServerCode(const std::string& url)
         }
         else
         {
-            qDebug() << "Server response for code check: " << QString::fromStdString(std::string(response.begin(), response.end()));
+            qDebug() << "Server response for code check: " << QString::fromStdString(response);
         }
 
         curl_easy_cleanup(curl);
@@ -438,67 +418,4 @@ std::vector<Bomb> ServerUtils::GetBombsFromServer()
     }
 
     return bombs;
-}
-
-std::vector<std::vector<int>> ServerUtils::GetMapFromServer(const uint8_t& level)
-{
-    CURL* curl;
-    CURLcode res;
-    std::vector<std::vector<int>> matrix;
-
-    curl_global_init(CURL_GLOBAL_DEFAULT);
-    curl = curl_easy_init();
-
-    if (curl)
-    {
-        std::string readBuffer;
-        std::string url = "http://localhost:8080/game";
-
-        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &ServerUtils::WriteCallBack);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
-
-        res = curl_easy_perform(curl);
-
-        if (res != CURLE_OK)
-        {
-            qDebug() << "CURL error: " << curl_easy_strerror(res);
-        }
-        else
-        {
-            try
-            {
-                json jsonResponse = json::parse(readBuffer);
-
-                if (jsonResponse.contains("matrix"))
-                {
-                    auto jsonMatrix = jsonResponse["matrix"];
-                    for (const auto& row : jsonMatrix)
-                    {
-                        std::vector<int> rowVector;
-                        for (const auto& cell : row)
-                        {
-                            rowVector.push_back(cell.get<int>());
-                        }
-                        matrix.push_back(rowVector);
-                    }
-                }
-                else
-                {
-                    qDebug() << "Matrix not found in response.";
-                }
-            }
-            catch (const json::parse_error& e)
-            {
-                qDebug() << "JSON Parsing error: " << e.what();
-            }
-            catch (const std::exception& e) {
-                qDebug() << "Exception while processing response: " << e.what();
-            }
-        }
-        curl_easy_cleanup(curl);
-    }
-    curl_global_cleanup();
-
-    return matrix;
 }
