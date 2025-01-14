@@ -31,26 +31,35 @@ void StartServer(Game& game) {
 
     // POST submitLevel
     CROW_ROUTE(serverApp, "/submitLevel").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
-        return handleRequest([&game, &req]() {
+        try {
             auto jsonBody = crow::json::load(req.body);
-            if (!jsonBody || !jsonBody.has("level"))
+            if (!jsonBody || !jsonBody.has("level")) {
+                std::cerr << "Invalid JSON payload. Expected a 'level' field." << std::endl;
                 return crow::response(400, "Invalid JSON payload. Expected a 'level' field.");
+            }
 
             int level = jsonBody["level"].i();
-            if (level < 1 || level > 3)
+            if (level < 1 || level > 3) {
+                std::cerr << "Invalid level. Level must be between 1 and 3." << std::endl;
                 return crow::response(400, "Invalid level. Must be 1, 2, or 3.");
+            }
 
-            std::lock_guard<std::mutex> lock(game.GetGameMutex());
             game.SetLevel(level);
 
             auto& db = game.GetDatabase();
+
             auto recentPlayer = db.GetRecentPlayer();
+
             if (recentPlayer) {
+                std::cout << "Updating level for player: " << *recentPlayer << std::endl;
                 db.UpdateLevel(*recentPlayer, level);
             }
-
             return crow::response(200, "Level updated successfully.");
-            });
+        }
+        catch (const std::exception& e) {
+            std::cerr << "Error processing request: " << e.what() << std::endl;
+            return crow::response(500, std::string("Error processing request: ") + e.what());
+        }
         });
 
     // POST user

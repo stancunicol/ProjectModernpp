@@ -2,6 +2,8 @@
 
 int ServerUtils::userId = -1;
 
+using json = nlohmann::json;
+
 void ServerUtils::SetUserId(int userId) {
     qDebug() << "About to set User ID to:" << userId;
     this->userId = userId;
@@ -471,4 +473,100 @@ std::vector<Bomb> ServerUtils::GetBombsFromServer()
     }
 
     return bombs;
+}
+
+size_t ServerUtils::GetLevel() const {
+    return m_level;
+}
+
+void ServerUtils::SetLevel(const size_t level) {
+    m_level = level;
+}
+
+void ServerUtils::GetMapFromServer()
+{
+    CURL* curl;
+    CURLcode res;
+
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+    curl = curl_easy_init();
+
+    if (curl)
+    {
+        std::string readBuffer;
+
+        curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:8080/game");
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+
+        res = curl_easy_perform(curl);
+
+        if (res != CURLE_OK)
+        {
+            qDebug() << "CURL error: " << curl_easy_strerror(res);
+        }
+        else
+        {
+            try
+            {
+                json jsonResponse = json::parse(readBuffer);
+
+                //int level = jsonResponse.value("level", -1);
+                int rows = jsonResponse.value("rows", -1);
+                int columns = jsonResponse.value("columns", -1);
+
+                //qDebug() << "Level:" << level;
+                qDebug() << "Rows:" << rows;
+                qDebug() << "Columns:" << columns;
+
+                if (jsonResponse.contains("matrix"))
+                {
+                    auto jsonMatrix = jsonResponse["matrix"];
+
+                    if (!jsonMatrix.is_array())
+                    {
+                        qDebug() << "Error: Matrix is not an array.";
+                        return;
+                    }
+
+                    for (const auto& row : jsonMatrix)
+                    {
+                        if (!row.is_array())
+                        {
+                            qDebug() << "Error: Row in matrix is not an array.";
+                            return;
+                        }
+
+                        std::vector<int> rowVector;
+                        for (const auto& cell : row)
+                        {
+                            if (cell.is_number_integer())
+                            {
+                                rowVector.push_back(cell.get<int>());
+                            }
+                            else
+                            {
+                                qDebug() << "Error: Cell is not an integer.";
+                            }
+                        }
+                        m_matrix.push_back(rowVector);
+                    }
+                }
+                else
+                {
+                    qDebug() << "Matrix not found in response.";
+                }
+            }
+            catch (const json::parse_error& e)
+            {
+                qDebug() << "JSON Parsing error: " << e.what();
+            }
+        }
+        curl_easy_cleanup(curl);
+    }
+    curl_global_cleanup();
+}
+
+std::vector<std::vector<int>> ServerUtils::GetMap() const {
+    return m_matrix;
 }

@@ -2,6 +2,7 @@
 
 #include <QMainWindow>
 #include "ServerUtils.h"
+#include <iostream>
 
 class GameMapInterface : public QMainWindow
 {

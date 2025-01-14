@@ -8,7 +8,7 @@ GameMapInterface::GameMapInterface(QWidget* parent)
 {
     setWindowTitle("Game Map");
     setFixedSize(600, 600);
-    std::pair<int, int> basePosition = m_serverObject.GetBaseFromServer();
+    /*std::pair<int, int> basePosition = m_serverObject.GetBaseFromServer();
     qDebug() << "Base Position - X:" << basePosition.first << " Y:" << basePosition.second;
 
     std::vector<Bomb> bombs = m_serverObject.GetBombsFromServer();
@@ -25,17 +25,26 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     qDebug() << "Enemy Positions:";
     for (const auto& enemy : enemies) {
         qDebug() << "Enemy ID:" << enemy.id << "Position: (" << enemy.x << "," << enemy.y << ")";
-    }
+    }*/
 }
 
-GameMapInterface::~GameMapInterface()
-{
+GameMapInterface::~GameMapInterface() {
 
 }
 
 void GameMapInterface::keyPressEvent(QKeyEvent* event)
 {
-
+    m_serverObject.GetMapFromServer();
+    std::vector<std::vector<int>> matrix = m_serverObject.GetMap();
+    std::cout << "Matrix:" << '\n';
+    for (const auto& row : matrix)
+    {
+        for (const auto& cell : row)
+        {
+            std::cout << cell << " ";
+        }
+        std::cout << std::endl;
+    }
 
 
     if (event->key() == Qt::Key_W)

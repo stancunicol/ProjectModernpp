@@ -129,4 +129,3 @@ void LevelsWindow::OnHardLevelClicked()
     emit levelSelected(m_level);
     accept();
 }
-

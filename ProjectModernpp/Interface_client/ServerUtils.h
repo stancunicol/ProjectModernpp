@@ -24,6 +24,8 @@ private:
     std::string lastStatus;
     static int userId;
     int roomCode;
+    size_t m_level;
+    std::vector<std::vector<int>> m_matrix;
 
 public:
     void GetGeneratedCodeFromServer();
@@ -56,5 +58,10 @@ public:
     void SetStatus(const std::string& status) { lastStatus = status; }
     std::string GetStatus() const { return lastStatus; }
 
+    size_t GetLevel() const;
+    void SetLevel(const size_t level);
+
+    void GetMapFromServer();
+    std::vector<std::vector<int>> GetMap() const;
 };
 
