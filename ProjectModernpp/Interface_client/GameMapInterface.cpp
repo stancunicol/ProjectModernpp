@@ -9,14 +9,18 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     : QMainWindow(parent)
 {
     setWindowTitle("Game Map");
-    setFixedSize(600, 600);
-    
-    
-    
-    std::pair<int, int> basePosition = m_serverObject.GetBaseFromServer();
+
+    m_serverObject.GetMapFromServer();
+    matrix = m_serverObject.GetMap();
+    height = matrix.size();
+    width = matrix[0].size();
+
+    resize(36 * width, 36 * height);
+
+    basePosition = m_serverObject.GetBaseFromServer();
     qDebug() << "Base Position - X:" << basePosition.first << " Y:" << basePosition.second;
 
-    std::vector<Bomb> bombs = m_serverObject.GetBombsFromServer();
+    bombs = m_serverObject.GetBombsFromServer();
     if (!bombs.empty()) {
         qDebug() << "Received " << bombs.size() << " bombs from server.";
         for (const auto& bomb : bombs) {
@@ -26,21 +30,22 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     else {
         qDebug() << "No bomb data available.";
     }
-    std::vector<Enemy> enemies = m_serverObject.GetEnemiesFromServer();
+
+    enemies = m_serverObject.GetEnemiesFromServer();
     qDebug() << "Enemy Positions:";
     for (const auto& enemy : enemies) {
         qDebug() << "Enemy ID:" << enemy.id << "Position: (" << enemy.x << "," << enemy.y << ")";
     }
+    update();
 }
 
-GameMapInterface::~GameMapInterface() {
+GameMapInterface::~GameMapInterface() 
+{
 
 }
 
 void GameMapInterface::keyPressEvent(QKeyEvent* event)
 {
-    m_serverObject.GetMapFromServer();
-    std::vector<std::vector<int>> matrix = m_serverObject.GetMap();
     std::cout << "Matrix:" << '\n';
     for (const auto& row : matrix)
     {
@@ -78,6 +83,25 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
     }
 }
 
-        
-    
-
+void GameMapInterface::paintEvent(QPaintEvent* event)
+{
+    QPainter painter(this);
+    for(int i=0;i<height;i++)
+        for (int j = 0; j < width; j++)
+        {
+            QPixmap pixmap;
+            switch (matrix[i][j])
+            {
+            case 0:
+                pixmap = QPixmap("./path.jpg").scaled(36, 36);
+                break;
+            case 1:
+                pixmap = QPixmap("./bush.jpg").scaled(36, 36);
+                break;
+            case 2:
+                pixmap = QPixmap("./wall.jpg").scaled(36, 36);
+                break;
+            }
+            painter.drawPixmap(j * 36, i * 36, pixmap);
+        }
+}

@@ -6,12 +6,16 @@
 
 class GameMapInterface : public QMainWindow
 {
-    Q_OBJECT
-
 public:
     GameMapInterface(QWidget* parent = nullptr);
     ~GameMapInterface();
-    void keyPressEvent(QKeyEvent* event);
+    void keyPressEvent(QKeyEvent* event) override;
+    void paintEvent(QPaintEvent* event) override;
 private:
     ServerUtils m_serverObject;
+    std::pair<int, int> basePosition;
+    std::vector<Bomb> bombs;
+    std::vector<Enemy> enemies;
+    std::vector<std::vector<int>> matrix;
+    uint16_t height, width;
 };

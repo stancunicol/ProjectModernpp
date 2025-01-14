@@ -8,8 +8,8 @@
 void GameMap::MatrixSizeGenerator() {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> disHeight(19, 27);
-    std::uniform_int_distribution<> disWidth(19, 27);
+    std::uniform_int_distribution<> disHeight(19, 24);
+    std::uniform_int_distribution<> disWidth(19, 24);
 
     m_height = disHeight(gen);
     m_width = disWidth(gen);
