@@ -193,10 +193,15 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="background.jpg" />
+    <Image Include="base.jpg" />
     <Image Include="Battle_city.jpg" />
     <Image Include="bush.jpg" />
     <Image Include="include_girls_logo.jpg" />
     <Image Include="path.jpg" />
+    <Image Include="player1.png" />
+    <Image Include="player2.png" />
+    <Image Include="player3.png" />
+    <Image Include="player4.png" />
     <Image Include="wall.jpg" />
   </ItemGroup>
   <ItemGroup>

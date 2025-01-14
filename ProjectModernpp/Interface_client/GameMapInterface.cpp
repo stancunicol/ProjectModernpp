@@ -85,11 +85,11 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
 
 void GameMapInterface::paintEvent(QPaintEvent* event)
 {
+    QPixmap pixmap;
     QPainter painter(this);
     for(int i=0;i<height;i++)
         for (int j = 0; j < width; j++)
         {
-            QPixmap pixmap;
             switch (matrix[i][j])
             {
             case 0:
@@ -104,4 +104,28 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
             }
             painter.drawPixmap(j * 36, i * 36, pixmap);
         }
+    pixmap = QPixmap("./base.jpg").scaled(36, 36);
+    painter.drawPixmap(basePosition.second * 36, basePosition.first * 36, pixmap);
+    pixmap = QPixmap("./player1.png").scaled(36, 36);
+    painter.drawPixmap(0, 0, pixmap);
+    for (auto enemy : enemies)
+    {
+        if (enemy.id == 0)
+        {
+            pixmap = QPixmap("./player2.png").scaled(36, 36);
+            painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
+        }
+        else
+            if (enemy.id == 1)
+            {
+                pixmap = QPixmap("./player3.png").scaled(36, 36);
+                painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
+            }
+            else
+                if (enemy.id == 2)
+                {
+                    pixmap = QPixmap("./player4.png").scaled(36, 36);
+                    painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
+                }
+    }
 }

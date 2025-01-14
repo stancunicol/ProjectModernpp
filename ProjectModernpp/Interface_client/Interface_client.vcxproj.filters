@@ -91,6 +91,21 @@
     <Image Include="wall.jpg">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="base.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="player1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="player2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="player3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="player4.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="Battle_city.ui">
