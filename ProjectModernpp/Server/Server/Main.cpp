@@ -38,7 +38,7 @@ void StartServer(Game& game) {
                 return crow::response(400, "Invalid JSON payload. Expected a 'level' field.");
             }
 
-            int level = jsonBody["level"].i();
+            uint8_t level = jsonBody["level"].i();
             if (level < 1 || level > 3) {
                 std::cerr << "Invalid level. Level must be between 1 and 3." << std::endl;
                 return crow::response(400, "Invalid level. Must be 1, 2, or 3.");
@@ -75,7 +75,7 @@ void StartServer(Game& game) {
                 return crow::response(400, "Invalid 'username' format.");
 
             auto& db = game.GetDatabase();
-            int userId;
+            uint8_t userId;
             if (db.UserExists(username)) {
                 userId = db.GetUserId(username);
                 crow::json::wvalue jsonResponse;
@@ -90,6 +90,7 @@ void StartServer(Game& game) {
                 crow::json::wvalue jsonResponse;
                 jsonResponse["status"] = "register";
                 jsonResponse["userId"] = userId;
+                game.GetEntityManager().AddPlayer(userId, username, game.GetMap());
                 return crow::response(200, jsonResponse);
             }
             });
@@ -114,7 +115,7 @@ void StartServer(Game& game) {
             std::mt19937 gen(rd());
             std::uniform_int_distribution<int> dis(100000, 999999);
 
-            int code = dis(gen);
+            uint32_t code = dis(gen);
 
             crow::json::wvalue response;
             response["code"] = code;
@@ -193,7 +194,7 @@ void StartServer(Game& game) {
                 return crow::response(400, "Invalid JSON payload. Expected 'playerId' and 'direction'.");
             }
 
-            int playerId = jsonBody["playerId"].i();
+            uint8_t playerId = jsonBody["playerId"].i();
             std::string direction = jsonBody["direction"].s();
 
             Point moveDirection;
@@ -248,7 +249,7 @@ void StartServer(Game& game) {
                 return crow::response(400, "Missing 'playerId' parameter.");
             }
 
-            int playerId = std::stoi(params.get("playerId"));
+            uint8_t playerId = std::stoi(params.get("playerId"));
 
             auto& db = game.GetDatabase();
             auto playerData = db.GetPlayerDataById(playerId);

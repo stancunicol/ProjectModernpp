@@ -13,14 +13,14 @@ import Bomb;
 
 class EntityManager {
 private:
-    std::unordered_map<int, Player> m_players;
+    std::unordered_map<uint8_t, Player> m_players;
     std::vector<Enemy> m_enemies;
     std::vector<Bullet> m_bullets;
     std::vector<Bomb> m_bombs;
-    std::vector<std::vector<Bullet>> m_playersBullets;
+    std::unordered_map<uint8_t, std::vector<Bullet>> m_playersBullets;
 
-    std::vector<float> m_enemyShootTimers; // Timpurile scurse pentru fiecare inamic
-    const float m_enemyShootInterval = 0.3f; // Intervalul între trageri
+    std::vector<float> m_enemyShootTimers;
+    const float m_enemyShootInterval = 0.3f;
 
     Base m_base;
     std::string m_winner;
@@ -35,7 +35,7 @@ public:
     void AddPlayer(int id, const std::string& playerName, GameMap& map);
     void AddEnemy(const Enemy& enemy);
     void AddBullet(const Bullet& bullet);
-    void AddPlayerBullet(const Bullet& bullet, int playerIndex);
+    void AddPlayerBullet(const Bullet& bullet, int playerId);
     void PlaceBase(GameMap& map);
 
     void RemoveBullet(size_t index);
@@ -51,12 +51,12 @@ public:
 
     void UpdateEntities(GameMap& map, float deltaTime);   // Updates the positions and states of all entities
 
-    const std::unordered_map<int, Player>& GetPlayers() const;
+    const std::unordered_map<uint8_t, Player>& GetPlayers() const;
     const std::vector<Enemy>& GetEnemies() const;
     const std::vector<Bullet>& GetBullets() const;
     const std::vector<Bomb>& GetBombs() const;
 
-    std::unordered_map<int, Player>& GetPlayersMutable();
+    std::unordered_map<uint8_t, Player>& GetPlayersMutable();
     std::vector<Enemy>& GetEnemiesMutable();
     std::vector<Bullet>& GetBulletsMutable();
     const Base& GetBase() const;

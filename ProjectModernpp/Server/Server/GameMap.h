@@ -7,9 +7,9 @@ import Point;
 
 class  GameMap {
 private:
-    uint32_t m_width;
-    uint32_t m_height;
-    uint32_t m_level;
+    uint8_t m_width;
+    uint8_t m_height;
+    uint8_t m_level;
 
     std::vector<std::vector<CellType>> m_dynamicGrid;
     std::vector<std::vector<CellType>> m_grid;
@@ -21,19 +21,19 @@ public:
 
 
     void Initialize();//initialize the map based on the level
-    bool IsInSafeZone(int x, int y, int safeZoneSize);
-    bool HasEmptyNeighbors(int x, int y);
+    bool IsInSafeZone(uint8_t x, uint8_t y, uint8_t safeZoneSize);
+    bool HasEmptyNeighbors(uint8_t x, uint8_t y);
 
     void Display() const;//displays the map
 
     void ClearDynamicEntities();
 
-    void SetStaticCell(int x, int y, CellType type);
+    void SetStaticCell(uint8_t x, uint8_t y, CellType type);
 
     std::vector<std::vector<CellType>>& GetMap();//returns the map
-    uint32_t GetWidth() const;
-    uint32_t GetHeight() const;
-    uint32_t GetLevel() const;
+    uint8_t GetWidth() const;
+    uint8_t GetHeight() const;
+    uint8_t GetLevel() const;
 
     void Reset(uint8_t level);
 };

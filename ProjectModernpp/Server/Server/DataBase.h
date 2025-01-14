@@ -18,15 +18,15 @@ public:
 
 	void Initialize();
 
-	void InsertGameData(const std::string& playerName, uint32_t score, uint8_t level);
-	void UpdateGameData(const std::string& playerName, uint32_t score);
+	void InsertGameData(const std::string& playerName, uint16_t score, uint8_t level);
+	void UpdateGameData(const std::string& playerName, uint16_t score);
 	void DeleteGameData();
 
 	bool UserExists(const std::string& username);
 	void AddUser(const std::string& username);
 	int GetUserId(const std::string& username);
 
-	void UpdateLevel(const std::string& playerName, int level);
+	void UpdateLevel(const std::string& playerName, uint8_t level);
 
 	void InsertRoomCode(const std::string& playerName, const std::string& roomCode);
 	std::optional<std::string> FindRoomByCode(const std::string& code);
@@ -38,8 +38,8 @@ public:
 
 	std::vector<std::string> GetPlayersForRoom(const std::string& roomCode);
 
-	std::optional<std::tuple<std::string, int>> GetPlayerDataById(int playerId) const;
-	std::vector<std::tuple<std::string, int, int, std::string>> GetGameData() const;
+	std::optional<std::tuple<std::string, uint8_t>> GetPlayerDataById(uint8_t playerId) const;
+	std::vector<std::tuple<std::string, uint16_t, uint8_t, std::string>> GetGameData() const;
 
 	friend std::ostream& operator<<(std::ostream& out, const DataBase& db);
 };

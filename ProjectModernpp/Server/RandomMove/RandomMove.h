@@ -7,7 +7,7 @@
 class __declspec(dllexport) RandomMove
 {
 private:
-    std::vector<std::pair<int, int>> directions{
+    std::vector<std::pair<int8_t, int8_t>> directions{
         { -1, 0 }, //up
         { 1, 0 }, //down
         { 0, -1 }, //left
@@ -20,5 +20,5 @@ public:
 
     void ShuffleDirections();
 
-    std::pair<int, int> GenerateNextDirection();
+    std::pair<int8_t, int8_t> GenerateNextDirection();
 };

@@ -11,7 +11,7 @@ void RandomMove::ShuffleDirections()
     currentIndex = 0;
 }
 
-std::pair<int, int> RandomMove::GenerateNextDirection()
+std::pair<int8_t, int8_t> RandomMove::GenerateNextDirection()
 {
     if (currentIndex >= directions.size()) {
         ShuffleDirections();

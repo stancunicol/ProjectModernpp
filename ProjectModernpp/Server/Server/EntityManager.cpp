@@ -3,7 +3,6 @@
 EntityManager::EntityManager(GameMap& map)
     : m_base{ Point(map.GetHeight() - 1, map.GetWidth() / 2) }, m_database{ "GameData.db" } {
     PlaceBase(map);
-    m_playersBullets.resize(0); // Inițializăm vectorul de vectori pentru gloanțele jucătorilor
 }
 
 void EntityManager::AddBomb(const Bomb& bomb)
@@ -13,7 +12,7 @@ void EntityManager::AddBomb(const Bomb& bomb)
 
 void EntityManager::AddPlayer(int id, const std::string& playerName, GameMap& map) {
     m_players.emplace(id, Player(playerName, map));
-    //m_playersBullets[id] = {}; 
+    m_playersBullets[id] = {};
     m_players[id].PlaceCharacter();
 }
 
@@ -28,16 +27,15 @@ void EntityManager::AddBullet(const Bullet& bullet)
     m_bullets.push_back(bullet);
 }
 
-void EntityManager::AddPlayerBullet(const Bullet& bullet, int playerIndex) {
-    if (playerIndex >= 0 && static_cast<size_t>(playerIndex) < m_playersBullets.size()) {
-        m_playersBullets[playerIndex].push_back(bullet);
-    }
+void EntityManager::AddPlayerBullet(const Bullet& bullet, int playerId) {
+    auto& bullets = m_playersBullets[playerId];
+    bullets.push_back(bullet);
 }
 
 void EntityManager::PlaceBase(GameMap& m_map)
 {
-    const int centerX = m_map.GetHeight() - 1; // Bottom row
-    const int centerY = m_map.GetWidth() / 2;  // Middle column
+    const int8_t centerX = m_map.GetHeight() - 1; // Bottom row
+    const int8_t centerY = m_map.GetWidth() / 2;  // Middle column
 
     m_base.SetPosition({ centerX, centerY });
 
@@ -150,16 +148,14 @@ void EntityManager::UpdateEntities(GameMap& map, float deltaTime)
 {
     map.ClearDynamicEntities();
 
-    for (size_t i = 0; i < m_players.size(); ++i)
-    {
-        if (m_players[i].IsActive()) {
-            m_players[i].MoveCharacter(m_players[i].GetDirection(), map);
+    for (auto& [playerId, player] : m_players) {
+        if (player.IsActive()) {
+            player.MoveCharacter(player.GetDirection(), map);
         }
     }
 
     for (size_t i = 0; i < m_enemies.size(); ++i) {
         m_enemies[i].MoveRandom(map);
-        // Actualizăm timerul pentru tragere
         m_enemyShootTimers[i] += deltaTime;
 
         if (m_enemyShootTimers[i] >= m_enemyShootInterval) {
@@ -179,8 +175,9 @@ void EntityManager::UpdateEntities(GameMap& map, float deltaTime)
         }
     }
 
-    for (size_t i = 0; i < m_playersBullets.size(); ++i) {
-        for (Bullet& bullet : m_playersBullets[i]) {
+    // Actualizăm gloanțele fiecărui jucător
+    for (auto& [playerId, bullets] : m_playersBullets) {
+        for (Bullet& bullet : bullets) {
             bullet.Move(map);
         }
     }
@@ -207,70 +204,18 @@ void EntityManager::UpdateEntities(GameMap& map, float deltaTime)
         m_bullets.end());
 
     for (auto& playerBullets : m_playersBullets) {
-        playerBullets.erase(std::remove_if(playerBullets.begin(), playerBullets.end(),
+        playerBullets.second.erase(std::remove_if(playerBullets.second.begin(), playerBullets.second.end(),
             [](const Bullet& bullet) { return !bullet.IsActive(); }),
-            playerBullets.end());
+            playerBullets.second.end());
     }
-
-}
-
-void EntityManager::RemoveBullet(size_t index)
-{
-    if (index < m_bullets.size()) {
-        m_bullets.erase(m_bullets.begin() + index);
-    }
-}
-
-const std::unordered_map<int, Player>& EntityManager::GetPlayers() const {
-    return m_players;
-}
-
-const std::vector<Enemy>& EntityManager::GetEnemies() const
-{
-    return m_enemies;
-}
-
-const std::vector<Bullet>& EntityManager::GetBullets() const
-{
-    return m_bullets;
-}
-
-const std::vector<Bomb>& EntityManager::GetBombs() const
-{
-    return m_bombs;
-}
-
-std::unordered_map<int, Player>& EntityManager::GetPlayersMutable()
-{
-    return m_players;
-}
-
-std::vector<Enemy>& EntityManager::GetEnemiesMutable()
-{
-    return m_enemies;
-}
-
-std::vector<Bullet>& EntityManager::GetBulletsMutable()
-{
-    return m_bullets;
-}
-
-const Base& EntityManager::GetBase() const
-{
-    return m_base;
-}
-
-std::string EntityManager::GetWinner() const
-{
-    return m_winner;
 }
 
 void EntityManager::HandleCollisions(GameMap& map)
 {
     // Coliziuni gloanțe player - inamici
-    for (size_t playerIndex = 0; playerIndex < m_playersBullets.size(); ++playerIndex) {
-        for (size_t bulletIndex = 0; bulletIndex < m_playersBullets[playerIndex].size(); ++bulletIndex) {
-            Bullet& bullet = m_playersBullets[playerIndex][bulletIndex];
+    for (auto& [playerId, bullets] : m_playersBullets) {
+        for (size_t bulletIndex = 0; bulletIndex < bullets.size(); ++bulletIndex) {
+            Bullet& bullet = bullets[bulletIndex];
             if (!bullet.IsActive()) continue;
 
             // Coliziuni cu inamici
@@ -281,9 +226,9 @@ void EntityManager::HandleCollisions(GameMap& map)
 
                     if (m_enemies[enemyIndex].GetLives() == 0) {
                         RemoveEnemy(enemyIndex);
-                        m_players[playerIndex].SetPoints(100);
-                        m_players[playerIndex].SetScore();
-                        m_database.UpdateGameData(m_players[playerIndex].GetName(), m_players[playerIndex].GetScore());
+                        m_players[playerId].SetPoints(100);
+                        m_players[playerId].SetScore();
+                        m_database.UpdateGameData(m_players[playerId].GetName(), m_players[playerId].GetScore());
                     }
                     break;
                 }
@@ -294,10 +239,10 @@ void EntityManager::HandleCollisions(GameMap& map)
                 bullet.SetActive(false);
                 m_base.TakeHit();
                 if (m_base.GetLife() == 0) {
-                    m_players[playerIndex].SetPoints(500);
-                    m_players[playerIndex].SetScore();
-                    m_database.UpdateGameData(m_players[playerIndex].GetName(), m_players[playerIndex].GetScore());
-                    m_winner = m_players[playerIndex].GetName();
+                    m_players[playerId].SetPoints(500);
+                    m_players[playerId].SetScore();
+                    m_database.UpdateGameData(m_players[playerId].GetName(), m_players[playerId].GetScore());
+                    m_winner = m_players[playerId].GetName();
                 }
                 break;
             }
@@ -332,16 +277,57 @@ void EntityManager::HandleCollisions(GameMap& map)
             break;
         }
     }
+}
 
-    //// Coliziuni între jucători
-    //for (size_t i = 0; i < m_players.size(); ++i) {
-    //    for (size_t j = i + 1; j < m_players.size(); ++j) {
-    //        if (m_players[i].GetPosition() == m_players[j].GetPosition()) {
-    //            m_players[i].SetLives(m_players[i].GetLives() - 1);
-    //            m_players[j].SetLives(m_players[j].GetLives() - 1);
-    //        }
-    //    }
-    //}
+void EntityManager::RemoveBullet(size_t index)
+{
+    if (index < m_bullets.size()) {
+        m_bullets.erase(m_bullets.begin() + index);
+    }
+}
+
+const std::unordered_map<uint8_t, Player>& EntityManager::GetPlayers() const {
+    return m_players;
+}
+
+const std::vector<Enemy>& EntityManager::GetEnemies() const
+{
+    return m_enemies;
+}
+
+const std::vector<Bullet>& EntityManager::GetBullets() const
+{
+    return m_bullets;
+}
+
+const std::vector<Bomb>& EntityManager::GetBombs() const
+{
+    return m_bombs;
+}
+
+std::unordered_map<uint8_t, Player>& EntityManager::GetPlayersMutable()
+{
+    return m_players;
+}
+
+std::vector<Enemy>& EntityManager::GetEnemiesMutable()
+{
+    return m_enemies;
+}
+
+std::vector<Bullet>& EntityManager::GetBulletsMutable()
+{
+    return m_bullets;
+}
+
+const Base& EntityManager::GetBase() const
+{
+    return m_base;
+}
+
+std::string EntityManager::GetWinner() const
+{
+    return m_winner;
 }
 
 Player* EntityManager::GetPlayerById(int playerId) {

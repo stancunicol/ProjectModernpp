@@ -6,13 +6,13 @@ import <cstdint>;
 export
 class Point {
 private:
-    int m_x, m_y;
-    int* m_data;
+    int8_t m_x, m_y;
+    int8_t* m_data;
 
 public:
     Point() : m_x(0), m_y(0), m_data(nullptr) {}
 
-    Point(int x, int y);
+    Point(int8_t x, int8_t y);
 
     Point(const Point& other);
 
@@ -35,6 +35,6 @@ public:
     void SetPosition(const Point& position);
     Point GetPosition() const;
 
-    size_t GetX() const;
-    size_t GetY() const;
+    int8_t GetX() const;
+    int8_t GetY() const;
 };

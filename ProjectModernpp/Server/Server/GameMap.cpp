@@ -29,7 +29,7 @@ GameMap::GameMap(uint8_t level)
 
 void GameMap::Initialize()
 {
-    int breakableWallChance = 0, unbreakableWallChance = 0, safeZoneSize = 3;
+    uint8_t breakableWallChance = 0, unbreakableWallChance = 0, safeZoneSize = 3;
 
     switch (m_level) {
     case 1: breakableWallChance = 15; unbreakableWallChance = 5; break;
@@ -38,11 +38,11 @@ void GameMap::Initialize()
     default: break;
     }
 
-    for (int i = 0; i < m_height; ++i) {
-        for (int j = 0; j < m_width; ++j) {
+    for (size_t i = 0; i < m_height; ++i) {
+        for (size_t j = 0; j < m_width; ++j) {
             if (IsInSafeZone(i, j, safeZoneSize)) continue;
 
-            int randVal = rand() % 100;
+            uint8_t randVal = rand() % 100;
 
             if (m_grid[i][j] == CellType::EMPTY && HasEmptyNeighbors(i, j))
             {
@@ -57,7 +57,7 @@ void GameMap::Initialize()
     }
 }
 
-bool GameMap::IsInSafeZone(int x, int y, int safeZoneSize)
+bool GameMap::IsInSafeZone(uint8_t x, uint8_t y, uint8_t safeZoneSize)
 {
     return (x < safeZoneSize && y < safeZoneSize) ||
         (x < safeZoneSize && y >= m_width - safeZoneSize) ||
@@ -65,14 +65,14 @@ bool GameMap::IsInSafeZone(int x, int y, int safeZoneSize)
         (x >= m_height - safeZoneSize && y >= m_width - safeZoneSize);
 }
 
-bool GameMap::HasEmptyNeighbors(int x, int y)
+bool GameMap::HasEmptyNeighbors(uint8_t x, uint8_t y)
 {
-    int emptyCount = 0;
-    const int dx[] = { -1, 0, 1, 0 };
-    const int dy[] = { 0, -1, 0, 1 };
+    uint8_t emptyCount = 0;
+    const int8_t dx[] = { -1, 0, 1, 0 };
+    const int8_t dy[] = { 0, -1, 0, 1 };
 
-    for (int k = 0; k < 4; ++k) {
-        int nx = x + dx[k], ny = y + dy[k];
+    for (size_t k = 0; k < 4; ++k) {
+        int8_t nx = x + dx[k], ny = y + dy[k];
         if (nx >= 0 && nx < m_height && ny >= 0 && ny < m_width &&
             m_grid[nx][ny] == CellType::EMPTY) {
             emptyCount++;
@@ -83,8 +83,8 @@ bool GameMap::HasEmptyNeighbors(int x, int y)
 
 void GameMap::Display() const
 {
-    for (int i = 0; i < m_height; ++i) {
-        for (int j = 0; j < m_width; ++j) {
+    for (size_t i = 0; i < m_height; ++i) {
+        for (size_t j = 0; j < m_width; ++j) {
 
             if (m_dynamicGrid[i][j] != CellType::EMPTY && m_dynamicGrid[i][j] != CellType::BREAKABLE_WALL
                 && m_dynamicGrid[i][j] != CellType::UNBREAKABLE_WALL) {
@@ -100,14 +100,14 @@ void GameMap::Display() const
 
 void GameMap::ClearDynamicEntities()
 {
-    for (int i = 0; i < m_height; ++i) {
-        for (int j = 0; j < m_width; ++j) {
+    for (size_t i = 0; i < m_height; ++i) {
+        for (size_t j = 0; j < m_width; ++j) {
             m_dynamicGrid[i][j] = CellType::EMPTY;
         }
     }
 }
 
-void GameMap::SetStaticCell(int x, int y, CellType type)
+void GameMap::SetStaticCell(uint8_t x, uint8_t y, CellType type)
 {
     if (x >= 0 && x < m_width && y >= 0 && y < m_height) {
         m_grid[x][y] = type;
@@ -119,17 +119,17 @@ std::vector<std::vector<CellType>>& GameMap::GetMap()
     return m_grid;
 }
 
-uint32_t GameMap::GetWidth() const
+uint8_t GameMap::GetWidth() const
 {
     return m_grid[0].size();
 }
 
-uint32_t GameMap::GetHeight() const
+uint8_t GameMap::GetHeight() const
 {
     return m_grid.size();
 }
 
-uint32_t GameMap::GetLevel() const
+uint8_t GameMap::GetLevel() const
 {
     return m_level;
 }
