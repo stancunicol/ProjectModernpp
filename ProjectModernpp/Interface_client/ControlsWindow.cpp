@@ -30,6 +30,8 @@ ControlsWindow::ControlsWindow(QWidget* parent)
         "<ul>"
         "<li><b>Goal:</b> Destroy the enemy base to win the game!</li>"
         "<li><b>Movement:</b> Use arrow keys or WASD to move your tank.</li>"
+        "<li><b>Movement:</b> The arrow keys (↑, ↓, ←, →) are set as default values in the application,</li>"
+        "representing the movement directions(up, down, left, and right) in the game."
         "<li><b>Actions:</b> Use 'Space' to shoot your weapon.</li>"
         "<li><b>Walls:</b> Destroyable walls can be broken to open paths, while indestructible walls block the way.</li>"
         "<li><b>Bases:</b> Shout the base in order to win faster.</li>"

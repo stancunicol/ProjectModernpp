@@ -14,8 +14,6 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
     Battle_city* game = new Battle_city();
 
-    std::vector<std::vector<int>> matrix;
-
     game->show();
 
     QObject::connect(game, &Battle_city::aboutToClose, [=]()

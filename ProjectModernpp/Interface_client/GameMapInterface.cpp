@@ -1,14 +1,11 @@
 ﻿#include "GameMapInterface.h"
 #include "ServerUtils.h"
-#include<QTimer>
-#include<QPainter>
-#include <QKeyEvent>
-#include <QDebug>
 
 GameMapInterface::GameMapInterface(QWidget* parent)
     : QMainWindow(parent)
 {
     setWindowTitle("Game Map");
+    setFocusPolicy(Qt::StrongFocus);
 
     m_serverObject.GetMapFromServer();
     matrix = m_serverObject.GetMap();
@@ -57,34 +54,67 @@ GameMapInterface::GameMapInterface(QWidget* parent)
         std::cout << "Player at (" << static_cast<int>(point.m_x) << ", " << static_cast<int>(point.m_y)
             << ") is " << (isActive ? "active" : "inactive") << ".\n";
     }
+    loadControls();
     update();
 }
 
-GameMapInterface::~GameMapInterface() 
+GameMapInterface::~GameMapInterface()
 {
+
+}
+
+void GameMapInterface::loadControls()
+{
+    QSettings settings("MyCompany", "BattleCity");
+
+    m_upKey = settings.value("UpKey", "W").toString();
+    m_downKey = settings.value("DownKey", "S").toString();
+    m_leftKey = settings.value("LeftKey", "A").toString();
+    m_rightKey = settings.value("RightKey", "D").toString();
+    m_fireKey = settings.value("FireKey", "Space").toString();
 
 }
 
 void GameMapInterface::keyPressEvent(QKeyEvent* event)
 {
-    if (event->key() == Qt::Key_W)
+    switch (event->key())
     {
-        qDebug() << "W key pressed - Moving Up";
+    case Qt::Key_Up:
+        qDebug() << "Up Arrow pressed!";
+        m_serverObject.SendMoveToServer("up");
+        break;
+    case Qt::Key_Down:
+        qDebug() << "Down Arrow pressed!";
+        m_serverObject.SendMoveToServer("down");
+        break;
+    case Qt::Key_Left:
+        qDebug() << "Left Arrow pressed!";
+        m_serverObject.SendMoveToServer("left");
+        break;
+    case Qt::Key_Right:
+        qDebug() << "Right Arrow pressed!";
+        m_serverObject.SendMoveToServer("right");
+        break;
+    }
+
+    if (event->key() == QKeySequence(m_upKey).toString().at(0).unicode())
+    {
+        qDebug() << m_upKey << " key pressed - Moving Up";
         m_serverObject.SendMoveToServer("up");
     }
-    else if (event->key() == Qt::Key_S)
+    else if (event->key() == QKeySequence(m_downKey).toString().at(0).unicode())
     {
-        qDebug() << "S key pressed - Moving Down";
+        qDebug() << m_downKey << " key pressed - Moving Down";
         m_serverObject.SendMoveToServer("down");
     }
-    else if (event->key() == Qt::Key_A)
+    else if (event->key() == QKeySequence(m_leftKey).toString().at(0).unicode())
     {
-        qDebug() << "A key pressed - Moving Left";
+        qDebug() << m_leftKey << " key pressed - Moving Left";
         m_serverObject.SendMoveToServer("left");
     }
-    else if (event->key() == Qt::Key_D)
+    else if (event->key() == QKeySequence(m_rightKey).toString().at(0).unicode())
     {
-        qDebug() << "D key pressed - Moving Right";
+        qDebug() << m_rightKey << " key pressed - Moving Right";
         m_serverObject.SendMoveToServer("right");
     }
     else
@@ -97,7 +127,7 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
 {
     QPixmap pixmap;
     QPainter painter(this);
-    for(int i=0;i<height;i++)
+    for (int i = 0; i < height; i++)
         for (int j = 0; j < width; j++)
         {
             switch (matrix[i][j])
