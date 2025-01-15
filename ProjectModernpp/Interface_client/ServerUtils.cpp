@@ -19,7 +19,7 @@ void ServerUtils::GetGeneratedCodeFromServer() {
     curl = curl_easy_init();
 
     if (curl) {
-        std::string url = "http://localhost:8080/generateCode";
+        std::string url = "http://localhost:8080/registerRoom";
 
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &ServerUtils::WriteCallback);
@@ -35,13 +35,13 @@ void ServerUtils::GetGeneratedCodeFromServer() {
             try {
                 auto jsonResponse = nlohmann::json::parse(response);
                 if (jsonResponse.contains("code") && jsonResponse.contains("message")) {
-                    int code = jsonResponse["code"].get<int>();
+                    std::string code = jsonResponse["code"].get<std::string>();
                     std::string message = jsonResponse["message"].get<std::string>();
 
                     qDebug() << "Code received from server:" << code;
                     qDebug() << "Message:" << QString::fromStdString(message);
 
-                    this->SetRoomCode(code);
+                    this->SetRoomCode(code); 
                 }
                 else {
                     qDebug() << "Invalid JSON response. Missing 'code' or 'message'.";
@@ -243,32 +243,46 @@ void ServerUtils::PostServerData(const std::string& url, const std::string& json
     curl_global_cleanup();
 }
 
-bool ServerUtils::CheckServerCode(const std::string& url)
+bool ServerUtils::CheckServerCode(const std::string& code, int id)
 {
     CURL* curl;
     CURLcode res;
     std::string response;
+
+    nlohmann::json jsonPayload;
+    jsonPayload["code"] = code;
+    jsonPayload["playerId"] = id;
+
+    std::string jsonString = jsonPayload.dump();
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
     curl = curl_easy_init();
 
     if (curl)
     {
-        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        struct curl_slist* headers = nullptr;
+        headers = curl_slist_append(headers, "Content-Type: application/json");
+
+        curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:8080/joinRoom");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonString.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &ServerUtils::WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
 
         res = curl_easy_perform(curl);
+
         if (res != CURLE_OK)
         {
-            qDebug() << "Failed to check code on server: " << curl_easy_strerror(res);
+            qDebug() << "Failed to join room on server: " << curl_easy_strerror(res);
         }
         else
         {
-            qDebug() << "Server response for code check: " << QString::fromStdString(response);
+            qDebug() << "Server response for joining room: " << QString::fromStdString(response);
         }
 
         curl_easy_cleanup(curl);
+        curl_slist_free_all(headers);
     }
 
     curl_global_cleanup();
@@ -277,9 +291,13 @@ bool ServerUtils::CheckServerCode(const std::string& url)
         auto jsonResponse = nlohmann::json::parse(response);
         qDebug() << "Parsed JSON: " << QString::fromStdString(jsonResponse.dump());
 
-        if (jsonResponse.contains("status") && jsonResponse["status"] == "success")
+        if (jsonResponse.contains("message") && jsonResponse["message"] == "Player joined room successfully.")
         {
             return true;
+        }
+        else
+        {
+            qDebug() << "Error: " << QString::fromStdString(jsonResponse["message"].get<std::string>());
         }
     }
     catch (const std::exception& e) {

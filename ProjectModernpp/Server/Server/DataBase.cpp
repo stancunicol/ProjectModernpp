@@ -137,6 +137,63 @@ void DataBase::UpdateLevel(const std::string& playerName, uint8_t level)
     sqlite3_finalize(stmt);
 }
 
+void DataBase::UpdateDataByRoomCode(uint8_t playerId, const std::string& code) {
+    std::lock_guard<std::mutex> lock(dbMutex);
+
+    uint8_t level = 0;
+    std::string roomCode;
+
+    {
+        std::string query = "SELECT level, roomCode FROM GameData WHERE roomCode = ?;";
+        sqlite3_stmt* stmt;
+
+        if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+            std::cerr << "Failed to prepare query: " << sqlite3_errmsg(db) << std::endl;
+            return;
+        }
+
+        sqlite3_bind_text(stmt, 1, code.c_str(), -1, SQLITE_STATIC);  // Bind roomCode
+
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            level = static_cast<uint8_t>(sqlite3_column_int(stmt, 0));
+            roomCode = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        }
+        else {
+            std::cerr << "No player found with roomCode " << code << std::endl;
+            sqlite3_finalize(stmt);
+            return;
+        }
+
+        sqlite3_finalize(stmt);
+    }
+
+    std::string updateQuery = R"(
+        UPDATE GameData
+        SET level = ?,
+            roomCode = ?
+        WHERE id = ?;
+    )";
+
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(db, updateQuery.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "Failed to prepare update query: " << sqlite3_errmsg(db) << std::endl;
+        return;
+    }
+
+    sqlite3_bind_int(stmt, 1, level);
+    sqlite3_bind_text(stmt, 2, roomCode.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_int(stmt, 3, playerId);
+
+    if (sqlite3_step(stmt) != SQLITE_DONE) {
+        std::cerr << "Failed to update player data: " << sqlite3_errmsg(db) << std::endl;
+    }
+    else {
+        std::cout << "Successfully updated player data for playerId " << std::to_string(playerId)
+            << " with roomCode " << roomCode << " and level " << static_cast<int>(level) << std::endl;
+    }
+
+    sqlite3_finalize(stmt);
+}
 
 void DataBase::InsertRoomCode(const std::string& playerName, const std::string& roomCode)
 {

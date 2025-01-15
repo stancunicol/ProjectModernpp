@@ -84,10 +84,8 @@ void PlayWindow::OnForwardClicked()
 void PlayWindow::OnGenerateClicked()
 {
     m_serverObject.GetGeneratedCodeFromServer();
-    QString randomNumber = QString::number(m_serverObject.GetRoomCode());
+    QString randomNumber = QString::fromStdString(m_serverObject.GetRoomCode());
     m_generate = true;
     m_generateCode->setText(randomNumber);
 
-    m_serverObject.PostServerData("http://localhost:8080/registerRoom", "{\"code\": \"" + randomNumber.toStdString() + "\"}");
 }
-

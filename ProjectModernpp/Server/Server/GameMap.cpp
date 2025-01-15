@@ -55,6 +55,7 @@ void GameMap::Initialize()
             }
         }
     }
+    m_grid[m_height - 1][m_width / 2] = CellType::EMPTY;
 }
 
 bool GameMap::IsInSafeZone(uint8_t x, uint8_t y, uint8_t safeZoneSize)

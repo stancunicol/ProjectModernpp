@@ -4,10 +4,19 @@
 
 std::string Game::GenerateRoomCode()
 {
-    const char characters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const char characters[] = "0123456789";
+    const size_t codeLength = 6;
     std::string code;
-    for (int i = 0; i < 8; i++)
-        code += characters[rand() % (sizeof(characters) - 1)];
+    code.reserve(codeLength);
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, sizeof(characters) - 2);
+
+    for (size_t i = 0; i < codeLength; ++i) {
+        code += characters[dis(gen)];
+    }
+
     return code;
 }
 
@@ -138,9 +147,15 @@ std::string Game::CreateRoom() {
     return code;
 }
 
-std::optional<std::string> Game::JoinRoom(const std::string& code, const std::string& playerName) {
+std::optional<std::string> Game::JoinRoom(const std::string& code, uint8_t playerId) {
     std::lock_guard<std::mutex> lock(roomMutex);
     auto it = m_rooms.find(code);
+
+    std::string playerName;
+    auto playerData = m_database.GetPlayerDataById(playerId);
+    if (playerData.has_value())
+        playerName = std::get<0>(playerData.value());
+
     if (it != m_rooms.end() && it->second.AddPlayer(playerName))
         return it->second.GetCode();
     return std::nullopt;

@@ -50,10 +50,10 @@ ConnectWindow::ConnectWindow(QWidget* parent)
         "color: rgba(255, 255, 255, 1);"
         "}");
     layout->addWidget(m_startButton);
-    connect(m_startButton, &QPushButton::clicked, this, &ConnectWindow::OnGenerateClicked);
+    connect(m_startButton, &QPushButton::clicked, this, &ConnectWindow::OnConnectClicked);
 }
 
-void ConnectWindow::OnGenerateClicked()
+void ConnectWindow::OnConnectClicked()
 {
     QString roomCode = m_insertCode->text();
 
@@ -63,8 +63,14 @@ void ConnectWindow::OnGenerateClicked()
         return;
     }
 
-    bool isCodeValid = m_serverObject.CheckServerCode("http://localhost:8080/checkRoom?code=" + roomCode.toStdString());
+    bool isCodeValid = m_serverObject.CheckServerCode(roomCode.toStdString(), m_serverObject.GetUserId());
 
+    if (isCodeValid) {
+        qDebug() << "Player successfully joined the room.";
+    }
+    else {
+        qDebug() << "Failed to join the room.";
+    }
     if (isCodeValid)
     {
         QMessageBox::information(this, "Success", "Room code is valid. Joining room...");

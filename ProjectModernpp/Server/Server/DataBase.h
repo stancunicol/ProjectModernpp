@@ -27,6 +27,7 @@ public:
 	int GetUserId(const std::string& username);
 
 	void UpdateLevel(const std::string& playerName, uint8_t level);
+	void UpdateDataByRoomCode(uint8_t playerId, const std::string& code);
 
 	void InsertRoomCode(const std::string& playerName, const std::string& roomCode);
 	std::optional<std::string> FindRoomByCode(const std::string& code);

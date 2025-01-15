@@ -8,6 +8,7 @@ import Base;
 #include <mutex>
 #include <condition_variable>
 #include <vector>
+#include <cstdint>
 #include <conio.h>
 #include "DataBase.h"
 #include "Player.h"
@@ -55,7 +56,7 @@ public:
 
     std::string CreateRoom();
 
-    std::optional<std::string> JoinRoom(const std::string& code, const std::string& playerName);
+    std::optional<std::string> JoinRoom(const std::string& code, uint8_t playerId);
 
     bool LeaveRoom(const std::string& code, const std::string& playerName);
 

@@ -80,15 +80,15 @@ void StartServer(Game& game) {
             if (db.UserExists(username)) {
                 userId = db.GetUserId(username);
 
-                if (!game.GetEntityManager().PlayerExists(userId)) {
+                /*if (!game.GetEntityManager().PlayerExists(userId)) {
                     game.GetEntityManager().AddPlayer(userId, username, game.GetMap());
-                }
+                }*/
 
                 crow::json::wvalue jsonResponse;
                 jsonResponse["status"] = "login";
                 jsonResponse["userId"] = userId;
                 game.GetEntityManager().AddPlayer(userId, username, game.GetMap());
-                std::cout << "Player " << username << " (ID: " << userId << ") added to the game.\n";
+                //std::cout << "Player " << username << " (ID: " << std::to_string(userId) << ") added to the game.\n";
                 return crow::response(200, jsonResponse);
             }
             else {
@@ -103,10 +103,20 @@ void StartServer(Game& game) {
             });
         });
 
-    // POST registerRoom
-    CROW_ROUTE(serverApp, "/registerRoom").methods(crow::HTTPMethod::POST)([&game]() {
+
+    // GET registerRoom
+    CROW_ROUTE(serverApp, "/registerRoom").methods(crow::HTTPMethod::GET)([&game]() {
         return handleRequest([&game]() {
             std::string roomCode = game.CreateRoom();
+
+            auto& db = game.GetDatabase();
+            std::optional<std::string> recentPlayer = db.GetRecentPlayer();
+            if (!recentPlayer.has_value()) {
+                return crow::response(400, "No recently declared user available.");
+            }
+
+            db.InsertRoomCode(recentPlayer.value(), roomCode);
+
             crow::json::wvalue response;
             response["code"] = roomCode;
             response["message"] = "Room registered successfully.";
@@ -114,34 +124,19 @@ void StartServer(Game& game) {
             });
         });
 
-    // GET generateCode
-    CROW_ROUTE(serverApp, "/generateCode").methods(crow::HTTPMethod::GET)([]() {
-        return handleRequest([]() {
-
-            std::random_device rd;
-            std::mt19937 gen(rd());
-            std::uniform_int_distribution<int> dis(100000, 999999);
-
-            uint32_t code = dis(gen);
-
-            crow::json::wvalue response;
-            response["code"] = code;
-            response["message"] = "Code generated successfully.";
-
-            return crow::response(200, response);
-            });
-        });
 
     // POST joinRoom
     CROW_ROUTE(serverApp, "/joinRoom").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
         return handleRequest([&game, &req]() {
             auto jsonBody = crow::json::load(req.body);
-            if (!jsonBody || !jsonBody.has("code") || !jsonBody.has("playerName"))
+            if (!jsonBody || !jsonBody.has("code") || !jsonBody.has("playerId"))
                 return crow::response(400, "Invalid JSON payload. Expected 'code' and 'playerName' fields.");
 
             std::string code = jsonBody["code"].s();
-            std::string playerName = jsonBody["playerName"].s();
-            auto result = game.JoinRoom(code, playerName);
+            int playerId = jsonBody["playerId"].i();
+            auto result = game.JoinRoom(code, playerId);
+
+            game.GetDatabase().UpdateDataByRoomCode(playerId, code);
 
             if (result.has_value()) {
                 crow::json::wvalue response;

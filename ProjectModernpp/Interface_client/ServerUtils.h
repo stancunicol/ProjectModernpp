@@ -29,7 +29,7 @@ private:
 
     std::string lastStatus;
     static int userId;
-    int roomCode;
+    std::string roomCode;
     size_t m_level;
     std::vector<std::vector<int>> m_matrix;
     std::vector<std::pair<Point, bool>> m_playerPositions;
@@ -47,7 +47,7 @@ public:
 
     void PostServerData(const std::string& url, const std::string& jsonPayload);
 
-    bool CheckServerCode(const std::string& url);
+    bool CheckServerCode(const std::string& code, int id);
 
     void SendMoveToServer(const std::string& direction);
 
@@ -59,8 +59,8 @@ public:
     void SetUserId(int id);
     int GetUserId() const { return userId; }
 
-    void SetRoomCode(int code) { this->roomCode = code; }
-    int GetRoomCode() const { return roomCode; }
+    void SetRoomCode(std::string code) { this->roomCode = code; }
+    std::string GetRoomCode() const { return roomCode; }
 
     void SetStatus(const std::string& status) { lastStatus = status; }
     std::string GetStatus() const { return lastStatus; }

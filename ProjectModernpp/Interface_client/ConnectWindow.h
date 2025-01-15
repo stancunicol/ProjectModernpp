@@ -19,7 +19,7 @@ public:
     ~ConnectWindow();
 
 private:
-    void OnGenerateClicked();
+    void OnConnectClicked();
 
 private:
     QLineEdit* m_insertCode = nullptr;
