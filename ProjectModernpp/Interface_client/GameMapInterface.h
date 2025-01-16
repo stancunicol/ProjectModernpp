@@ -17,6 +17,7 @@ public:
     void loadControls();
     void keyPressEvent(QKeyEvent* event) override;
     void paintEvent(QPaintEvent* event) override;
+    void updateOtherPlayers();
 private:
     ServerUtils m_serverObject;
     std::pair<int, int> basePosition;
@@ -32,4 +33,6 @@ private:
     QString m_fireKey;
 
     QPoint player1Position;
+
+    std::vector<std::pair<QPoint, QString>> otherPlayers;
 };

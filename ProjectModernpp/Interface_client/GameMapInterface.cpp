@@ -7,6 +7,10 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     setWindowTitle("Game Map");
     setFocusPolicy(Qt::StrongFocus);
 
+    QTimer* fetchTimer = new QTimer(this);
+    connect(fetchTimer, &QTimer::timeout, this, &GameMapInterface::updateOtherPlayers);
+    fetchTimer->start(1000);
+
     m_serverObject.GetMapFromServer();
     matrix = m_serverObject.GetMap();
     height = matrix.size();
@@ -59,7 +63,7 @@ GameMapInterface::GameMapInterface(QWidget* parent)
 
     if (!playerFound) {
         qWarning() << "[WARNING] Player position not found. Ensure server returned correct data.";
-        player1Position = QPoint(-1, -1); // Setăm o poziție invalidă dacă nu este găsită
+        player1Position = QPoint(-1, -1);
     }
     loadControls();
     update();
@@ -176,27 +180,67 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
         painter.drawPixmap(player1Position.x() * 36, player1Position.y() * 36, pixmap.scaled(36, 36));
     }
 
+    for (const auto& [position, username] : otherPlayers) {
+        pixmap.load("./player1.png");
+        painter.drawPixmap(position.x() * 36, position.y() * 36, pixmap.scaled(36, 36));
+    }
+
     pixmap = QPixmap("./base.jpg").scaled(36, 36);
     painter.drawPixmap(basePosition.second * 36, basePosition.first * 36, pixmap);
 
     for (auto enemy : enemies)
     {
-        if (enemy.id == 0)
+        switch (enemy.id)
         {
-            pixmap = QPixmap("./player2.png").scaled(36, 36);
+        case 0:
+            pixmap = QPixmap("./enemy1.png").scaled(36, 36);
             painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
+            break;
+        case 1:
+            pixmap = QPixmap("./enemy2.png").scaled(36, 36);
+            painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
+            break;
+        case 2:
+            pixmap = QPixmap("./enemy3.png").scaled(36, 36);
+            painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
+            break;
+        case 3:
+            pixmap = QPixmap("./enemy4.png").scaled(36, 36);
+            painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
+            break;
         }
-        else
-            if (enemy.id == 1)
-            {
-                pixmap = QPixmap("./player3.png").scaled(36, 36);
-                painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
-            }
-            else
-                if (enemy.id == 2)
-                {
-                    pixmap = QPixmap("./player4.png").scaled(36, 36);
-                    painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
-                }
     }
+}
+
+void GameMapInterface::updateOtherPlayers() {
+    m_serverObject.FetchPlayerStates();
+
+    otherPlayers.clear(); // Clear existing data
+
+    // Process the fetched data
+    uint8_t currentUserId = m_serverObject.GetUserId();
+    std::string url = "http://localhost:8080/playerState?playerId=" + std::to_string(currentUserId);
+    std::string response = m_serverObject.GetServerData(url);
+
+    if (response.empty()) {
+        qWarning() << "Failed to fetch player states.";
+        return;
+    }
+
+    try {
+        auto jsonResponse = nlohmann::json::parse(response);
+        if (jsonResponse.contains("players") && jsonResponse["players"].is_array()) {
+            for (const auto& player : jsonResponse["players"]) {
+                int x = player["position"]["x"];
+                int y = player["position"]["y"];
+                QString username = QString::fromStdString(player["username"]);
+                otherPlayers.emplace_back(QPoint(y, x), username);
+            }
+        }
+    }
+    catch (const std::exception& e) {
+        qWarning() << "Error parsing player state response: " << e.what();
+    }
+
+    update();
 }

@@ -41,7 +41,7 @@ void ServerUtils::GetGeneratedCodeFromServer() {
                     qDebug() << "Code received from server:" << code;
                     qDebug() << "Message:" << QString::fromStdString(message);
 
-                    this->SetRoomCode(code); 
+                    this->SetRoomCode(code);
                 }
                 else {
                     qDebug() << "Invalid JSON response. Missing 'code' or 'message'.";
@@ -621,4 +621,33 @@ void ServerUtils::GetPlayerPositionsFromServer() {
 
 std::vector<std::pair<Point, std::string>> ServerUtils::GetPlayerPositions() {
     return m_playerPositions;
+}
+
+void ServerUtils::FetchPlayerStates() {
+    uint8_t playerId = GetUserId();
+
+    std::string url = "http://localhost:8080/playerState?playerId=" + std::to_string(playerId);
+    std::string response = GetServerData(url);
+
+    if (response.empty()) {
+        qWarning() << "Failed to fetch player states.";
+        return;
+    }
+
+    try {
+        auto jsonResponse = nlohmann::json::parse(response);
+        if (jsonResponse.contains("players") && jsonResponse["players"].is_array()) {
+            for (const auto& player : jsonResponse["players"]) {
+                int id = player["id"];
+                int x = player["position"]["x"];
+                int y = player["position"]["y"];
+                std::string username = player["username"];
+
+                qDebug() << "Player ID:" << id << "Position: (" << x << "," << y << ") Username:" << QString::fromStdString(username);
+            }
+        }
+    }
+    catch (const std::exception& e) {
+        qWarning() << "Error parsing player state response: " << e.what();
+    }
 }

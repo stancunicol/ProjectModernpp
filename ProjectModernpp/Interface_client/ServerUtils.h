@@ -75,5 +75,7 @@ public:
 
     void GetPlayerPositionsFromServer();
     std::vector<std::pair<Point, std::string>> GetPlayerPositions();
+
+    void FetchPlayerStates();
 };
 

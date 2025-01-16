@@ -196,6 +196,10 @@
     <Image Include="base.jpg" />
     <Image Include="Battle_city.jpg" />
     <Image Include="bush.jpg" />
+    <Image Include="enemy1.png" />
+    <Image Include="enemy2.png" />
+    <Image Include="enemy3.png" />
+    <Image Include="enemy4.png" />
     <Image Include="include_girls_logo.jpg" />
     <Image Include="path.jpg" />
     <Image Include="player1.png" />
