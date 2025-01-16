@@ -15,6 +15,16 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     height = matrix.size();
     width = matrix[0].size();
 
+    std::cout << "Matrix:" << '\n';
+    for (const auto& row : matrix)
+    {
+        for (const auto& cell : row)
+        {
+            std::cout << cell << " ";
+        }
+        std::cout << std::endl;
+    }
+
     resize(36 * width, 36 * height);
 
     basePosition = m_serverObject.GetBaseFromServer();
@@ -36,6 +46,17 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     for (const auto& enemy : enemies) {
         qDebug() << "Enemy ID:" << enemy.id << "Position: (" << enemy.x << "," << enemy.y << ")";
     }
+
+    m_serverObject.GetPlayerPositionsFromServer();
+    playerPositions = m_serverObject.GetPlayerPositions();
+    std::cout << "Player Positions:\n";
+    for (const auto& position : playerPositions) {
+        auto point = position.first;
+        bool isActive = position.second;
+
+        std::cout << "Player at (" << static_cast<int>(point.m_x) << ", " << static_cast<int>(point.m_y)
+            << ") is " << (isActive ? "active" : "inactive") << ".\n";
+    }
     update();
 }
 
@@ -46,17 +67,6 @@ GameMapInterface::~GameMapInterface()
 
 void GameMapInterface::keyPressEvent(QKeyEvent* event)
 {
-    std::cout << "Matrix:" << '\n';
-    for (const auto& row : matrix)
-    {
-        for (const auto& cell : row)
-        {
-            std::cout << cell << " ";
-        }
-        std::cout << std::endl;
-    }
-
-
     if (event->key() == Qt::Key_W)
     {
         qDebug() << "W key pressed - Moving Up";

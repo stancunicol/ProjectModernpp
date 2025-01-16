@@ -13,7 +13,6 @@ int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
     Battle_city* game = new Battle_city();
-    GameMapInterface* gameMap = new GameMapInterface();
 
     std::vector<std::vector<int>> matrix;
 
@@ -21,6 +20,7 @@ int main(int argc, char* argv[])
 
     QObject::connect(game, &Battle_city::aboutToClose, [=]()
         {
+        GameMapInterface* gameMap = new GameMapInterface();
         gameMap->show();
         });
 

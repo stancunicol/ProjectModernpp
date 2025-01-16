@@ -63,5 +63,7 @@ public:
     std::string GetWinner() const;
 
     Player* GetPlayerById(int playerId);
+
+    bool PlayerExists(uint8_t userId) const;
 };
 

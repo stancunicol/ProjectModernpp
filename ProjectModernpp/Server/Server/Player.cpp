@@ -9,6 +9,9 @@ Player::Player() : m_name("DefaultPlayer"), m_points(0), m_score(0), m_moveDirec
 Player::Player(const std::string& name, const GameMap& grid)
     : m_name{ name }, m_points{ 0 }, m_score{ 0 }, m_shootDirection(0, 0), m_moveDirection(0, 0)
 {
+    std::cout << "Player created: " << m_name << std::endl;
+    Activate();
+
     if (!m_positions) {
         m_positions = std::make_shared<std::array<std::pair<Point, bool>, 4>>();
         (*m_positions)[0] = { Point(0, 0), false };
@@ -93,4 +96,8 @@ void Player::SetPoints(uint16_t points)
 void Player::SetScore()
 {
     m_score += m_points;
+}
+
+std::vector<std::pair<Point, bool>> Player::GetAllPositions() {
+    return std::vector<std::pair<Point, bool>>(m_positions->begin(), m_positions->end());
 }

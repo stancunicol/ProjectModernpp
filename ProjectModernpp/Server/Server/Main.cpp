@@ -5,6 +5,7 @@
 #include <regex>
 #include <iostream>
 #include <crow/json.h>
+#include "Player.h"
 
 std::ostream& operator<<(std::ostream& os, const crow::json::wvalue& value) {
     os << value.dump();
@@ -78,10 +79,16 @@ void StartServer(Game& game) {
             uint8_t userId;
             if (db.UserExists(username)) {
                 userId = db.GetUserId(username);
+
+                if (!game.GetEntityManager().PlayerExists(userId)) {
+                    game.GetEntityManager().AddPlayer(userId, username, game.GetMap());
+                }
+
                 crow::json::wvalue jsonResponse;
                 jsonResponse["status"] = "login";
                 jsonResponse["userId"] = userId;
                 game.GetEntityManager().AddPlayer(userId, username, game.GetMap());
+                std::cout << "Player " << username << " (ID: " << userId << ") added to the game.\n";
                 return crow::response(200, jsonResponse);
             }
             else {
@@ -340,6 +347,47 @@ void StartServer(Game& game) {
             return crow::response(500, std::string("Error retrieving bombs: ") + e.what());
         }
         });
+
+    CROW_ROUTE(serverApp, "/getPlayerPositions").methods(crow::HTTPMethod::GET)([&game]() {
+        try {
+            crow::json::wvalue response;
+
+            // Obține toate pozițiile partajate (dacă există)
+            auto positions = Player::GetAllPositions();
+            auto& players = game.GetEntityManager().GetPlayers();
+            crow::json::wvalue::list positionList;
+
+            for (const auto& [id, player] : players) {
+                if (!player.IsActive()) continue;
+
+                crow::json::wvalue playerJson;
+                playerJson["id"] = id;
+                playerJson["name"] = player.GetName();
+
+                // Convertiți poziția într-un format JSON
+                auto pos = player.GetPosition();
+                playerJson["position"] = { {"x", pos.GetX()}, {"y", pos.GetY()} };
+
+                // Informație despre ocupare
+                playerJson["occupied"] = player.IsActive();
+
+                positionList.push_back(playerJson);
+            }
+
+            // Debugging: afișare poziții
+
+            // Finalizare răspuns JSON
+            response["positions"] = std::move(positionList);
+            response["message"] = "Player positions retrieved successfully.";
+
+            return crow::response(200, response);
+        }
+        catch (const std::exception& e) {
+            return crow::response(500, std::string("Error retrieving player positions: ") + e.what());
+        }
+        });
+
+
 
     serverApp.port(8080).multithreaded().run();
 }

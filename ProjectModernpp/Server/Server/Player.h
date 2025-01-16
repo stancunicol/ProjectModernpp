@@ -65,4 +65,5 @@ public:
         return m_isActive;
     }
 
+    static std::vector<std::pair<Point, bool>> GetAllPositions();
 };

@@ -217,7 +217,7 @@
     <QtMoc Include="LevelsWindow.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="GameMapInterface.h" />
+    <ClInclude Include="GameMapInterface.h" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="CustomToolBar.h" />

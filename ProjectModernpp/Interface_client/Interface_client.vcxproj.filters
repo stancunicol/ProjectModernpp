@@ -65,9 +65,6 @@
     <QtMoc Include="LevelsWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="GameMapInterface.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="CustomToolBar.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -123,6 +120,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameMapInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

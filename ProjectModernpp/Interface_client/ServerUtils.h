@@ -6,16 +6,22 @@
 #include <string>
 #include <nlohmann/json.hpp>
 #include <vector>
+#include <iostream>
 
 struct Enemy {
     int id;
     int x;
     int y;
 };
+
 struct Bomb {
     int id;
     int x;
     int y;
+};
+
+struct Point {
+    int8_t m_x, m_y;
 };
 
 class ServerUtils {
@@ -26,6 +32,7 @@ private:
     int roomCode;
     size_t m_level;
     std::vector<std::vector<int>> m_matrix;
+    std::vector<std::pair<Point, bool>> m_playerPositions;
 
 public:
     void GetGeneratedCodeFromServer();
@@ -63,5 +70,8 @@ public:
 
     void GetMapFromServer();
     std::vector<std::vector<int>> GetMap() const;
+
+    void GetPlayerPositionsFromServer();
+    std::vector<std::pair<Point, bool>> GetPlayerPositions();
 };
 

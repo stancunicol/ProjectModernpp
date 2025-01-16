@@ -1,4 +1,4 @@
-import Point;
+﻿import Point;
 
 #include <utility> 
 
@@ -7,7 +7,19 @@ Point::Point(int8_t x, int8_t y)
 
 
 Point::Point(const Point& other)
-	: m_x(other.m_x), m_y(other.m_y), m_data(new int8_t[2]{ other.m_x, other.m_y }) {}
+{
+	if (&other != nullptr) { // Verificare pentru siguranță
+		m_x = other.m_x;
+		m_y = other.m_y;
+		m_data = new int8_t[2]{ other.m_x, other.m_y };
+	}
+	else {
+		m_x = 0;
+		m_y = 0;
+		m_data = nullptr; // Sau poți inițializa cu un vector implicit
+	}
+}
+
 
 Point::Point(Point&& other) noexcept
 	: m_x(other.m_x), m_y(other.m_y), m_data(other.m_data) {

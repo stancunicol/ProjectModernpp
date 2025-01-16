@@ -570,3 +570,27 @@ void ServerUtils::GetMapFromServer()
 std::vector<std::vector<int>> ServerUtils::GetMap() const {
     return m_matrix;
 }
+
+void ServerUtils::GetPlayerPositionsFromServer() {
+    std::string url = "http://localhost:8080/getPlayerPositions";
+    try {
+        std::string response = GetServerData(url);
+
+        auto json = nlohmann::json::parse(response);
+
+        m_playerPositions.clear();
+
+        for (const auto& player : json["players"]) {
+            Point point = { player["x"], player["y"] };
+            bool isActive = player["active"];
+            m_playerPositions.emplace_back(point, isActive);
+        }
+    }
+    catch (const std::exception& e) {
+        qDebug() << "Error fetching player positions:" << e.what();
+    }
+}
+
+std::vector<std::pair<Point, bool>> ServerUtils::GetPlayerPositions() {
+    return m_playerPositions;
+}

@@ -18,4 +18,5 @@ private:
     std::vector<Enemy> enemies;
     std::vector<std::vector<int>> matrix;
     uint16_t height, width;
+    std::vector<std::pair<Point, bool>> playerPositions;
 };

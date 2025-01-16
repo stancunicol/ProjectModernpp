@@ -334,3 +334,8 @@ Player* EntityManager::GetPlayerById(int playerId) {
     auto it = m_players.find(playerId);
     return (it != m_players.end()) ? &it->second : nullptr;
 }
+
+bool EntityManager::PlayerExists(uint8_t userId) const
+{
+    return m_players.find(userId) != m_players.end();
+}
