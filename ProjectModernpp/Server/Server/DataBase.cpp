@@ -322,7 +322,7 @@ sqlite3* DataBase::GetDatabaseConnection() const
     return db;
 }
 
-std::vector<std::string> DataBase::GetPlayersForRoom(const std::string& roomCode) {
+std::vector<std::string> DataBase::GetPlayersFromRoom(const std::string& roomCode) {
     std::vector<std::string> players;
     const std::string query = "SELECT playerName FROM GameData WHERE roomCode = ?;";
 
@@ -355,6 +355,37 @@ std::vector<std::string> DataBase::GetPlayersForRoom(const std::string& roomCode
     // Curăță resursele
     sqlite3_finalize(stmt);
     return players;
+}
+
+std::vector<uint8_t> DataBase::GetPlayersFromRoom(uint8_t playerId) {
+    std::vector<uint8_t> playerIds;
+
+    const std::string query = R"(
+        SELECT p1.id
+        FROM GameData AS p1
+        JOIN GameData AS p2 ON p1.roomCode = p2.roomCode
+        WHERE p2.id = ? AND p1.id != ?;
+    )";
+
+    sqlite3_stmt* stmt = nullptr;
+    if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+        return playerIds;
+    }
+
+    sqlite3_bind_int(stmt, 1, playerId);
+    sqlite3_bind_int(stmt, 2, playerId);
+
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        playerIds.push_back(static_cast<uint8_t>(sqlite3_column_int(stmt, 0)));
+    }
+
+    if (sqlite3_errcode(db) != SQLITE_DONE && sqlite3_errcode(db) != SQLITE_OK) {
+        std::cerr << "Error executing query: " << sqlite3_errmsg(db) << std::endl;
+    }
+
+    sqlite3_finalize(stmt);
+    return playerIds;
 }
 
 std::optional<std::tuple<std::string, uint8_t>> DataBase::GetPlayerDataById(uint8_t playerId) const {

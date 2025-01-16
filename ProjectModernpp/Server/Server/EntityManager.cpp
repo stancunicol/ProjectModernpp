@@ -341,6 +341,11 @@ Player* EntityManager::GetPlayerById(int playerId) {
     return (it != m_players.end()) ? &it->second : nullptr;
 }
 
+std::vector<uint8_t> EntityManager::GetPlayerIdsFromRoom(uint8_t playerId)
+{
+    return m_database.GetPlayersFromRoom(playerId);
+}
+
 bool EntityManager::PlayerExists(uint8_t userId) const
 {
     return m_players.find(userId) != m_players.end();

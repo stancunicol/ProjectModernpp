@@ -353,6 +353,49 @@ void StartServer(Game& game) {
         }
         });
 
+    CROW_ROUTE(serverApp, "/playerState").methods(crow::HTTPMethod::GET)(
+        [&game](const crow::request& req) {
+            try {
+                auto queryParams = crow::query_string(req.url_params);
+                const char* playerIdParam = queryParams.get("playerId");
+                if (!playerIdParam) {
+                    return crow::response(400, "Missing 'playerId' query parameter.");
+                }
+
+                uint8_t playerId = std::stoi(playerIdParam);
+
+                auto playersFromDB = game.GetEntityManager().GetPlayerIdsFromRoom(playerId);
+
+                auto& players = game.GetEntityManager().GetPlayers();
+                if (players.find(playerId) == players.end()) {
+                    return crow::response(404, "Player not found.");
+                }
+
+                crow::json::wvalue response;
+                response["status"] = "success";
+                crow::json::wvalue::list playerStates;
+
+                for (uint8_t id : playersFromDB) {
+                    auto it = players.find(id);
+                    if (it != players.end()) {
+                        const Player& player = it->second;
+                        playerStates.push_back({
+                            {"id", id},
+                            {"position", {{"x", player.GetPosition().GetX()}, {"y", player.GetPosition().GetY()}}},
+                            {"username", player.GetName()}
+                            });
+                    }
+                }
+
+                response["players"] = std::move(playerStates);
+                return crow::response(200, response);
+            }
+            catch (const std::exception& e) {
+                return crow::response(500, std::string("Server error: ") + e.what());
+            }
+        });
+
+
     serverApp.port(8080).multithreaded().run();
 }
 

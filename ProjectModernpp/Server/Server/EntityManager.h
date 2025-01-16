@@ -64,6 +64,8 @@ public:
 
     Player* GetPlayerById(int playerId);
 
+    std::vector<uint8_t> GetPlayerIdsFromRoom(uint8_t playerId);
+
     bool PlayerExists(uint8_t userId) const;
 
     std::vector<std::tuple<Point, std::string>> GetAllPlayerPositions() const;

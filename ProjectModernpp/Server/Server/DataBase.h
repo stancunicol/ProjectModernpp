@@ -37,7 +37,8 @@ public:
 
 	sqlite3* GetDatabaseConnection() const;
 
-	std::vector<std::string> GetPlayersForRoom(const std::string& roomCode);
+	std::vector<std::string> GetPlayersFromRoom(const std::string& roomCode);
+	std::vector<uint8_t> GetPlayersFromRoom(uint8_t playerId);
 
 	std::optional<std::tuple<std::string, uint8_t>> GetPlayerDataById(uint8_t playerId) const;
 	std::vector<std::tuple<std::string, uint16_t, uint8_t, std::string>> GetGameData() const;
