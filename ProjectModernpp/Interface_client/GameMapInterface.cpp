@@ -104,30 +104,27 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
         direction = QPoint(1, 0);  // Mișcare la dreapta
         dirString = "right";
         break;
-    default:
-        QMainWindow::keyPressEvent(event);
-        return;
     }
 
     if (event->key() == QKeySequence(m_upKey).toString().at(0).unicode())
     {
-        qDebug() << m_upKey << " key pressed - Moving Up";
-        m_serverObject.SendMoveToServer("up");
+        direction = QPoint(0, -1);  // Mișcare în sus
+        dirString = "up";
     }
     else if (event->key() == QKeySequence(m_downKey).toString().at(0).unicode())
     {
-        qDebug() << m_downKey << " key pressed - Moving Down";
-        m_serverObject.SendMoveToServer("down");
+        direction = QPoint(0, 1);  // Mișcare în jos
+        dirString = "down";
     }
     else if (event->key() == QKeySequence(m_leftKey).toString().at(0).unicode())
     {
-        qDebug() << m_leftKey << " key pressed - Moving Left";
-        m_serverObject.SendMoveToServer("left");
+        direction = QPoint(-1, 0);  // Mișcare la stânga
+        dirString = "left";
     }
     else if (event->key() == QKeySequence(m_rightKey).toString().at(0).unicode())
     {
-        qDebug() << m_rightKey << " key pressed - Moving Right";
-        m_serverObject.SendMoveToServer("right");
+        direction = QPoint(1, 0);  // Mișcare la dreapta
+        dirString = "right";
     }
     else
     {
