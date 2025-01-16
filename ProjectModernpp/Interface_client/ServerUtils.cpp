@@ -307,15 +307,15 @@ bool ServerUtils::CheckServerCode(const std::string& code, int id)
     return false;
 }
 
-void ServerUtils::SendMoveToServer(const std::string& direction) {
-
-    if (GetUserId() == 0) {
-        qDebug() << "No connected user. Cannot send move.";
-        return;
+std::optional<Point> ServerUtils::SendMoveToServer(const std::string& direction) {
+    if (GetUserId() == -1) {
+        qWarning() << "No connected user. Cannot send move.";
+        return std::nullopt;
     }
 
     CURL* curl;
     CURLcode res;
+    std::string response;
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
     curl = curl_easy_init();
@@ -332,21 +332,31 @@ void ServerUtils::SendMoveToServer(const std::string& direction) {
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonPayload.c_str());
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
         res = curl_easy_perform(curl);
 
-        if (res != CURLE_OK) {
-            qDebug() << "Failed to send move: " << curl_easy_strerror(res);
+        if (res == CURLE_OK) {
+            auto jsonResponse = nlohmann::json::parse(response);
+            if (jsonResponse.contains("status") && jsonResponse["status"] == "success") {
+                int x = jsonResponse["newPosition"]["x"];
+                int y = jsonResponse["newPosition"]["y"];
+                return Point(x, y);
+            }
+            else {
+                qWarning() << "Move rejected. Server response: " << QString::fromStdString(response);
+            }
         }
         else {
-            qDebug() << "Movement sent successfully for ConnectedUserId " << GetUserId() << " direction: " << QString::fromStdString(direction);
+            qWarning() << "Failed to send move: " << curl_easy_strerror(res);
         }
 
-        curl_slist_free_all(headers);
         curl_easy_cleanup(curl);
     }
 
     curl_global_cleanup();
+    return std::nullopt;
 }
 
 std::string ServerUtils::GetPlayerDataByIdFromServer()
@@ -593,15 +603,14 @@ void ServerUtils::GetPlayerPositionsFromServer() {
     std::string url = "http://localhost:8080/getPlayerPositions";
     try {
         std::string response = GetServerData(url);
-
         auto json = nlohmann::json::parse(response);
 
         m_playerPositions.clear();
 
-        for (const auto& player : json["players"]) {
-            Point point = { player["x"], player["y"] };
-            bool isActive = player["active"];
-            m_playerPositions.emplace_back(point, isActive);
+        for (const auto& player : json["positions"]) {
+            Point point = { player["position"]["x"], player["position"]["y"] };
+            int id = player["id"];
+            m_playerPositions.emplace_back(point, std::to_string(id));
         }
     }
     catch (const std::exception& e) {
@@ -609,6 +618,7 @@ void ServerUtils::GetPlayerPositionsFromServer() {
     }
 }
 
-std::vector<std::pair<Point, bool>> ServerUtils::GetPlayerPositions() {
+
+std::vector<std::pair<Point, std::string>> ServerUtils::GetPlayerPositions() {
     return m_playerPositions;
 }

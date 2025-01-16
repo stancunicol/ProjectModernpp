@@ -200,47 +200,33 @@ void StartServer(Game& game) {
             std::string direction = jsonBody["direction"].s();
 
             Point moveDirection;
-            if (direction == "up") {
-                moveDirection = Point(-1, 0);
-            }
-            else if (direction == "down") {
-                moveDirection = Point(1, 0);
-            }
-            else if (direction == "left") {
-                moveDirection = Point(0, -1);
-            }
-            else if (direction == "right") {
-                moveDirection = Point(0, 1);
-            }
-            else {
-                return crow::response(400, "Invalid direction. Must be 'up', 'down', 'left', or 'right'.");
-            }
+            if (direction == "up") moveDirection = Point(-1, 0);
+            else if (direction == "down") moveDirection = Point(1, 0);
+            else if (direction == "left") moveDirection = Point(0, -1);
+            else if (direction == "right") moveDirection = Point(0, 1);
+            else return crow::response(400, "Invalid direction.");
 
-            // Verificăm dacă playerId există în harta m_players
-            auto it = game.GetEntityManager().GetPlayersMutable().find(playerId);
-            if (it != game.GetEntityManager().GetPlayersMutable().end()) {
-                // Dacă playerId există, mutăm jucătorul
-                it->second.MoveCharacter(moveDirection, game.GetMap());
+            auto& players = game.GetEntityManager().GetPlayersMutable();
+            auto it = players.find(playerId);
 
-                Point currentPosition = it->second.GetPosition();
-
-                crow::json::wvalue response;
-                response["playerId"] = playerId;
-                response["newPosition"]["x"] = currentPosition.GetX();
-                response["newPosition"]["y"] = currentPosition.GetY();
-
-                std::cout << "Player " << playerId << " moved to position: ("
-                    << currentPosition.GetX() << ", " << currentPosition.GetY() << ")\n";
-
-                return crow::response(200, response);
-            }
-            else {
-                // Dacă playerId nu există în harta m_players
+            if (it == players.end()) {
                 return crow::response(404, "Player not found.");
             }
+
+            Point currentPosition = it->second.GetPosition();
+
+            it->second.MoveCharacter(moveDirection, game.GetMap());
+            Point newPosition = it->second.GetPosition();
+
+            crow::json::wvalue response;
+            response["status"] = "success";
+            response["currentPosition"] = { {"x", currentPosition.GetX()}, {"y", currentPosition.GetY()} };
+            response["newPosition"] = { {"x", newPosition.GetX()}, {"y", newPosition.GetY()} };
+
+            return crow::response(200, response);
         }
         catch (const std::exception& e) {
-            return crow::response(500, std::string("Error processing request: ") + e.what());
+            return crow::response(500, std::string("Server error: ") + e.what());
         }
         });
 
@@ -347,42 +333,25 @@ void StartServer(Game& game) {
         try {
             crow::json::wvalue response;
 
-            // Obține toate pozițiile partajate (dacă există)
-            auto positions = Player::GetAllPositions();
-            auto& players = game.GetEntityManager().GetPlayers();
+            auto positions = game.GetEntityManager().GetAllPlayerPositions();
             crow::json::wvalue::list positionList;
 
-            for (const auto& [id, player] : players) {
-                if (!player.IsActive()) continue;
-
+            for (const auto& [position, name] : positions) {
+                uint8_t playerId = game.GetDatabase().GetUserId(name);
                 crow::json::wvalue playerJson;
-                playerJson["id"] = id;
-                playerJson["name"] = player.GetName();
-
-                // Convertiți poziția într-un format JSON
-                auto pos = player.GetPosition();
-                playerJson["position"] = { {"x", pos.GetX()}, {"y", pos.GetY()} };
-
-                // Informație despre ocupare
-                playerJson["occupied"] = player.IsActive();
-
+                playerJson["id"] = playerId; // Folosește ID-ul
+                playerJson["position"] = { {"x", position.GetX()}, {"y", position.GetY()} };
                 positionList.push_back(playerJson);
             }
 
-            // Debugging: afișare poziții
-
-            // Finalizare răspuns JSON
             response["positions"] = std::move(positionList);
             response["message"] = "Player positions retrieved successfully.";
-
             return crow::response(200, response);
         }
         catch (const std::exception& e) {
             return crow::response(500, std::string("Error retrieving player positions: ") + e.what());
         }
         });
-
-
 
     serverApp.port(8080).multithreaded().run();
 }

@@ -30,4 +30,6 @@ private:
     QString m_leftKey;
     QString m_rightKey;
     QString m_fireKey;
+
+    QPoint player1Position;
 };

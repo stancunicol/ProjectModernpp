@@ -11,9 +11,15 @@ void EntityManager::AddBomb(const Bomb& bomb)
 }
 
 void EntityManager::AddPlayer(int id, const std::string& playerName, GameMap& map) {
-    m_players.emplace(id, Player(playerName, map));
-    m_playersBullets[id] = {};
-    m_players[id].PlaceCharacter();
+    if (m_players.find(id) == m_players.end()) {
+        m_players.emplace(id, Player(playerName, map));
+        m_playersBullets[id] = {};
+        m_players[id].PlaceCharacter();
+        std::cout << "Player " << playerName << " added with ID " << std::to_string(id) << ".\n";
+    }
+    else {
+        std::cout << "[WARNING] Player ID " << std::to_string(id) << " already exists.\n";
+    }
 }
 
 void EntityManager::AddEnemy(const Enemy& enemy)
@@ -338,4 +344,25 @@ Player* EntityManager::GetPlayerById(int playerId) {
 bool EntityManager::PlayerExists(uint8_t userId) const
 {
     return m_players.find(userId) != m_players.end();
+}
+
+std::vector<std::tuple<Point, std::string>> EntityManager::GetAllPlayerPositions() const {
+    std::vector<std::tuple<Point, std::string>> playerPositions;
+
+    for (const auto& [playerId, player] : m_players) {
+        Point position = player.GetPosition();
+        std::string name = player.GetName();
+
+        playerPositions.emplace_back(position, name);
+    }
+
+    return playerPositions;
+}
+
+void EntityManager::ResetPlayers(GameMap& map)
+{
+    for (auto& [id, player] : m_players) {
+        player.ResetPositions(map);
+        player.PlaceCharacter();
+    }
 }

@@ -22,6 +22,8 @@ struct Bomb {
 
 struct Point {
     int8_t m_x, m_y;
+
+    Point(int8_t x, int8_t y) : m_x(x), m_y(y) {}
 };
 
 class ServerUtils {
@@ -32,7 +34,7 @@ private:
     std::string roomCode;
     size_t m_level;
     std::vector<std::vector<int>> m_matrix;
-    std::vector<std::pair<Point, bool>> m_playerPositions;
+    std::vector<std::pair<Point, std::string>> m_playerPositions;
 
 public:
     void GetGeneratedCodeFromServer();
@@ -49,7 +51,7 @@ public:
 
     bool CheckServerCode(const std::string& code, int id);
 
-    void SendMoveToServer(const std::string& direction);
+    std::optional<Point> SendMoveToServer(const std::string& direction);
 
     std::string GetPlayerDataByIdFromServer();
     std::vector<Enemy> GetEnemiesFromServer();
@@ -72,6 +74,6 @@ public:
     std::vector<std::vector<int>> GetMap() const;
 
     void GetPlayerPositionsFromServer();
-    std::vector<std::pair<Point, bool>> GetPlayerPositions();
+    std::vector<std::pair<Point, std::string>> GetPlayerPositions();
 };
 

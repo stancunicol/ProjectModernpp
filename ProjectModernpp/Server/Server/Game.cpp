@@ -115,8 +115,14 @@ std::mutex m_levelMutex;
 
 void Game::SetLevel(int newLevel) {
     std::lock_guard<std::mutex> lock(gameMutex);
-    //std::lock_guard<std::mutex> lock(m_levelMutex);
     m_map.Reset(newLevel);
+
+    auto& players = m_entityManager.GetPlayersMutable();
+    for (auto& [id, player] : players) {
+        player.ResetPositions(m_map);
+        player.PlaceCharacter();
+    }
+
     InitializeGame();
 }
 

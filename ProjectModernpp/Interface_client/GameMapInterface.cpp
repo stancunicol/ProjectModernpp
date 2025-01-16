@@ -45,14 +45,21 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     }
 
     m_serverObject.GetPlayerPositionsFromServer();
-    playerPositions = m_serverObject.GetPlayerPositions();
-    std::cout << "Player Positions:\n";
-    for (const auto& position : playerPositions) {
-        auto point = position.first;
-        bool isActive = position.second;
+    auto playerPositions = m_serverObject.GetPlayerPositions();
 
-        std::cout << "Player at (" << static_cast<int>(point.m_x) << ", " << static_cast<int>(point.m_y)
-            << ") is " << (isActive ? "active" : "inactive") << ".\n";
+    bool playerFound = false;
+    for (const auto& position : playerPositions) {
+        if (std::stoi(position.second) == m_serverObject.GetUserId()) {
+            player1Position = QPoint(position.first.m_y, position.first.m_x);
+            qDebug() << "[INFO] Player initialized at position: (" << player1Position.x() << ", " << player1Position.y() << ")";
+            playerFound = true;
+            break;
+        }
+    }
+
+    if (!playerFound) {
+        qWarning() << "[WARNING] Player position not found. Ensure server returned correct data.";
+        player1Position = QPoint(-1, -1); // Setăm o poziție invalidă dacă nu este găsită
     }
     loadControls();
     update();
@@ -77,24 +84,29 @@ void GameMapInterface::loadControls()
 
 void GameMapInterface::keyPressEvent(QKeyEvent* event)
 {
-    switch (event->key())
-    {
+    QPoint direction;
+    QString dirString;
+
+    switch (event->key()) {
     case Qt::Key_Up:
-        qDebug() << "Up Arrow pressed!";
-        m_serverObject.SendMoveToServer("up");
+        direction = QPoint(0, -1);  // Mișcare în sus
+        dirString = "up";
         break;
     case Qt::Key_Down:
-        qDebug() << "Down Arrow pressed!";
-        m_serverObject.SendMoveToServer("down");
+        direction = QPoint(0, 1);  // Mișcare în jos
+        dirString = "down";
         break;
     case Qt::Key_Left:
-        qDebug() << "Left Arrow pressed!";
-        m_serverObject.SendMoveToServer("left");
+        direction = QPoint(-1, 0);  // Mișcare la stânga
+        dirString = "left";
         break;
     case Qt::Key_Right:
-        qDebug() << "Right Arrow pressed!";
-        m_serverObject.SendMoveToServer("right");
+        direction = QPoint(1, 0);  // Mișcare la dreapta
+        dirString = "right";
         break;
+    default:
+        QMainWindow::keyPressEvent(event);
+        return;
     }
 
     if (event->key() == QKeySequence(m_upKey).toString().at(0).unicode())
@@ -121,6 +133,23 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
     {
         QMainWindow::keyPressEvent(event);
     }
+
+    auto newPositionOpt = m_serverObject.SendMoveToServer(dirString.toStdString());
+    if (newPositionOpt) {
+        const Point& newPosition = *newPositionOpt;
+
+        if (newPosition.m_x != player1Position.x() || newPosition.m_y != player1Position.y()) {
+            player1Position = QPoint(newPosition.m_y, newPosition.m_x);
+            qDebug() << "[INFO] Player moved to new position: (" << player1Position.x() << ", " << player1Position.y() << ")";
+        }
+        else {
+            qDebug() << "[INFO] Server rejected move. Position unchanged.";
+        }
+    }
+    else {
+        qWarning() << "[WARNING] Move validation failed. Check server connection.";
+    }
+    update();
 }
 
 void GameMapInterface::paintEvent(QPaintEvent* event)
@@ -144,10 +173,15 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
             }
             painter.drawPixmap(j * 36, i * 36, pixmap);
         }
+
+    if (player1Position.x() >= 0 && player1Position.y() >= 0) {
+        pixmap.load("./player1.png");
+        painter.drawPixmap(player1Position.x() * 36, player1Position.y() * 36, pixmap.scaled(36, 36));
+    }
+
     pixmap = QPixmap("./base.jpg").scaled(36, 36);
     painter.drawPixmap(basePosition.second * 36, basePosition.first * 36, pixmap);
-    pixmap = QPixmap("./player1.png").scaled(36, 36);
-    painter.drawPixmap(0, 0, pixmap);
+
     for (auto enemy : enemies)
     {
         if (enemy.id == 0)

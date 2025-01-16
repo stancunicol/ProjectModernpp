@@ -31,7 +31,7 @@ public:
 
     const Point& GetShootDirection() const;
 
-    void ResetPositions();
+    void ResetPositions(const GameMap& grid);
 
     std::string GetName() const;
     uint16_t GetPoints() const;
@@ -65,5 +65,4 @@ public:
         return m_isActive;
     }
 
-    static std::vector<std::pair<Point, bool>> GetAllPositions();
 };
