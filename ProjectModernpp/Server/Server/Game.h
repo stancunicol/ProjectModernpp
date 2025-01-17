@@ -71,4 +71,6 @@ public:
     RoomManager GetRoomManager();
 
     void CloseRoom(const std::string& code);
+
+    void UpdateEnemyPositions();
 };

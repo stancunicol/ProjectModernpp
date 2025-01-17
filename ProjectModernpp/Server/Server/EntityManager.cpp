@@ -22,9 +22,9 @@ void EntityManager::AddPlayer(int id, const std::string& playerName, GameMap& ma
     }
 }
 
-void EntityManager::AddEnemy(const Enemy& enemy)
+void EntityManager::AddEnemy(int id, const Enemy& enemy)
 {
-    m_enemies.push_back(enemy);
+    m_enemies.emplace(id, enemy);
     m_enemyShootTimers.push_back(0.0f);
 }
 
@@ -65,11 +65,15 @@ void EntityManager::RemovePlayer(size_t playerId)
     }
 }
 
-void EntityManager::RemoveEnemy(size_t index)
+void EntityManager::RemoveEnemy(int id)
 {
-    if (index < m_enemies.size()) {
-        m_enemies.erase(m_enemies.begin() + index);
-        m_enemyShootTimers.erase(m_enemyShootTimers.begin() + index);
+    auto it = m_enemies.find(id);
+    if (it != m_enemies.end()) {
+        m_enemies.erase(it);
+        auto index = std::distance(m_enemies.begin(), it);
+        if (index >= 0 && index < m_enemyShootTimers.size()) {
+            m_enemyShootTimers.erase(m_enemyShootTimers.begin() + index);
+        }
     }
 }
 
@@ -296,7 +300,7 @@ const std::unordered_map<uint8_t, Player>& EntityManager::GetPlayers() const {
     return m_players;
 }
 
-const std::vector<Enemy>& EntityManager::GetEnemies() const
+const std::unordered_map<int, Enemy>& EntityManager::GetEnemies() const
 {
     return m_enemies;
 }
@@ -316,7 +320,7 @@ std::unordered_map<uint8_t, Player>& EntityManager::GetPlayersMutable()
     return m_players;
 }
 
-std::vector<Enemy>& EntityManager::GetEnemiesMutable()
+std::unordered_map<int, Enemy>& EntityManager::GetEnemiesMutable()
 {
     return m_enemies;
 }
@@ -382,4 +386,10 @@ void EntityManager::CloseRoom(const std::string& roomCode) {
     m_bombs.clear();
     m_playersBullets.clear();
     std::cout << "Room " << roomCode << " closed and resources cleaned up.\n";
+}
+
+void EntityManager::UpdateEnemyPositions() {
+    for (auto& enemy : m_enemies) {
+        enemy.second.MoveRandom(m_map);
+    }
 }

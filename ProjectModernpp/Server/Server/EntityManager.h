@@ -14,7 +14,7 @@ import Bomb;
 class EntityManager {
 private:
     std::unordered_map<uint8_t, Player> m_players;
-    std::vector<Enemy> m_enemies;
+    std::unordered_map<int, Enemy> m_enemies;
     std::vector<Bullet> m_bullets;
     std::vector<Bomb> m_bombs;
     std::unordered_map<uint8_t, std::vector<Bullet>> m_playersBullets;
@@ -26,6 +26,7 @@ private:
     std::string m_winner;
 
     DataBase m_database;
+    GameMap m_map;
 
     void HandleCollisions(GameMap& map);
 public:
@@ -33,14 +34,14 @@ public:
 
     void AddBomb(const Bomb& bomb);
     void AddPlayer(int id, const std::string& playerName, GameMap& map);
-    void AddEnemy(const Enemy& enemy);
+    void AddEnemy(int id, const Enemy& enemy);
     void AddBullet(const Bullet& bullet);
     void AddPlayerBullet(const Bullet& bullet, int playerId);
     void PlaceBase(GameMap& map);
 
     void RemoveBullet(size_t index);
     void RemovePlayer(size_t playerId);
-    void RemoveEnemy(size_t index);
+    void RemoveEnemy(int id);
     void RemoveBomb(size_t index);
 
 
@@ -52,12 +53,12 @@ public:
     void UpdateEntities(GameMap& map, float deltaTime);   // Updates the positions and states of all entities
 
     const std::unordered_map<uint8_t, Player>& GetPlayers() const;
-    const std::vector<Enemy>& GetEnemies() const;
+    const std::unordered_map<int, Enemy>& GetEnemies() const;
     const std::vector<Bullet>& GetBullets() const;
     const std::vector<Bomb>& GetBombs() const;
 
     std::unordered_map<uint8_t, Player>& GetPlayersMutable();
-    std::vector<Enemy>& GetEnemiesMutable();
+    std::unordered_map<int, Enemy>& GetEnemiesMutable();
     std::vector<Bullet>& GetBulletsMutable();
     const Base& GetBase() const;
     std::string GetWinner() const;
@@ -73,5 +74,7 @@ public:
     void ResetPlayers(GameMap& map);
 
     void CloseRoom(const std::string& roomCode);
+
+    void UpdateEnemyPositions();
 };
 

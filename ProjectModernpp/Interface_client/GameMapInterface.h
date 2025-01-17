@@ -8,6 +8,7 @@
 #include <iostream>
 #include <QSettings>
 #include "ServerUtils.h"
+#include <QTimer>
 
 class GameMapInterface : public QMainWindow
 {
@@ -18,6 +19,7 @@ public:
     void keyPressEvent(QKeyEvent* event) override;
     void paintEvent(QPaintEvent* event) override;
     void updateOtherPlayers();
+    void updateEnemies();
 private:
     ServerUtils m_serverObject;
     std::pair<int, int> basePosition;

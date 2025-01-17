@@ -7,9 +7,12 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     setWindowTitle("Game Map");
     setFocusPolicy(Qt::StrongFocus);
 
-    QTimer* fetchTimer = new QTimer(this);
-    connect(fetchTimer, &QTimer::timeout, this, &GameMapInterface::updateOtherPlayers);
-    fetchTimer->start(1000);
+    QTimer* fetchTimerPlayer = new QTimer(this);
+    QTimer* fetchTimerEnemy = new QTimer(this);
+    connect(fetchTimerPlayer, &QTimer::timeout, this, &GameMapInterface::updateOtherPlayers);
+    connect(fetchTimerEnemy, &QTimer::timeout, this, &GameMapInterface::updateEnemies);
+    fetchTimerPlayer->start(1000);
+    fetchTimerEnemy->start(1000);
 
     m_serverObject.GetMapFromServer();
     matrix = m_serverObject.GetMap();
@@ -242,5 +245,36 @@ void GameMapInterface::updateOtherPlayers() {
         qWarning() << "Error parsing player state response: " << e.what();
     }
 
+    update();
+}
+
+void GameMapInterface::updateEnemies() {
+    m_serverObject.FetchEnemyStates();  // Exemplu de funcție pentru a obține datele despre inamici
+
+    enemies.clear(); // Clear existing enemies
+
+    std::string url = "http://localhost:8080/getEnemiesState";
+    std::string response = m_serverObject.GetServerData(url);
+
+    if (response.empty()) {
+        qWarning() << "Failed to fetch enemy states.";
+        return;
+    }
+
+    try {
+        auto jsonResponse = nlohmann::json::parse(response);
+
+        if (jsonResponse.contains("enemies") && jsonResponse["enemies"].is_array()) {
+            for (const auto& enemy : jsonResponse["enemies"]) {
+                int x = enemy["position"]["x"];
+                int y = enemy["position"]["y"];
+                int id = enemy["id"];
+                enemies.push_back({ x, y, id });
+            }
+        }
+    }
+    catch (const std::exception& e) {
+        qWarning() << "Error parsing enemy state response: " << e.what();
+    }
     update();
 }

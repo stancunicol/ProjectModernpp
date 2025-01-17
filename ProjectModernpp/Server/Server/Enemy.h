@@ -14,6 +14,8 @@ private:
 public:
     Enemy(GameMap& map);//"puts" the enemies in the game map
 
+    Enemy();
+
     void PlaceCharacter(GameMap& map);
 
     void MoveRandom(GameMap& grid);

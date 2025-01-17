@@ -3,9 +3,10 @@
 #include <iostream>
 #include <crow.h>
 #include <regex>
-#include <iostream>
 #include <crow/json.h>
 #include "Player.h"
+#include <thread>
+#include <chrono>
 
 std::ostream& operator<<(std::ostream& os, const crow::json::wvalue& value) {
     os << value.dump();
@@ -19,6 +20,14 @@ crow::response handleRequest(Func&& func) {
     }
     catch (const std::exception& e) {
         return crow::response(500, std::string("Error processing request: ") + e.what());
+    }
+}
+
+void UpdateEnemyPositionsPeriodically(Game& game) {
+    while (true) {
+        game.GetEntityManager().UpdateEnemyPositions();
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 }
 
@@ -263,17 +272,23 @@ void StartServer(Game& game) {
         try {
             auto& enemies = game.GetEntityManager().GetEnemies();
 
+            if (enemies.empty()) {
+                crow::json::wvalue response;
+                response["enemyCount"] = 0;
+                response["enemies"] = crow::json::wvalue::list();
+                return crow::response(200, response);
+            }
+
             crow::json::wvalue response;
             response["enemyCount"] = enemies.size();
 
             crow::json::wvalue::list enemyList;
-            for (size_t i = 0; i < enemies.size(); ++i) {
-                const auto& enemy = enemies[i];
+            for (const auto& enemyPair : enemies) {
 
                 crow::json::wvalue enemyData;
-                enemyData["id"] = static_cast<int>(i);
-                enemyData["x"] = enemy.GetPosition().GetX();
-                enemyData["y"] = enemy.GetPosition().GetY();
+                enemyData["id"] = enemyPair.first;
+                enemyData["x"] = enemyPair.second.GetPosition().GetX();
+                enemyData["y"] = enemyPair.second.GetPosition().GetY();
 
                 enemyList.push_back(enemyData);
             }
@@ -397,13 +412,39 @@ void StartServer(Game& game) {
             }
         });
 
+    CROW_ROUTE(serverApp, "/getEnemiesState").methods(crow::HTTPMethod::GET)(
+        [&game](const crow::request& req) {
+            try {
+                auto& enemies = game.GetEntityManager().GetEnemies();
+
+                crow::json::wvalue response;
+                response["status"] = "success";
+                crow::json::wvalue::list enemyStates;
+
+                for (const auto& enemyPair : enemies) {
+                    enemyStates.push_back({
+                        {"id", enemyPair.first},
+                        {"position", {{"x", enemyPair.second.GetPosition().GetX()}, {"y", enemyPair.second.GetPosition().GetY()}}}
+                        });
+                }
+
+                response["enemies"] = std::move(enemyStates);
+                return crow::response(200, response);
+            }
+            catch (const std::exception& e) {
+                return crow::response(500, std::string("Server error: ") + e.what());
+            }
+        });
+
 
     serverApp.port(8080).multithreaded().run();
 }
 
 int main() {
     Game game;
+    std::thread updateThread(UpdateEnemyPositionsPeriodically, std::ref(game));
     std::thread serverThread(StartServer, std::ref(game));
     serverThread.join();
+    updateThread.detach();
     return 0;
 }

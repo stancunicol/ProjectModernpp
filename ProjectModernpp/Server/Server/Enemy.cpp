@@ -8,6 +8,10 @@ Enemy::Enemy(GameMap& map) //constructor
     PlaceCharacter(map);
 }
 
+Enemy::Enemy()
+{
+}
+
 
 void Enemy::PlaceCharacter(GameMap& map)
 {

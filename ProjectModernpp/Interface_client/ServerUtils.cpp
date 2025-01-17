@@ -408,6 +408,11 @@ std::vector<Enemy> ServerUtils::GetEnemiesFromServer()
     try {
         auto jsonResponse = nlohmann::json::parse(response);
 
+        if (jsonResponse["enemyCount"].get<int>() == 0) {
+            qDebug() << "No enemies found.";
+            return enemies;
+        }
+
         if (!jsonResponse.is_object() || !jsonResponse.contains("enemies") || !jsonResponse["enemies"].is_array()) {
             qDebug() << "Invalid JSON structure. Aborting.";
             return enemies;
@@ -650,5 +655,31 @@ void ServerUtils::FetchPlayerStates() {
     }
     catch (const std::exception& e) {
         qWarning() << "Error parsing player state response: " << e.what();
+    }
+}
+
+void ServerUtils::FetchEnemyStates() {
+    std::string url = "http://localhost:8080/getEnemiesState";
+    std::string response = GetServerData(url);
+
+    if (response.empty()) {
+        qWarning() << "Failed to fetch enemy states.";
+        return;
+    }
+
+    try {
+        auto jsonResponse = nlohmann::json::parse(response);
+        if (jsonResponse.contains("enemies") && jsonResponse["enemies"].is_array()) {
+            for (const auto& enemy : jsonResponse["enemies"]) {
+                int id = enemy["id"];
+                int x = enemy["position"]["x"];
+                int y = enemy["position"]["y"];
+
+                qDebug() << "Enemy ID:" << id << "Position: (" << x << "," << y << ")";
+            }
+        }
+    }
+    catch (const std::exception& e) {
+        qWarning() << "Error parsing enemy state response: " << e.what();
     }
 }

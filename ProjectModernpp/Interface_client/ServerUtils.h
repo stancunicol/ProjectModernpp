@@ -3,10 +3,10 @@
 #include <string>
 #include <QDebug>
 #include <curl/curl.h>
-#include <string>
 #include <nlohmann/json.hpp>
 #include <vector>
 #include <iostream>
+#include <QTimer>
 
 struct Enemy {
     int id;
@@ -77,5 +77,6 @@ public:
     std::vector<std::pair<Point, std::string>> GetPlayerPositions();
 
     void FetchPlayerStates();
+    void FetchEnemyStates();
 };
 
