@@ -3,7 +3,7 @@
 #include <random>
 
 Enemy::Enemy(GameMap& map) //constructor
-    : Character(Point(0, 0), Point(0, 0))
+    : Character{ Point(0, 0), Point(0, 0) }
 {
     PlaceCharacter(map);
 }

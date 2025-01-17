@@ -41,6 +41,6 @@ void Character::DecreaseLives(uint8_t amount) {
 	else m_lives = 0;
 }
 
-bool Character::isDead() const {
+bool Character::IsDead() const {
 	return m_lives == 0;
 }

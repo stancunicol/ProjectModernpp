@@ -25,9 +25,9 @@ private:
 
     std::unordered_map<std::string, Room> m_rooms;
 
-    std::mutex roomMutex;
+    std::mutex m_roomMutex;
 
-    std::mutex gameMutex;
+    std::mutex m_gameMutex;
 
     RoomManager m_roomManager;
 

@@ -1,7 +1,8 @@
 import Bomb;
 
 Bomb::Bomb(const Point& position, float activationTime)
-    : m_position(position), m_activationTime(activationTime), m_active(false) {}
+    : m_position{ position }, m_activationTime{ activationTime }, m_active{ false } {
+}
 
 void Bomb::Update(float deltaTime)
 {

@@ -1,10 +1,10 @@
 #include "Bullet.h"
 
 Bullet::Bullet(const Point& position, const Point& direction)
-    : m_active(true), m_speed(0.25f), m_direction(direction), m_position(position), m_progress{ 0.0f }, m_interpolationProgress{ 0.0f } {}
+    : m_active{ true }, m_speed{ 0.25f }, m_direction{ direction }, m_position{ position }, m_progress{ 0.0f }, m_interpolationProgress{ 0.0f } {
+}
 
 bool Bullet::IsActive() const
-
 {
     return m_active;
 }

@@ -8,8 +8,8 @@
 
 class DataBase {
 private:
-	sqlite3* db;
-	std::mutex dbMutex;
+	sqlite3* m_db;
+	std::mutex m_dbMutex;
 
 	void executeQuery(const std::string& query);
 public:
@@ -33,7 +33,7 @@ public:
 	std::optional<std::string> FindRoomByCode(const std::string& code);
 
 	std::optional<std::string> GetRecentPlayer();
-	void updateLastConnected(const std::string& playerName);
+	void UpdateLastConnected(const std::string& playerName);
 
 	sqlite3* GetDatabaseConnection() const;
 

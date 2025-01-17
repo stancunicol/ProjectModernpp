@@ -99,7 +99,7 @@ void Game::UpdatePlayerMovements() {
 
 std::mutex& Game::GetGameMutex()
 {
-    return gameMutex;
+    return m_gameMutex;
 }
 
 void Game::EndGame(const std::string& winner)
@@ -111,10 +111,8 @@ void Game::EndGame(const std::string& winner)
     std::cout << "Game Over! " << winner << " Wins!\n";
 }
 
-std::mutex m_levelMutex;
-
 void Game::SetLevel(int newLevel) {
-    std::lock_guard<std::mutex> lock(gameMutex);
+    std::lock_guard<std::mutex> lock(m_gameMutex);
     m_map.Reset(newLevel);
 
     auto& players = m_entityManager.GetPlayersMutable();
@@ -125,7 +123,6 @@ void Game::SetLevel(int newLevel) {
 
     InitializeGame();
 }
-
 
 crow::json::wvalue Game::TranformInJson() {
     crow::json::wvalue jsonMap;
@@ -147,7 +144,7 @@ crow::json::wvalue Game::GetGameStateAsJson() {
 }
 
 std::string Game::CreateRoom() {
-    std::lock_guard<std::mutex> lock(roomMutex);
+    std::lock_guard<std::mutex> lock(m_roomMutex);
     std::string code = GenerateRoomCode();
     auto map = std::make_unique<GameMap>();
     m_roomManager.CreateRoom(code, std::move(map));
@@ -155,7 +152,7 @@ std::string Game::CreateRoom() {
 }
 
 std::optional<std::string> Game::JoinRoom(const std::string& code, int playerId) {
-    std::lock_guard<std::mutex> lock(roomMutex);
+    std::lock_guard<std::mutex> lock(m_roomMutex);
     Room* room = m_roomManager.GetRoom(code);
     if (!room)
         return std::nullopt;
@@ -172,7 +169,7 @@ std::optional<std::string> Game::JoinRoom(const std::string& code, int playerId)
 }
 
 bool Game::LeaveRoom(const std::string& code, const int& playerId) {
-    std::lock_guard<std::mutex> lock(roomMutex);
+    std::lock_guard<std::mutex> lock(m_roomMutex);
     Room* room = m_roomManager.GetRoom(code);
     if (room && room->RemovePlayer(playerId)) {
         if (room->GetPlayers().empty())
@@ -183,7 +180,7 @@ bool Game::LeaveRoom(const std::string& code, const int& playerId) {
 }
 
 void Game::CloseRoom(const std::string& code) {
-    std::lock_guard<std::mutex> lock(roomMutex);
+    std::lock_guard<std::mutex> lock(m_roomMutex);
 
     if (m_roomManager.RemoveRoom(code))
         std::cout << "Room " << code << " closed and resources cleaned up.\n";

@@ -24,5 +24,5 @@ public:
 
     void DecreaseLives(uint8_t amount);
 
-    bool isDead() const;
+    bool IsDead() const;
 };
