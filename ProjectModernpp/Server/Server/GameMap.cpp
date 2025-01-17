@@ -27,6 +27,13 @@ GameMap::GameMap(uint8_t level)
     Initialize();
 }
 
+GameMap::GameMap(GameMap&& other)
+    : m_width(other.m_width), m_height(other.m_height), m_level(other.m_level),
+    m_dynamicGrid(std::move(other.m_dynamicGrid)), m_grid(std::move(other.m_grid))
+{
+
+}
+
 void GameMap::Initialize()
 {
     uint8_t breakableWallChance = 0, unbreakableWallChance = 0, safeZoneSize = 3;

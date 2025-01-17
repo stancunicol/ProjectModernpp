@@ -44,4 +44,11 @@ public:
 	std::vector<std::tuple<std::string, uint16_t, uint8_t, std::string>> GetGameData() const;
 
 	friend std::ostream& operator<<(std::ostream& out, const DataBase& db);
+
+	void DeleteRoom(const std::string& roomCode);
+	void UpdateRoomData(const std::string& roomCode, const std::string& newMapData);
+
+	void RemovePlayerFromRoom(int playerId);
+
+	void AddRoom(const std::string& roomCode);
 };

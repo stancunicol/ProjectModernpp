@@ -371,3 +371,15 @@ void EntityManager::ResetPlayers(GameMap& map)
         player.PlaceCharacter();
     }
 }
+
+void EntityManager::CloseRoom(const std::string& roomCode) {
+    for (auto& [playerId, player] : m_players) {
+        player.Deactivate();
+    }
+
+    m_enemies.clear();
+    m_bullets.clear();
+    m_bombs.clear();
+    m_playersBullets.clear();
+    std::cout << "Room " << roomCode << " closed and resources cleaned up.\n";
+}

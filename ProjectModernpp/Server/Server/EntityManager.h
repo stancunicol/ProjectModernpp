@@ -72,5 +72,6 @@ public:
 
     void ResetPlayers(GameMap& map);
 
+    void CloseRoom(const std::string& roomCode);
 };
 

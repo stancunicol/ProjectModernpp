@@ -63,6 +63,9 @@
     <ClCompile Include="Point.cppm">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="RoomManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.h">
@@ -93,6 +96,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Room.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

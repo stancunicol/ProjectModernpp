@@ -14,6 +14,15 @@ DataBase::~DataBase() {
 }
 
 void DataBase::Initialize() {
+    const std::string createRoomsTableQuery = R"(
+        CREATE TABLE IF NOT EXISTS Rooms (
+            id INTEGER PRIMARY KEY,
+            roomCode TEXT UNIQUE NOT NULL,
+            mapData TEXT, -- Datele hărții, codificate ca text JSON sau alt format
+            createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+    )";
+    executeQuery(createRoomsTableQuery);
 
     const std::string createTableQuery = R"(
         CREATE TABLE IF NOT EXISTS GameData (
@@ -25,6 +34,7 @@ void DataBase::Initialize() {
             lastConnected DATETIME DEFAULT NULL
         );
     )";
+    executeQuery("PRAGMA foreign_keys = ON;");
     executeQuery(createTableQuery);
 }
 
@@ -240,9 +250,6 @@ void DataBase::InsertRoomCode(const std::string& playerName, const std::string& 
     sqlite3_finalize(stmtAdd);
     updateLastConnected(playerName);
 }
-
-
-
 
 std::optional<std::string> DataBase::FindRoomByCode(const std::string& code)
 {
@@ -465,4 +472,71 @@ std::ostream& operator<<(std::ostream& out, const DataBase& db) {
     }
 
     return out;
+}
+
+void DataBase::DeleteRoom(const std::string& roomCode) {
+    const std::string updateQuery = "UPDATE GameData SET roomCode = NULL WHERE roomCode = '" + roomCode + "')";
+    executeQuery(updateQuery);
+
+    const std::string checkQuery = "SELECT COUNT(*) FROM GameData WHERE roomCode = '" + roomCode + "';";
+    sqlite3_stmt* stmt;
+    int playerCount = 0;
+
+    if (sqlite3_prepare_v2(db, checkQuery.c_str(), -1, &stmt, nullptr) == SQLITE_OK) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            playerCount = sqlite3_column_int(stmt, 0);
+        }
+    }
+    sqlite3_finalize(stmt);
+
+    if (playerCount == 0) {
+        const std::string deleteQuery = "DELETE FROM Rooms WHERE roomCode = '" + roomCode + "';";
+        executeQuery(deleteQuery);
+    }
+}
+
+void DataBase::UpdateRoomData(const std::string& roomCode, const std::string& newMapData) {
+    const std::string updateQuery = "UPDATE Rooms SET mapData = '" + newMapData + "'WHERE roomCode = '" + roomCode + "';";
+    executeQuery(updateQuery);
+}
+
+void DataBase::RemovePlayerFromRoom(int playerId) {
+    const std::string updateQuery = R"(
+        UPDATE GameData SET roomCode = NULL WHERE id = ?;
+    )";
+
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(db, updateQuery.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+        return;
+    }
+
+    sqlite3_bind_int(stmt, 1, playerId);
+
+    if (sqlite3_step(stmt) != SQLITE_DONE) {
+        std::cerr << "Error executing statement: " << sqlite3_errmsg(db) << std::endl;
+    }
+
+    sqlite3_finalize(stmt);
+}
+
+void DataBase::AddRoom(const std::string& roomCode) {
+    const std::string insertQuery = R"(
+        INSERT INTO GameRooms (roomCode, status) VALUES (?, ?);
+    )";
+
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(db, insertQuery.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+        return;
+    }
+
+    sqlite3_bind_text(stmt, 1, roomCode.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 2, "available", -1, SQLITE_STATIC); // Statusul camerei, poate fi "available", "in_game", etc.
+
+    if (sqlite3_step(stmt) != SQLITE_DONE) {
+        std::cerr << "Error executing statement: " << sqlite3_errmsg(db) << std::endl;
+    }
+
+    sqlite3_finalize(stmt);
 }

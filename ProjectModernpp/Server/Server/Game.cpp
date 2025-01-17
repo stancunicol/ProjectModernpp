@@ -149,39 +149,51 @@ crow::json::wvalue Game::GetGameStateAsJson() {
 std::string Game::CreateRoom() {
     std::lock_guard<std::mutex> lock(roomMutex);
     std::string code = GenerateRoomCode();
-    m_rooms.emplace(code, Room(code));
+    auto map = std::make_unique<GameMap>();
+    m_roomManager.CreateRoom(code, std::move(map));
     return code;
 }
 
-std::optional<std::string> Game::JoinRoom(const std::string& code, uint8_t playerId) {
+std::optional<std::string> Game::JoinRoom(const std::string& code, int playerId) {
     std::lock_guard<std::mutex> lock(roomMutex);
-    auto it = m_rooms.find(code);
+    Room* room = m_roomManager.GetRoom(code);
+    if (!room)
+        return std::nullopt;
 
     std::string playerName;
     auto playerData = m_database.GetPlayerDataById(playerId);
     if (playerData.has_value())
         playerName = std::get<0>(playerData.value());
 
-    if (it != m_rooms.end() && it->second.AddPlayer(playerName))
-        return it->second.GetCode();
+    if (room->AddPlayer(playerId))
+        return room->GetCode();
+
     return std::nullopt;
 }
 
-bool Game::LeaveRoom(const std::string& code, const std::string& playerName) {
+bool Game::LeaveRoom(const std::string& code, const int& playerId) {
     std::lock_guard<std::mutex> lock(roomMutex);
-    auto it = m_rooms.find(code);
-    if (it != m_rooms.end() && it->second.RemovePlayer(playerName)) {
-        if (it->second.GetPlayers().empty())
-            m_rooms.erase(it);
+    Room* room = m_roomManager.GetRoom(code);
+    if (room && room->RemovePlayer(playerId)) {
+        if (room->GetPlayers().empty())
+            m_roomManager.RemoveRoom(code);
         return true;
     }
     return false;
 }
 
-std::optional<Room> Game::GetRoom(const std::string& code) {
+void Game::CloseRoom(const std::string& code) {
     std::lock_guard<std::mutex> lock(roomMutex);
-    auto it = m_rooms.find(code);
-    if (it != m_rooms.end())
-        return it->second;
-    return std::nullopt;
+
+    if (m_roomManager.RemoveRoom(code))
+        std::cout << "Room " << code << " closed and resources cleaned up.\n";
+}
+
+RoomManager Game::GetRoomManager() {
+    return m_roomManager;
+}
+
+Room* Game::GetRoom(const std::string& code)
+{
+    return m_roomManager.GetRoom(code);
 }

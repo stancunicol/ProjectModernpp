@@ -105,21 +105,21 @@ void StartServer(Game& game) {
 
 
     // GET registerRoom
-    CROW_ROUTE(serverApp, "/registerRoom").methods(crow::HTTPMethod::GET)([&game]() {
-        return handleRequest([&game]() {
-            std::string roomCode = game.CreateRoom();
+    CROW_ROUTE(serverApp, "/registerRoom").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
+        return handleRequest([&game, &req]() {
+            std::string code = game.GenerateRoomCode();
 
-            auto& db = game.GetDatabase();
-            std::optional<std::string> recentPlayer = db.GetRecentPlayer();
-            if (!recentPlayer.has_value()) {
-                return crow::response(400, "No recently declared user available.");
+            auto map = std::make_unique<GameMap>();
+
+            if (!game.GetRoomManager().CreateRoom(code, std::move(map))) {
+                return crow::response(500, "Error creating room.");
             }
 
-            db.InsertRoomCode(recentPlayer.value(), roomCode);
+            game.GetDatabase().AddRoom(code);
 
             crow::json::wvalue response;
-            response["code"] = roomCode;
-            response["message"] = "Room registered successfully.";
+            response["message"] = "Room created successfully.";
+            response["code"] = code;
             return crow::response(200, response);
             });
         });
@@ -158,9 +158,11 @@ void StartServer(Game& game) {
                 return crow::response(400, "Invalid JSON payload. Expected 'code' and 'playerName' fields.");
 
             std::string code = jsonBody["code"].s();
-            std::string playerName = jsonBody["playerName"].s();
+            int playerId = jsonBody["id"].i();
 
-            if (game.LeaveRoom(code, playerName))
+            game.GetDatabase().RemovePlayerFromRoom(playerId);
+
+            if (game.LeaveRoom(code, playerId))
                 return crow::response(200, "Player left room successfully.");
             else
                 return crow::response(400, "Unable to leave room. Room may not exist or player is not in the room.");

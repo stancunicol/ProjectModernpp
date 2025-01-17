@@ -93,8 +93,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>F:\vcpkg\installed\x64-windows\include;C:\Users\vilcu\Desktop\vcpkg\installed\x64-windows\lib;$(IncludePath)</IncludePath>
-    <LibraryPath>F:\vcpkg\installed\x64-windows\lib;C:\Users\vilcu\Desktop\vcpkg\installed\x64-windows\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>E:\vcpkg\installed\x64-windows\include;C:\Users\vilcu\Desktop\vcpkg\installed\x64-windows\lib;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\vcpkg\installed\x64-windows\lib;C:\Users\vilcu\Desktop\vcpkg\installed\x64-windows\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

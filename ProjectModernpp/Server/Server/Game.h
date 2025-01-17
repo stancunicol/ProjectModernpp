@@ -15,6 +15,7 @@ import Base;
 #include "Bullet.h"
 #include "EntityManager.h"
 #include "Room.h"
+#include "RoomManager.h"
 
 class  Game {
 private:
@@ -24,12 +25,11 @@ private:
 
     std::unordered_map<std::string, Room> m_rooms;
 
-    std::string GenerateRoomCode();
-
     std::mutex roomMutex;
 
     std::mutex gameMutex;
 
+    RoomManager m_roomManager;
 
 public:
 
@@ -56,13 +56,19 @@ public:
 
     std::string CreateRoom();
 
-    std::optional<std::string> JoinRoom(const std::string& code, uint8_t playerId);
+    std::optional<std::string> JoinRoom(const std::string& code, int playerId);
 
-    bool LeaveRoom(const std::string& code, const std::string& playerName);
+    bool LeaveRoom(const std::string& code, const int& playerId);
 
-    std::optional<Room> GetRoom(const std::string& code);
+    Room* GetRoom(const std::string& code);
 
     void UpdatePlayerMovements();
 
     std::mutex& GetGameMutex();
+
+    std::string GenerateRoomCode();
+
+    RoomManager GetRoomManager();
+
+    void CloseRoom(const std::string& code);
 };

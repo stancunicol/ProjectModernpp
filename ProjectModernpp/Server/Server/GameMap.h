@@ -19,6 +19,7 @@ private:
 public:
     GameMap(uint8_t level = 1);
 
+    GameMap(GameMap&& other);
 
     void Initialize();//initialize the map based on the level
     bool IsInSafeZone(uint8_t x, uint8_t y, uint8_t safeZoneSize);

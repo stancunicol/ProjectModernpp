@@ -22,6 +22,7 @@ void ServerUtils::GetGeneratedCodeFromServer() {
         std::string url = "http://localhost:8080/registerRoom";
 
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "POST");
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &ServerUtils::WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
         curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
