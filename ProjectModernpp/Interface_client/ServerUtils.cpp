@@ -10,6 +10,10 @@ void ServerUtils::SetUserId(int userId) {
     qDebug() << "User ID set to:" << this->userId;
 }
 
+ServerUtils::ServerUtils()
+{
+}
+
 void ServerUtils::GetGeneratedCodeFromServer() {
     CURL* curl;
     CURLcode res;
@@ -658,7 +662,7 @@ void ServerUtils::FetchPlayerStates() {
     }
 }
 
-void ServerUtils::FetchEnemyStates() {
+void ServerUtils::FetchEnemyStates(std::vector<Enemy>& enemies) {
     std::string url = "http://localhost:8080/getEnemiesState";
     std::string response = GetServerData(url);
 
@@ -670,11 +674,18 @@ void ServerUtils::FetchEnemyStates() {
     try {
         auto jsonResponse = nlohmann::json::parse(response);
         if (jsonResponse.contains("enemies") && jsonResponse["enemies"].is_array()) {
+            enemies.clear();
             for (const auto& enemy : jsonResponse["enemies"]) {
                 int id = enemy["id"];
                 int x = enemy["position"]["x"];
                 int y = enemy["position"]["y"];
 
+                if (x < 0 || x >= GetMap().size() || y < 0 || y >= GetMap()[0].size() || GetMap()[x][y] == 2) {
+                    qWarning() << "Invalid enemy position: (" << x << "," << y << ")";
+                    continue;
+                }
+
+                enemies.push_back({ id, x, y });
                 qDebug() << "Enemy ID:" << id << "Position: (" << x << "," << y << ")";
             }
         }

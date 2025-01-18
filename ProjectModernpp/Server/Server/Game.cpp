@@ -56,6 +56,15 @@ void Game::InitializeGame() {
             bombsToPlace--;
         }
     }
+
+    for (int i = 0;i < m_map.GetHeight();i++)
+    {
+        for (int j = 0;j < m_map.GetWidth();j++)
+        {
+            std::cout << static_cast<int>(m_map.GetMap()[i][j]) << " ";
+        }
+        std::cout << '\n';
+    }
 }
 
 void Game::Run() {
@@ -77,6 +86,8 @@ void Game::Run() {
             m_entityManager.UpdateEntities(m_map, elapsedTime);
             elapsedTime = 0.0f;
         }
+
+        //m_entityManager.UpdateEnemyPositions();
 
         // Display the game map and entities
         m_map.Display();

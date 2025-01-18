@@ -1,6 +1,9 @@
 ﻿#include "GameMapInterface.h"
 #include "ServerUtils.h"
 
+struct Enemy;
+
+
 GameMapInterface::GameMapInterface(QWidget* parent)
     : QMainWindow(parent)
 {
@@ -9,10 +12,10 @@ GameMapInterface::GameMapInterface(QWidget* parent)
 
     QTimer* fetchTimerPlayer = new QTimer(this);
     QTimer* fetchTimerEnemy = new QTimer(this);
-    connect(fetchTimerPlayer, &QTimer::timeout, this, &GameMapInterface::updateOtherPlayers);
+    //connect(fetchTimerPlayer, &QTimer::timeout, this, &GameMapInterface::updateOtherPlayers);
     connect(fetchTimerEnemy, &QTimer::timeout, this, &GameMapInterface::updateEnemies);
-    fetchTimerPlayer->start(1000);
-    fetchTimerEnemy->start(1000);
+    //fetchTimerPlayer->start(100);
+    fetchTimerEnemy->start(100);
 
     m_serverObject.GetMapFromServer();
     matrix = m_serverObject.GetMap();
@@ -43,12 +46,6 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     }
     else {
         qDebug() << "No bomb data available.";
-    }
-
-    enemies = m_serverObject.GetEnemiesFromServer();
-    qDebug() << "Enemy Positions:";
-    for (const auto& enemy : enemies) {
-        qDebug() << "Enemy ID:" << enemy.id << "Position: (" << enemy.x << "," << enemy.y << ")";
     }
 
     m_serverObject.GetPlayerPositionsFromServer();
@@ -191,27 +188,27 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
     pixmap = QPixmap("./base.jpg").scaled(36, 36);
     painter.drawPixmap(basePosition.second * 36, basePosition.first * 36, pixmap);
 
-    for (auto enemy : enemies)
+    for (const auto& enemy : m_enemies)
     {
-        switch (enemy.id)
-        {
-        case 0:
-            pixmap = QPixmap("./enemy1.png").scaled(36, 36);
-            painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
-            break;
-        case 1:
-            pixmap = QPixmap("./enemy2.png").scaled(36, 36);
-            painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
-            break;
-        case 2:
-            pixmap = QPixmap("./enemy3.png").scaled(36, 36);
-            painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
-            break;
-        case 3:
-            pixmap = QPixmap("./enemy4.png").scaled(36, 36);
-            painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
-            break;
-        }
+            switch (enemy.id)
+            {
+            case 0:
+                pixmap = QPixmap("./enemy1.png").scaled(36, 36);
+                painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
+                break;
+            case 1:
+                pixmap = QPixmap("./enemy2.png").scaled(36, 36);
+                painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
+                break;
+            case 2:
+                pixmap = QPixmap("./enemy3.png").scaled(36, 36);
+                painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
+                break;
+            case 3:
+                pixmap = QPixmap("./enemy4.png").scaled(36, 36);
+                painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
+                break;
+            }
     }
 }
 
@@ -249,32 +246,16 @@ void GameMapInterface::updateOtherPlayers() {
 }
 
 void GameMapInterface::updateEnemies() {
-    m_serverObject.FetchEnemyStates();  // Exemplu de funcție pentru a obține datele despre inamici
+    std::vector<Enemy> fetchedEnemies;
+    m_serverObject.FetchEnemyStates(fetchedEnemies);
 
-    enemies.clear(); // Clear existing enemies
-
-    std::string url = "http://localhost:8080/getEnemiesState";
-    std::string response = m_serverObject.GetServerData(url);
-
-    if (response.empty()) {
-        qWarning() << "Failed to fetch enemy states.";
-        return;
+    for (const auto& enemy : fetchedEnemies) 
+    { 
+        qDebug() << "Enemy ID:" << enemy.id << " Position: (" << enemy.x << ", " << enemy.y << ")"; 
+        if (m_serverObject.GetMap()[enemy.x][enemy.y] == 1 || m_serverObject.GetMap()[enemy.x][enemy.y] == 2)
+            qDebug() << "Invalid position.\n";
     }
 
-    try {
-        auto jsonResponse = nlohmann::json::parse(response);
-
-        if (jsonResponse.contains("enemies") && jsonResponse["enemies"].is_array()) {
-            for (const auto& enemy : jsonResponse["enemies"]) {
-                int x = enemy["position"]["x"];
-                int y = enemy["position"]["y"];
-                int id = enemy["id"];
-                enemies.push_back({ x, y, id });
-            }
-        }
-    }
-    catch (const std::exception& e) {
-        qWarning() << "Error parsing enemy state response: " << e.what();
-    }
+    m_enemies = std::move(fetchedEnemies);
     update();
 }

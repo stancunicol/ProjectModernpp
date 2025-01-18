@@ -10,6 +10,8 @@ class Enemy : virtual public Character
 private:
     bool m_active = false;
     Point m_shootDirection = Point(0, 0);
+    RandomMove randomMove;
+    float m_timeSinceLastMove;
 
 public:
     Enemy(GameMap& map);//"puts" the enemies in the game map
@@ -24,4 +26,6 @@ public:
 
     const Point& GetPosition() const;
     const Point& GetShootDirection() const;
+
+    void Update(float deltaTime);
 };

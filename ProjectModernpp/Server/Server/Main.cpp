@@ -25,8 +25,7 @@ crow::response handleRequest(Func&& func) {
 
 void UpdateEnemyPositionsPeriodically(Game& game) {
     while (true) {
-        game.GetEntityManager().UpdateEnemyPositions();
-
+        game.GetEntityManager().UpdateEnemyPositions(game.GetMap());
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 }
@@ -289,6 +288,7 @@ void StartServer(Game& game) {
                 enemyData["id"] = enemyPair.first;
                 enemyData["x"] = enemyPair.second.GetPosition().GetX();
                 enemyData["y"] = enemyPair.second.GetPosition().GetY();
+                //std::cout << "\nData sent to client: " << enemyPair.first << " " << static_cast<int>(enemyPair.second.GetPosition().GetX()) << " "<< static_cast<int>(enemyPair.second.GetPosition().GetY()) << '\n';
 
                 enemyList.push_back(enemyData);
             }
@@ -426,6 +426,7 @@ void StartServer(Game& game) {
                         {"id", enemyPair.first},
                         {"position", {{"x", enemyPair.second.GetPosition().GetX()}, {"y", enemyPair.second.GetPosition().GetY()}}}
                         });
+                    std::cout << "\nData sent to client: " << enemyPair.first << " " << static_cast<int>(enemyPair.second.GetPosition().GetX()) << " " << static_cast<int>(enemyPair.second.GetPosition().GetY()) << '\n';
                 }
 
                 response["enemies"] = std::move(enemyStates);

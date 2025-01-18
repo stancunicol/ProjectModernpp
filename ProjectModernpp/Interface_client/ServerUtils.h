@@ -35,8 +35,11 @@ private:
     size_t m_level;
     std::vector<std::vector<int>> m_matrix;
     std::vector<std::pair<Point, std::string>> m_playerPositions;
+    //std::vector<Enemy>& m_enemies;
 
 public:
+    ServerUtils();
+
     void GetGeneratedCodeFromServer();
 
     void SendLevelToServer(int level);
@@ -77,6 +80,6 @@ public:
     std::vector<std::pair<Point, std::string>> GetPlayerPositions();
 
     void FetchPlayerStates();
-    void FetchEnemyStates();
+    void FetchEnemyStates(std::vector<Enemy>& enemies);
 };
 

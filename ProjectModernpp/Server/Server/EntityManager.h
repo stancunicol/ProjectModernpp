@@ -26,7 +26,6 @@ private:
     std::string m_winner;
 
     DataBase m_database;
-    GameMap m_map;
 
     void HandleCollisions(GameMap& map);
 public:
@@ -75,6 +74,6 @@ public:
 
     void CloseRoom(const std::string& roomCode);
 
-    void UpdateEnemyPositions();
+    void UpdateEnemyPositions(GameMap& map);
 };
 

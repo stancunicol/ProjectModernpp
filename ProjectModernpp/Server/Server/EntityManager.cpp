@@ -70,17 +70,22 @@ void EntityManager::RemoveEnemy(int id)
     auto it = m_enemies.find(id);
     if (it != m_enemies.end()) {
         m_enemies.erase(it);
-        auto index = std::distance(m_enemies.begin(), it);
-        if (index >= 0 && index < m_enemyShootTimers.size()) {
-            m_enemyShootTimers.erase(m_enemyShootTimers.begin() + index);
+
+        auto enemyShootTimerIt = std::find(m_enemyShootTimers.begin(), m_enemyShootTimers.end(), 0.0f); // Verifică logica pentru găsirea corectă a timerului
+        if (enemyShootTimerIt != m_enemyShootTimers.end()) {
+            m_enemyShootTimers.erase(enemyShootTimerIt);
         }
     }
 }
+
 
 void EntityManager::RemoveBomb(size_t index)
 {
     if (index < m_bombs.size()) {
         m_bombs.erase(m_bombs.begin() + index);
+    }
+    else {
+        std::cerr << "Error: Bomb index out of range.\n";
     }
 }
 
@@ -135,17 +140,17 @@ void EntityManager::ExplodeBomb(const Bomb& bomb, GameMap& map) {
                 }
 
                 // Eliminăm inamici și jucători
-                for (size_t i = 0; i < m_enemies.size(); ++i) {
-                    if (m_enemies[i].GetPosition() == target) {
-                        RemoveEnemy(i);
+                for (auto it = m_enemies.begin(); it != m_enemies.end(); ++it) {
+                    if (it->second.GetPosition() == target) {
+                        RemoveEnemy(it->first);
                         break;
                     }
                 }
 
-                for (size_t i = 0; i < m_players.size(); ++i) {
-                    if (m_players[i].GetPosition() == target) {
-                        RemovePlayer(i);
-                        m_players[i].SetScore();
+
+                for (auto it = m_players.begin(); it != m_players.end(); ++it) {
+                    if (it->second.GetPosition() == target) {
+                        RemovePlayer(it->first);
                         break;
                     }
                 }
@@ -164,15 +169,18 @@ void EntityManager::UpdateEntities(GameMap& map, float deltaTime)
         }
     }
 
-    for (size_t i = 0; i < m_enemies.size(); ++i) {
-        m_enemies[i].MoveRandom(map);
-        m_enemyShootTimers[i] += deltaTime;
+    for (auto& [id, enemy] : m_enemies) {
+        enemy.MoveRandom(map);
 
-        if (m_enemyShootTimers[i] >= m_enemyShootInterval) {
-            Point shootDir = m_enemies[i].GetShootDirection();
+        if (id < m_enemyShootTimers.size()) {
+            m_enemyShootTimers[id] += deltaTime;
+        }
+
+        if (m_enemyShootTimers[id] >= m_enemyShootInterval) {
+            Point shootDir = enemy.GetShootDirection();
 
             if (shootDir != Point(0, 0)) {
-                Point bulletStartPos = m_enemies[i].GetPosition() + shootDir;
+                Point bulletStartPos = enemy.GetPosition() + shootDir;
 
                 if (bulletStartPos.GetX() >= 0 && bulletStartPos.GetX() < map.GetHeight() &&
                     bulletStartPos.GetY() >= 0 && bulletStartPos.GetY() < map.GetWidth() &&
@@ -181,7 +189,7 @@ void EntityManager::UpdateEntities(GameMap& map, float deltaTime)
                     AddBullet(newBullet);
                 }
             }
-            m_enemyShootTimers[i] = 0.0f;
+            m_enemyShootTimers[id] = 0.0f;
         }
     }
 
@@ -437,8 +445,8 @@ void EntityManager::CloseRoom(const std::string& roomCode) {
     std::cout << "Room " << roomCode << " closed and resources cleaned up.\n";
 }
 
-void EntityManager::UpdateEnemyPositions() {
+void EntityManager::UpdateEnemyPositions(GameMap& map) {
     for (auto& enemy : m_enemies) {
-        enemy.second.MoveRandom(m_map);
+        enemy.second.MoveRandom(map);
     }
 }
