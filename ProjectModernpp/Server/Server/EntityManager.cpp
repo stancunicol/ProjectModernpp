@@ -259,6 +259,44 @@ void EntityManager::HandleCollisions(GameMap& map)
         }
     }
 
+    // Coliziuni gloanțe player - gloanțe inamici
+    for (auto& [playerId, playerBullets] : m_playersBullets) {
+        for (size_t i = 0; i < playerBullets.size(); ++i) {
+            Bullet& playerBullet = playerBullets[i];
+            if (!playerBullet.IsActive()) continue;
+
+            for (Bullet& enemyBullet : m_bullets) {
+                if (!enemyBullet.IsActive()) continue;
+
+                if (playerBullet.GetPosition() == enemyBullet.GetPosition()) {
+                    playerBullet.SetActive(false);
+                    enemyBullet.SetActive(false);
+                    break;
+                }
+            }
+        }
+    }
+
+    // Coliziuni gloanțe player - alt player
+    for (auto& [playerId, bullets] : m_playersBullets) {
+        for (Bullet& bullet : bullets) {
+            if (!bullet.IsActive()) continue;
+
+            for (auto& [otherPlayerId, otherPlayer] : m_players) {
+                if (otherPlayerId == playerId) continue;
+
+                if (bullet.GetPosition() == otherPlayer.GetPosition()) {
+                    bullet.SetActive(false);
+                    otherPlayer.SetLives(otherPlayer.GetLives() - 1);
+                    if (otherPlayer.GetLives() <= 0) {
+                        RemovePlayer(otherPlayerId);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
     // Coliziuni gloanțe inamici - jucători
     for (size_t bulletIndex = 0; bulletIndex < m_bullets.size(); ++bulletIndex) {
         Bullet& bullet = m_bullets[bulletIndex];
@@ -285,6 +323,17 @@ void EntityManager::HandleCollisions(GameMap& map)
                 m_winner = "Enemy";
             }
             break;
+        }
+    }
+
+    // Coliziuni gloanțe - blocuri distrugibile
+    for (auto& bullet : m_bullets) {
+        if (!bullet.IsActive()) continue;
+
+        Point pos = bullet.GetPosition() + bullet.GetDirection();
+        if (map.GetMap()[pos.GetX()][pos.GetY()] == CellType::BREAKABLE_WALL) {
+            bullet.SetActive(false);
+            map.SetStaticCell(pos.GetX(), pos.GetY(), CellType::EMPTY);
         }
     }
 }
