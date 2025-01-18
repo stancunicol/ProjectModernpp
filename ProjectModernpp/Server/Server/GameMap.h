@@ -37,4 +37,12 @@ public:
     uint8_t GetLevel() const;
 
     void Reset(uint8_t level);
+
+    std::vector<CellType>& operator[](int index) {
+        return m_grid[index];
+    }
+
+    const std::vector<CellType>& operator[](int index) const {
+        return m_grid[index];
+    }
 };

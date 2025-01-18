@@ -20,6 +20,8 @@ public:
     void updateOtherPlayers();
     void updateEnemies();
     void updatePlayerScores();
+    void fireBullet();
+    void updateMap();
 private:
     ServerUtils m_serverObject;
     std::pair<int, int> basePosition;
@@ -38,4 +40,5 @@ private:
 
     std::vector<std::pair<QPoint, QString>> otherPlayers;
     std::vector<std::pair<QString, int>> playerScores;
+    QPoint m_currentDirection = QPoint(0, 0);
 };

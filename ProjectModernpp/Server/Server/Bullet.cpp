@@ -66,3 +66,14 @@ void Bullet::SetSpeed(float speed) {
     m_speed = speed;
 }
 
+bool Bullet::HasHit() const {
+    return m_hit;
+}
+
+Point Bullet::GetHitPosition() const {
+    return m_hitPosition;
+}
+
+int Bullet::GetOwnerId() const {
+    return m_ownerId;
+}

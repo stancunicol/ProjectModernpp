@@ -207,3 +207,76 @@ Room* Game::GetRoom(const std::string& code)
 {
     return m_roomManager.GetRoom(code);
 }
+
+bool Game::CheckBulletCollision(const Bullet& bullet, Point& hitObjectPos, bool& isPlayerHit, bool& isEnemyHit) {
+    Point bulletPos = bullet.GetPosition();
+    int shooterId = bullet.GetOwnerId();
+
+    Point direction = bullet.GetDirection();
+
+    int x = bulletPos.GetX();
+    int y = bulletPos.GetY();
+
+    if (x >= 0 && x < m_map.GetMap().size() && y >= 0 && y < m_map.GetMap()[x].size()) {
+        if (direction.GetY() == 0) {
+            while (x >= 0 && x < static_cast<int>(m_map.GetMap().size())) {
+                CellType cellType = m_map.GetMap()[x][y];
+
+                if (cellType == CellType::BREAKABLE_WALL) {
+                    m_map.GetMap()[x][y] = CellType::EMPTY;
+                    hitObjectPos = Point(x, y);
+                    return true;
+                }
+                else if (cellType == CellType::UNBREAKABLE_WALL) {
+                    hitObjectPos = Point(x, y);
+                    return true;
+                }
+
+                x += direction.GetX();
+            }
+        }
+        else if (direction.GetX() == 0) {
+            while (y >= 0 && y < static_cast<int>(m_map.GetMap()[0].size())) {
+                CellType cellType = m_map.GetMap()[x][y];
+
+                if (cellType == CellType::BREAKABLE_WALL) {
+                    m_map.GetMap()[x][y] = CellType::EMPTY;
+                    hitObjectPos = Point(x, y);
+                    return true;
+                }
+                else if (cellType == CellType::UNBREAKABLE_WALL) {
+                    hitObjectPos = Point(x, y);
+                    return true;
+                }
+
+                y += direction.GetY();
+            }
+        }
+    }
+    else {
+        std::cout << "Invalid bullet position: x=" << x << ", y=" << y;
+        return false;
+    }
+
+    for (const auto& player : GetEntityManager().GetPlayers()) {
+        if (player.second.GetPosition() == Point(x, y)) {
+            isPlayerHit = true;
+            hitObjectPos = bulletPos;
+            return true;
+        }
+    }
+
+    for (const auto& enemyPair : GetEntityManager().GetEnemies()) {
+        if (enemyPair.second.GetPosition() == Point(x, y)) {
+            isEnemyHit = true;
+            hitObjectPos = bulletPos;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void Game::DestroyWall(const Point& hitPosition) {
+    m_map.GetMap()[hitPosition.GetX()][hitPosition.GetY()] = CellType::EMPTY;
+}

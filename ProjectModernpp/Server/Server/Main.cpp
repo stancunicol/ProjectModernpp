@@ -469,6 +469,57 @@ void StartServer(Game& game) {
             }
         });
 
+    CROW_ROUTE(serverApp, "/fireBullet").methods(crow::HTTPMethod::POST)(
+        [&game](const crow::request& req) {
+            try {
+                auto jsonBody = crow::json::load(req.body);
+                //int shooterId = jsonBody["shooterId"].i();
+                Point bulletPos(jsonBody["position"]["x"].i(), jsonBody["position"]["y"].i());
+                Point bulletDir(jsonBody["direction"]["x"].i(), jsonBody["direction"]["y"].i());
+
+                Bullet bullet(bulletPos, bulletDir);
+
+                // Verificăm coliziunile pentru glonț
+                Point hitPos;
+                bool isPlayerHit = false;
+                bool isEnemyHit = false;
+                bool collision = game.CheckBulletCollision(bullet, hitPos, isPlayerHit, isEnemyHit);
+
+                crow::json::wvalue response;
+                response["status"] = "success";
+                response["collision"] = collision;
+                response["hitPosition"] = { {"x", hitPos.GetX()}, {"y", hitPos.GetY()} };
+
+                // Determinăm ce a lovit glonțul
+                if (collision) {
+                    if (isPlayerHit) {
+                        response["hitObject"] = "player";
+                    }
+                    else if (isEnemyHit) {
+                        response["hitObject"] = "enemy";
+                    }
+                    else {
+                        // Verificăm dacă a lovit un perete
+                        CellType cellType = game.GetMap()[hitPos.GetX()][hitPos.GetY()];
+                        if (cellType == CellType::BREAKABLE_WALL) {
+                            response["hitObject"] = "breakable_wall";
+                            game.DestroyWall(hitPos);  // Distruge peretele (modifică harta)
+                        }
+                        else if (cellType == CellType::UNBREAKABLE_WALL) {
+                            response["hitObject"] = "unbreakable_wall";
+                        }
+                        else response["hitObject"] = "";
+                    }
+                }
+
+                // Returnează răspunsul cu detaliile coliziunii și harta actualizată
+                return crow::response(200, response);
+            }
+            catch (const std::exception& e) {
+                return crow::response(500, std::string("Server error: ") + e.what());
+            }
+        });
+
 
     serverApp.port(8080).multithreaded().run();
 }

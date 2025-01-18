@@ -73,4 +73,8 @@ public:
     void CloseRoom(const std::string& code);
 
     void UpdateEnemyPositions();
+
+    bool CheckBulletCollision(const Bullet& bullet, Point& hitObjectPos, bool& isPlayerHit, bool& isEnemyHit);
+
+    void DestroyWall(const Point& hitPosition);
 };

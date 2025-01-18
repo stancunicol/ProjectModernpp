@@ -703,3 +703,115 @@ void ServerUtils::FetchEnemyStates(std::vector<Enemy>& enemies) {
         qWarning() << "Error parsing enemy state response: " << e.what();
     }
 }
+
+BulletResponse ServerUtils::FireBullet(const Point& bulletPosition, const Point& bulletDirection) {
+    std::string url = "http://localhost:8080/fireBullet";
+
+    // Creăm obiectul JSON pentru trimiterea datelor
+    nlohmann::json jsonRequest;
+    jsonRequest["position"] = { {"x", bulletPosition.m_x}, {"y", bulletPosition.m_y} };
+    jsonRequest["direction"] = { {"x", bulletDirection.m_x}, {"y", bulletDirection.m_y} };
+
+    std::string postData = jsonRequest.dump();
+
+    // Trimitem cererea către server și primim răspunsul
+    std::string response = GetServerBulletData(url, postData);
+
+    BulletResponse bulletResponse;
+
+    if (response.empty()) {
+        qWarning() << "Failed to fetch bullet status.";
+        return bulletResponse;  // Returnăm un obiect gol sau cu valori implicite
+    }
+
+    try {
+        auto jsonResponse = nlohmann::json::parse(response);
+
+        if (jsonResponse.contains("status") && jsonResponse["status"] == "error") {
+            qWarning() << "Server error: " << QString::fromStdString(jsonResponse["message"]);
+            bulletResponse.success = false;
+            return bulletResponse;
+        }
+
+        // Verificăm răspunsul de la server
+        if (jsonResponse["status"] == "success") {
+            bulletResponse.success = true;
+
+            bool hit = jsonResponse["collision"];
+            bulletResponse.collision = hit;
+
+            if (hit) {
+                int x = jsonResponse["hitPosition"]["y"];
+                int y = jsonResponse["hitPosition"]["x"];
+                bulletResponse.hitObject = jsonResponse["hitObject"].get<std::string>();
+            }
+            else {
+                bulletResponse.hitObject = "";
+            }
+
+            qDebug() << "Server response: " << QString::fromStdString(response);
+        }
+        else {
+            qWarning() << "Server response was not successful.";
+            bulletResponse.success = false;
+        }
+    }
+    catch (const std::exception& e) {
+        qWarning() << "Error parsing bullet status response: " << e.what();
+        bulletResponse.success = false;
+    }
+    catch (const nlohmann::json::parse_error& e) {
+        std::cerr << "Error parsing JSON: " << e.what() << std::endl;
+    }
+
+    return bulletResponse;
+}
+
+
+
+std::string ServerUtils::GetServerBulletData(const std::string& url, const std::string& postData) {
+    CURL* curl;
+    CURLcode res;
+    std::string response;
+
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+    curl = curl_easy_init();
+
+    if (curl) {
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &ServerUtils::WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L); // Timeout de 10 secunde
+
+        // Setăm metoda POST
+        curl_easy_setopt(curl, CURLOPT_POST, 1L);
+
+        // Setăm datele pentru body-ul cererii
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData.c_str());
+
+        // Setăm header-ul pentru a trimite JSON
+        struct curl_slist* headers = NULL;
+        headers = curl_slist_append(headers, "Content-Type: application/json");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+        long httpCode = 0;
+        res = curl_easy_perform(curl);
+        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
+
+        if (res != CURLE_OK) {
+            qDebug() << "Failed to fetch data from server: " << curl_easy_strerror(res);
+        }
+        else if (httpCode != 200) {
+            qDebug() << "HTTP Error: " << httpCode << " Response: " << QString::fromStdString(response);
+        }
+        else {
+            qDebug() << "Data fetched successfully from server: " << QString::fromStdString(response);
+        }
+
+        curl_easy_cleanup(curl);
+        curl_slist_free_all(headers);
+    }
+
+    curl_global_cleanup();
+    return response;
+}

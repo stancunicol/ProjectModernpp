@@ -12,6 +12,9 @@ private:
 
     float m_progress;
     float m_interpolationProgress;
+    bool m_hit;
+    Point m_hitPosition;
+    int m_ownerId;
 
 public:
     //Constructor
@@ -33,4 +36,10 @@ public:
     bool operator==(const Bullet& other) const;
 
     void SetSpeed(float speed);
+
+    bool HasHit() const;
+
+    Point GetHitPosition() const;
+
+    int GetOwnerId() const;
 };

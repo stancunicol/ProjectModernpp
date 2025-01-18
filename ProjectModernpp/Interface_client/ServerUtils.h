@@ -21,9 +21,15 @@ struct Bomb {
 };
 
 struct Point {
-    int8_t m_x, m_y;
+    int m_x, m_y;
 
-    Point(int8_t x, int8_t y) : m_x(x), m_y(y) {}
+    Point(int x, int y) : m_x(x), m_y(y) {}
+};
+
+struct BulletResponse {
+    bool success = false;
+    bool collision = false;
+    std::string hitObject;
 };
 
 class ServerUtils {
@@ -81,5 +87,9 @@ public:
 
     void FetchPlayerStates();
     void FetchEnemyStates(std::vector<Enemy>& enemies);
+
+    BulletResponse FireBullet(const Point& bulletPosition, const Point& bulletDirection);
+
+    std::string GetServerBulletData(const std::string& url, const std::string& postData);
 };
 

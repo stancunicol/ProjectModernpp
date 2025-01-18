@@ -2,6 +2,8 @@
 #include "ServerUtils.h"
 
 struct Enemy;
+struct Point;
+struct BulletResponse;
 
 
 GameMapInterface::GameMapInterface(QWidget* parent)
@@ -114,6 +116,9 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
         direction = QPoint(1, 0);  
         dirString = "right";
         break;
+    case Qt::Key_Space:
+        fireBullet();
+        return;
     }
 
     if (event->key() == QKeySequence(m_upKey).toString().at(0).unicode())
@@ -140,17 +145,21 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
     {
         QMainWindow::keyPressEvent(event);
     }
+    m_currentDirection = direction;
+    qDebug() << "[INFO] Firing bullet from position:" << player1Position << "in direction:" << m_currentDirection;
 
-    auto newPositionOpt = m_serverObject.SendMoveToServer(dirString.toStdString());
-    if (newPositionOpt) {
-        const Point& newPosition = *newPositionOpt;
+    if (!dirString.isEmpty()) {
+        auto newPositionOpt = m_serverObject.SendMoveToServer(dirString.toStdString());
+        if (newPositionOpt) {
+            const Point& newPosition = *newPositionOpt;
 
-        if (newPosition.m_x != player1Position.x() || newPosition.m_y != player1Position.y()) {
-            player1Position = QPoint(newPosition.m_y, newPosition.m_x);
-            qDebug() << "[INFO] Player moved to new position: (" << player1Position.x() << ", " << player1Position.y() << ")";
-        }
-        else {
-            qDebug() << "[INFO] Server rejected move. Position unchanged.";
+            if (newPosition.m_x != player1Position.x() || newPosition.m_y != player1Position.y()) {
+                player1Position = QPoint(newPosition.m_y, newPosition.m_x);
+                qDebug() << "[INFO] Player moved to new position: (" << player1Position.x() << ", " << player1Position.y() << ")";
+            }
+            else {
+                qDebug() << "[INFO] Server rejected move. Position unchanged.";
+            }
         }
     }
     else {
@@ -353,4 +362,30 @@ void GameMapInterface::updatePlayerScores()
         playerScores.emplace_back(QString::fromStdString(name), score);
     }
     update(); 
+}
+
+void GameMapInterface::fireBullet()
+{
+    auto result = m_serverObject.FireBullet({ player1Position.x(), player1Position.y() }, { m_currentDirection.x(), m_currentDirection.y() });
+    if (result.success) {
+        qDebug() << "[INFO] Bullet fired!";
+        if (result.collision) {
+            qDebug() << "[INFO] Bullet hit something!";
+        }
+        else {
+            qDebug() << "[INFO] Bullet missed.";
+        }
+
+        updateMap();
+    }
+    else {
+        qWarning() << "[WARNING] Bullet firing failed.";
+    }
+}
+
+void GameMapInterface::updateMap()
+{
+    m_serverObject.GetMapFromServer();
+    matrix = m_serverObject.GetMap();
+    repaint();
 }
