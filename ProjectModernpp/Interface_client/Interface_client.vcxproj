@@ -207,6 +207,7 @@
     <Image Include="player3.png" />
     <Image Include="player4.png" />
     <Image Include="wall.jpg" />
+    <Image Include="score_panel_bg.jpg" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Battle_city.h" />

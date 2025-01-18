@@ -8,7 +8,6 @@
 #include <iostream>
 #include <QSettings>
 #include "ServerUtils.h"
-#include <QTimer>
 
 class GameMapInterface : public QMainWindow
 {

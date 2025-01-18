@@ -99,41 +99,41 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
 
     switch (event->key()) {
     case Qt::Key_Up:
-        direction = QPoint(0, -1);  // Mișcare în sus
+        direction = QPoint(0, -1); 
         dirString = "up";
         break;
     case Qt::Key_Down:
-        direction = QPoint(0, 1);  // Mișcare în jos
+        direction = QPoint(0, 1);  
         dirString = "down";
         break;
     case Qt::Key_Left:
-        direction = QPoint(-1, 0);  // Mișcare la stânga
+        direction = QPoint(-1, 0); 
         dirString = "left";
         break;
     case Qt::Key_Right:
-        direction = QPoint(1, 0);  // Mișcare la dreapta
+        direction = QPoint(1, 0);  
         dirString = "right";
         break;
     }
 
     if (event->key() == QKeySequence(m_upKey).toString().at(0).unicode())
     {
-        direction = QPoint(0, -1);  // Mișcare în sus
+        direction = QPoint(0, -1); 
         dirString = "up";
     }
     else if (event->key() == QKeySequence(m_downKey).toString().at(0).unicode())
     {
-        direction = QPoint(0, 1);  // Mișcare în jos
+        direction = QPoint(0, 1);  
         dirString = "down";
     }
     else if (event->key() == QKeySequence(m_leftKey).toString().at(0).unicode())
     {
-        direction = QPoint(-1, 0);  // Mișcare la stânga
+        direction = QPoint(-1, 0); 
         dirString = "left";
     }
     else if (event->key() == QKeySequence(m_rightKey).toString().at(0).unicode())
     {
-        direction = QPoint(1, 0);  // Mișcare la dreapta
+        direction = QPoint(1, 0);  
         dirString = "right";
     }
     else
@@ -219,20 +219,50 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
 
     int scorePanelStartX = 36 * width;
     QRect scorePanelRect(scorePanelStartX, 0, 200, 36 * height);
-    painter.fillRect(scorePanelRect, QColor(30, 30, 30)); 
+
+    QPixmap scorePanelBackground("./score_panel_bg.jpg");
+    painter.drawPixmap(scorePanelRect, scorePanelBackground.scaled(scorePanelRect.size()));
 
     painter.setPen(Qt::white);
     painter.setFont(QFont("Arial", 14, QFont::Bold));
     painter.drawText(scorePanelRect, Qt::AlignTop | Qt::AlignHCenter, "Player Scores");
 
-    painter.setFont(QFont("Arial", 12));
-    int yOffset = 50; // Spațiu inițial față de marginea de sus
+    int totalHeight = scorePanelRect.height();
+    int sectionPadding = 10; 
+    int yOffset = sectionPadding; 
+
+    int remainingHeight = totalHeight - (2 * sectionPadding);
+    int scoreSectionHeight = remainingHeight * 0.75; 
+    int controlsSectionHeight = remainingHeight * 0.25; 
+
+    int scoreCount = playerScores.size();
+    int scoreLineHeight = scoreCount > 0 ? scoreSectionHeight / scoreCount : scoreSectionHeight;
+
+    int controlCount = 5; 
+    int controlLineHeight = controlsSectionHeight / controlCount;
+
+    painter.setFont(QFont("Arial", 12, QFont::Bold));
     for (const auto& [name, score] : playerScores) {
         QString scoreText = name + "\nScor: " + QString::number(score);
-        QRect textRect(scorePanelStartX, yOffset, 200, 50);
+        QRect textRect(scorePanelStartX, yOffset, 200, scoreLineHeight);
         painter.drawText(textRect, Qt::AlignCenter, scoreText);
-        yOffset += 60; // Spațiere între scoruri
+        yOffset += scoreLineHeight; 
     }
+
+    yOffset += sectionPadding;
+
+    painter.setFont(QFont("Arial", 10, QFont::Bold));
+    painter.drawText(scorePanelStartX + 10, yOffset, "Controls:");
+    yOffset += controlLineHeight;
+    painter.drawText(scorePanelStartX + 10, yOffset, "Move Up: " + m_upKey + " / ↑");
+    yOffset += controlLineHeight;
+    painter.drawText(scorePanelStartX + 10, yOffset, "Move Down: " + m_downKey + " / ↓");
+    yOffset += controlLineHeight;
+    painter.drawText(scorePanelStartX + 10, yOffset, "Move Left: " + m_leftKey + " / ←");
+    yOffset += controlLineHeight;
+    painter.drawText(scorePanelStartX + 10, yOffset, "Move Right: " + m_rightKey + " / →");
+    yOffset += controlLineHeight;
+    painter.drawText(scorePanelStartX + 10, yOffset, "Fire: " + m_fireKey + " / Space");
 }
 
 void GameMapInterface::updateOtherPlayers() {
