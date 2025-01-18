@@ -364,15 +364,16 @@ std::optional<Point> ServerUtils::SendMoveToServer(const std::string& direction)
     return std::nullopt;
 }
 
-std::string ServerUtils::GetPlayerDataByIdFromServer()
+std::vector<std::pair<std::string, int>> ServerUtils::GetPlayerDataByIdFromServer()
 {
     std::string url = "http://localhost:8080/getPlayerScore?playerId=" + std::to_string(GetUserId());
 
     std::string response = GetServerData(url);
+    std::vector<std::pair<std::string, int>> playersData;
 
     if (response.empty()) {
         qDebug() << "No data received from server.";
-        return "";
+        return playersData;
     }
 
     try {
@@ -380,19 +381,27 @@ std::string ServerUtils::GetPlayerDataByIdFromServer()
 
         if (jsonResponse.contains("error")) {
             qDebug() << "Error: " << QString::fromStdString(jsonResponse["error"]);
-            return "";
+            return playersData;
         }
 
-        std::string name = jsonResponse["name"];
-        int score = jsonResponse["score"];
-        qDebug() << "Player Name: " << QString::fromStdString(name);
-        qDebug() << "Player Score: " << score;
+        if (jsonResponse.contains("players")) {
+            const auto& players = jsonResponse["players"];
+
+            for (const auto& player : players) {
+                std::string name = player["name"];
+                int score = player["score"];
+                playersData.emplace_back(name, score);
+            }
+        }
+        else {
+            qDebug() << "Response does not contain 'players' field.";
+        }
     }
     catch (const std::exception& e) {
         qDebug() << "Error parsing server response: " << e.what();
     }
 
-    return response;
+    return playersData;
 }
 
 std::vector<Enemy> ServerUtils::GetEnemiesFromServer()

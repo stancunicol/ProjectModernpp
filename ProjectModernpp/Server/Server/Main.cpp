@@ -125,6 +125,14 @@ void StartServer(Game& game) {
 
             game.GetDatabase().AddRoom(code);
 
+            auto& db = game.GetDatabase();
+            std::optional<std::string> recentPlayer = db.GetRecentPlayer();
+            if (!recentPlayer.has_value()) {
+                return crow::response(400, "No recently declared user available.");
+            }
+
+            db.InsertRoomCode(recentPlayer.value(), code);
+
             crow::json::wvalue response;
             response["message"] = "Room created successfully.";
             response["code"] = code;
@@ -135,27 +143,37 @@ void StartServer(Game& game) {
 
     // POST joinRoom
     CROW_ROUTE(serverApp, "/joinRoom").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
-        return handleRequest([&game, &req]() {
+        try {
             auto jsonBody = crow::json::load(req.body);
-            if (!jsonBody || !jsonBody.has("code") || !jsonBody.has("playerId"))
-                return crow::response(400, "Invalid JSON payload. Expected 'code' and 'playerName' fields.");
+            std::cout << "Received payload: " << req.body << std::endl;
+
+            if (!jsonBody.has("code") || !jsonBody.has("playerId")) {
+                std::cerr << "Invalid JSON payload: Missing 'code' or 'playerId'." << std::endl;
+                return crow::response(400, "Invalid JSON payload. Expected 'code' and 'playerId'.");
+            }
 
             std::string code = jsonBody["code"].s();
             int playerId = jsonBody["playerId"].i();
+
             auto result = game.JoinRoom(code, playerId);
 
-            game.GetDatabase().UpdateDataByRoomCode(playerId, code);
+            if (!result.has_value()) {
 
-            if (result.has_value()) {
+                game.GetDatabase().UpdateDataByRoomCode(playerId, code);
+
                 crow::json::wvalue response;
                 response["message"] = "Player joined room successfully.";
-                response["roomCode"] = result.value();
+                response["roomCode"] = code;
                 return crow::response(200, response);
             }
             else {
                 return crow::response(400, "Unable to join room. Room may be full or not exist.");
             }
-            });
+        }
+        catch (const std::exception& e) {
+            std::cerr << "Error processing /joinRoom request: " << e.what() << std::endl;
+            return crow::response(500, std::string("Error processing request: ") + e.what());
+        }
         });
 
     // POST leaveRoom
@@ -256,11 +274,25 @@ void StartServer(Game& game) {
                 return crow::response(404, "Player not found.");
             }
 
-            crow::json::wvalue response;
-            response["name"] = std::get<0>(*playerData);
-            response["score"] = std::get<1>(*playerData);
+            std::vector<uint8_t> playersInRoom = db.GetPlayersFromRoom(playerId);
 
-            return crow::response{ response };
+            playersInRoom.push_back(playerId);
+
+            crow::json::wvalue::list playerScores;
+            for (uint8_t id : playersInRoom) {
+                auto playerInfo = db.GetPlayerDataById(id);
+                if (playerInfo) {
+                    playerScores.push_back({
+                        {"name", std::get<0>(*playerInfo)},
+                        {"score", std::get<1>(*playerInfo)}
+                        });
+                }
+            }
+
+            crow::json::wvalue response;
+            response["players"] = std::move(playerScores);
+
+            return crow::response(200, response);
         }
         catch (const std::exception& e) {
             return crow::response(500, std::string("Error processing request: ") + e.what());

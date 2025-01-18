@@ -20,6 +20,7 @@ public:
     void paintEvent(QPaintEvent* event) override;
     void updateOtherPlayers();
     void updateEnemies();
+    void updatePlayerScores();
 private:
     ServerUtils m_serverObject;
     std::pair<int, int> basePosition;
@@ -37,4 +38,5 @@ private:
     QPoint player1Position;
 
     std::vector<std::pair<QPoint, QString>> otherPlayers;
+    std::vector<std::pair<QString, int>> playerScores;
 };

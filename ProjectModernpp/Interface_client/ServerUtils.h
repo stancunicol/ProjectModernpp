@@ -56,7 +56,7 @@ public:
 
     std::optional<Point> SendMoveToServer(const std::string& direction);
 
-    std::string GetPlayerDataByIdFromServer();
+    std::vector<std::pair<std::string, int>> GetPlayerDataByIdFromServer();
     std::vector<Enemy> GetEnemiesFromServer();
     std::pair<int, int> GetBaseFromServer();
     std::vector<Bomb> GetBombsFromServer();

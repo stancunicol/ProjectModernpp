@@ -4,8 +4,12 @@ DataBase::DataBase(const std::string& dbName)
 {
     if (sqlite3_open(dbName.c_str(), &m_db))
     {
-        std::cerr << "Error opening base: " << sqlite3_errmsg(m_db) << '\n';
+        std::cerr << "Error opening database: " << sqlite3_errmsg(m_db) << '\n';
         m_db = nullptr;
+    }
+    else
+    {
+        Initialize(); 
     }
 }
 
@@ -608,7 +612,7 @@ void DataBase::RemovePlayerFromRoom(int playerId)
 void DataBase::AddRoom(const std::string& roomCode)
 {
     const std::string insertQuery = R"(
-        INSERT INTO GameRooms (roomCode, status) VALUES (?, ?);
+        INSERT INTO Rooms (roomCode, createdAt) VALUES (?, ?);
     )";
 
     sqlite3_stmt* stmt;

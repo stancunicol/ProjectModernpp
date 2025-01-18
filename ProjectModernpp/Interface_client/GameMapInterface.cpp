@@ -10,12 +10,18 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     setWindowTitle("Game Map");
     setFocusPolicy(Qt::StrongFocus);
 
+    const int scorePanelWidth = 200;
+
+    QTimer* scoreUpdateTimer = new QTimer(this);
     QTimer* fetchTimerPlayer = new QTimer(this);
     QTimer* fetchTimerEnemy = new QTimer(this);
     //connect(fetchTimerPlayer, &QTimer::timeout, this, &GameMapInterface::updateOtherPlayers);
     connect(fetchTimerEnemy, &QTimer::timeout, this, &GameMapInterface::updateEnemies);
-    //fetchTimerPlayer->start(100);
-    fetchTimerEnemy->start(100);
+    connect(scoreUpdateTimer, &QTimer::timeout, this, &GameMapInterface::updatePlayerScores);
+    //fetchTimerPlayer->start(1000);
+    fetchTimerEnemy->start(1000);
+    scoreUpdateTimer->start(1000);
+
 
     m_serverObject.GetMapFromServer();
     matrix = m_serverObject.GetMap();
@@ -32,7 +38,7 @@ GameMapInterface::GameMapInterface(QWidget* parent)
         std::cout << std::endl;
     }
 
-    resize(36 * width, 36 * height);
+    resize(36 * width + scorePanelWidth, 36 * height);
 
     basePosition = m_serverObject.GetBaseFromServer();
     qDebug() << "Base Position - X:" << basePosition.first << " Y:" << basePosition.second;
@@ -210,6 +216,23 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
                 break;
             }
     }
+
+    int scorePanelStartX = 36 * width;
+    QRect scorePanelRect(scorePanelStartX, 0, 200, 36 * height);
+    painter.fillRect(scorePanelRect, QColor(30, 30, 30)); 
+
+    painter.setPen(Qt::white);
+    painter.setFont(QFont("Arial", 14, QFont::Bold));
+    painter.drawText(scorePanelRect, Qt::AlignTop | Qt::AlignHCenter, "Player Scores");
+
+    painter.setFont(QFont("Arial", 12));
+    int yOffset = 50; // Spațiu inițial față de marginea de sus
+    for (const auto& [name, score] : playerScores) {
+        QString scoreText = name + "\nScor: " + QString::number(score);
+        QRect textRect(scorePanelStartX, yOffset, 200, 50);
+        painter.drawText(textRect, Qt::AlignCenter, scoreText);
+        yOffset += 60; // Spațiere între scoruri
+    }
 }
 
 void GameMapInterface::updateOtherPlayers() {
@@ -258,4 +281,14 @@ void GameMapInterface::updateEnemies() {
 
     m_enemies = std::move(fetchedEnemies);
     update();
+}
+
+void GameMapInterface::updatePlayerScores()
+{
+    auto scores = m_serverObject.GetPlayerDataByIdFromServer();
+    playerScores.clear();
+    for (const auto& [name, score] : scores) {
+        playerScores.emplace_back(QString::fromStdString(name), score);
+    }
+    update(); 
 }
