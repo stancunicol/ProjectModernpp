@@ -24,6 +24,10 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     fetchTimerEnemy->start(1000);
     scoreUpdateTimer->start(1000);
 
+    QTimer* bulletUpdateTimer = new QTimer(this);
+    connect(bulletUpdateTimer, &QTimer::timeout, this, &GameMapInterface::updateBullets);
+    bulletUpdateTimer->start(100);
+
 
     m_serverObject.GetMapFromServer();
     matrix = m_serverObject.GetMap();
@@ -46,13 +50,16 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     qDebug() << "Base Position - X:" << basePosition.first << " Y:" << basePosition.second;
 
     bombs = m_serverObject.GetBombsFromServer();
-    if (!bombs.empty()) {
+    if (!bombs.empty()) 
+    {
         qDebug() << "Received " << bombs.size() << " bombs from server.";
-        for (const auto& bomb : bombs) {
+        for (const auto& bomb : bombs) 
+        {
             qDebug() << "Bomb ID: " << bomb.id << " Position: (" << bomb.x << ", " << bomb.y << ")";
         }
     }
-    else {
+    else 
+    {
         qDebug() << "No bomb data available.";
     }
 
@@ -60,8 +67,10 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     auto playerPositions = m_serverObject.GetPlayerPositions();
 
     bool playerFound = false;
-    for (const auto& position : playerPositions) {
-        if (std::stoi(position.second) == m_serverObject.GetUserId()) {
+    for (const auto& position : playerPositions) 
+    {
+        if (std::stoi(position.second) == m_serverObject.GetUserId()) 
+        {
             player1Position = QPoint(position.first.m_y, position.first.m_x);
             qDebug() << "[INFO] Player initialized at position: (" << player1Position.x() << ", " << player1Position.y() << ")";
             playerFound = true;
@@ -69,7 +78,8 @@ GameMapInterface::GameMapInterface(QWidget* parent)
         }
     }
 
-    if (!playerFound) {
+    if (!playerFound) 
+    {
         qWarning() << "[WARNING] Player position not found. Ensure server returned correct data.";
         player1Position = QPoint(-1, -1);
     }
@@ -141,6 +151,11 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
         direction = QPoint(1, 0);  
         dirString = "right";
     }
+    else if(event->key() == QKeySequence(m_fireKey).toString().at(0).unicode())
+    {
+        fireBullet();
+        return;
+    }
     else
     {
         QMainWindow::keyPressEvent(event);
@@ -148,22 +163,26 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
     m_currentDirection = direction;
     qDebug() << "[INFO] Firing bullet from position:" << player1Position << "in direction:" << m_currentDirection;
 
-    if (!dirString.isEmpty()) {
+    if (!dirString.isEmpty()) 
+    {
         auto newPositionOpt = m_serverObject.SendMoveToServer(dirString.toStdString());
-        if (newPositionOpt) {
+        if (newPositionOpt) 
+        {
             const Point& newPosition = *newPositionOpt;
 
-            if (newPosition.m_x != player1Position.x() || newPosition.m_y != player1Position.y()) {
+            if (newPosition.m_x != player1Position.x() || newPosition.m_y != player1Position.y())
+            {
                 player1Position = QPoint(newPosition.m_y, newPosition.m_x);
                 qDebug() << "[INFO] Player moved to new position: (" << player1Position.x() << ", " << player1Position.y() << ")";
             }
-            else {
+            else 
+            {
                 qDebug() << "[INFO] Server rejected move. Position unchanged.";
             }
         }
     }
-    else {
-        qWarning() << "[WARNING] Move validation failed. Check server connection.";
+        else {
+            qWarning() << "[WARNING] Move validation failed. Check server connection.";
     }
     update();
 }
@@ -190,7 +209,8 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
             painter.drawPixmap(j * 36, i * 36, pixmap);
         }
 
-    if (player1Position.x() >= 0 && player1Position.y() >= 0) {
+    if (player1Position.x() >= 0 && player1Position.y() >= 0) 
+    {
         pixmap.load("./player1.png");
         painter.drawPixmap(player1Position.x() * 36, player1Position.y() * 36, pixmap.scaled(36, 36));
         
@@ -209,12 +229,14 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
     "./player4.png" 
     };
 
-    for (size_t i = 0; i < otherPlayers.size(); ++i) {
+    for (size_t i = 0; i < otherPlayers.size(); ++i) 
+    {
         const auto& [position, username] = otherPlayers[i];
 
         QPixmap playerPixmap;
 
-        if (i < playerImages.size()) {
+        if (i < playerImages.size()) 
+        {
             playerPixmap.load(playerImages[i]);  
         }
         painter.drawPixmap(position.x() * 36, position.y() * 36, playerPixmap.scaled(36, 36));
@@ -252,6 +274,16 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
             painter.drawText(enemy.y * 36 + 1, enemy.x * 36 + yOffsetText + 1, "Enemy");
     }
 
+    for (const auto& bullet : activeBullets) 
+    {
+        if (bullet.active) 
+        {
+            painter.setBrush(Qt::red);   
+            painter.setPen(Qt::NoPen);   
+            painter.drawEllipse(bullet.position.m_y * 36 + 12, bullet.position.m_x * 36 + 12, 12, 12);
+        }
+    }
+
     int scorePanelStartX = 36 * width;
     QRect scorePanelRect(scorePanelStartX, 0, 200, 36 * height);
 
@@ -280,7 +312,8 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
     int controlLineHeight = controlsSectionHeight / controlCount;
 
     painter.setFont(QFont("Arial", 12, QFont::Bold));
-    for (const auto& [name, score] : playerScores) {
+    for (const auto& [name, score] : playerScores)
+    {
         QString scoreText = name + "\nScor: " + QString::number(score);
         QRect textRect(scorePanelStartX, yOffset, 200, scoreLineHeight);
 
@@ -306,7 +339,8 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
     painter.drawText(scorePanelStartX + 10, yOffset, "Fire: " + m_fireKey + " / Space");
 }
 
-void GameMapInterface::updateOtherPlayers() {
+void GameMapInterface::updateOtherPlayers() 
+{
     m_serverObject.FetchPlayerStates();
 
     otherPlayers.clear(); // Clear existing data
@@ -316,14 +350,16 @@ void GameMapInterface::updateOtherPlayers() {
     std::string url = "http://localhost:8080/playerState?playerId=" + std::to_string(currentUserId);
     std::string response = m_serverObject.GetServerData(url);
 
-    if (response.empty()) {
+    if (response.empty()) 
+    {
         qWarning() << "Failed to fetch player states.";
         return;
     }
 
     try {
         auto jsonResponse = nlohmann::json::parse(response);
-        if (jsonResponse.contains("players") && jsonResponse["players"].is_array()) {
+        if (jsonResponse.contains("players") && jsonResponse["players"].is_array()) 
+        {
             for (const auto& player : jsonResponse["players"]) {
                 int x = player["position"]["x"];
                 int y = player["position"]["y"];
@@ -332,14 +368,16 @@ void GameMapInterface::updateOtherPlayers() {
             }
         }
     }
-    catch (const std::exception& e) {
+    catch (const std::exception& e)
+    {
         qWarning() << "Error parsing player state response: " << e.what();
     }
 
     update();
 }
 
-void GameMapInterface::updateEnemies() {
+void GameMapInterface::updateEnemies() 
+{
     std::vector<Enemy> fetchedEnemies;
     m_serverObject.FetchEnemyStates(fetchedEnemies);
 
@@ -358,7 +396,8 @@ void GameMapInterface::updatePlayerScores()
 {
     auto scores = m_serverObject.GetPlayerDataByIdFromServer();
     playerScores.clear();
-    for (const auto& [name, score] : scores) {
+    for (const auto& [name, score] : scores) 
+    {
         playerScores.emplace_back(QString::fromStdString(name), score);
     }
     update(); 
@@ -366,13 +405,21 @@ void GameMapInterface::updatePlayerScores()
 
 void GameMapInterface::fireBullet()
 {
-    auto result = m_serverObject.FireBullet({ player1Position.x(), player1Position.y() }, { m_currentDirection.x(), m_currentDirection.y() });
-    if (result.success) {
+    Point bulletPosition(player1Position.y(), player1Position.x());
+    Point bulletDirection(m_currentDirection.y(), m_currentDirection.x());
+
+    auto result = m_serverObject.FireBullet({ player1Position.y(), player1Position.x() }, { m_currentDirection.x(), m_currentDirection.y() });
+    if (result.success)
+    {
         qDebug() << "[INFO] Bullet fired!";
-        if (result.collision) {
+        Bullet newBullet = { bulletPosition, bulletDirection, true };
+        activeBullets.push_back(newBullet);
+        if (result.collision) 
+        {
             qDebug() << "[INFO] Bullet hit something!";
         }
-        else {
+        else 
+        {
             qDebug() << "[INFO] Bullet missed.";
         }
 
@@ -388,4 +435,50 @@ void GameMapInterface::updateMap()
     m_serverObject.GetMapFromServer();
     matrix = m_serverObject.GetMap();
     repaint();
+}
+
+void GameMapInterface::updateBullets() 
+{
+    for (auto& bullet : activeBullets) 
+    {
+        if (!bullet.active) 
+        {
+            continue;
+        }
+
+        bullet.position.m_x += bullet.direction.m_x;
+        bullet.position.m_y += bullet.direction.m_y;
+
+        if (matrix[bullet.position.m_x][bullet.position.m_y] == 2)
+        {
+            qDebug() << "[INFO] Bullet hit a wall!";
+            bullet.active = false;  
+        }
+        if (matrix[bullet.position.m_x][bullet.position.m_y] == 1) 
+        {
+            qDebug() << "[INFO] Bullet hit a wall!";
+            bullet.active = false;  
+            updateMap();
+        }
+        for (const auto& enemy : m_enemies) 
+        {
+            if (bullet.position.m_x == enemy.x && bullet.position.m_y == enemy.y) 
+            {
+                qDebug() << "[INFO] Bullet hit an enemy!";
+                bullet.active = false;  
+            }
+        }
+        if (bullet.position.m_x < 0 || bullet.position.m_x >= height ||
+            bullet.position.m_y < 0 || bullet.position.m_y >= width) 
+        {
+            bullet.active = false; 
+        }
+    }
+
+    // Remove inactive bullets from the list
+    activeBullets.erase(std::remove_if(activeBullets.begin(), activeBullets.end(),
+        [](const Bullet& bullet) { return !bullet.active; }),
+        activeBullets.end());
+
+    update(); 
 }

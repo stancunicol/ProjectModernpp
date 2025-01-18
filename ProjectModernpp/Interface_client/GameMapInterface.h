@@ -9,6 +9,12 @@
 #include <QSettings>
 #include "ServerUtils.h"
 
+struct Bullet {
+    Point position;  // Current position of the bullet
+    Point direction; // Direction of movement
+    bool active;     // Whether the bullet is still active or has been deactivated (e.g., due to a collision)
+};
+
 class GameMapInterface : public QMainWindow
 {
 public:
@@ -22,6 +28,7 @@ public:
     void updatePlayerScores();
     void fireBullet();
     void updateMap();
+    void updateBullets();
 private:
     ServerUtils m_serverObject;
     std::pair<int, int> basePosition;
@@ -41,4 +48,5 @@ private:
     std::vector<std::pair<QPoint, QString>> otherPlayers;
     std::vector<std::pair<QString, int>> playerScores;
     QPoint m_currentDirection = QPoint(0, 0);
+    std::vector<Bullet> activeBullets;
 };
