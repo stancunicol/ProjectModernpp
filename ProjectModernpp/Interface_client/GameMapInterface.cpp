@@ -184,11 +184,31 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
     if (player1Position.x() >= 0 && player1Position.y() >= 0) {
         pixmap.load("./player1.png");
         painter.drawPixmap(player1Position.x() * 36, player1Position.y() * 36, pixmap.scaled(36, 36));
+        
+        painter.setPen(Qt::black);
+        painter.setFont(QFont("Arial", 10, QFont::Bold));
+        int yOffsetText = (player1Position.y() == 0) ? 36 : -5;
+        painter.drawText(player1Position.x() * 36, player1Position.y() * 36 + yOffsetText, "You");
+
+        painter.setPen(Qt::blue);
+        painter.drawText(player1Position.x() * 36 + 1, player1Position.y() * 36 + yOffsetText + 1, "You");
     }
 
-    for (const auto& [position, username] : otherPlayers) {
-        pixmap.load("./player1.png");
-        painter.drawPixmap(position.x() * 36, position.y() * 36, pixmap.scaled(36, 36));
+    std::vector<QString> playerImages = {
+    "./player2.png",
+    "./player3.png",
+    "./player4.png" 
+    };
+
+    for (size_t i = 0; i < otherPlayers.size(); ++i) {
+        const auto& [position, username] = otherPlayers[i];
+
+        QPixmap playerPixmap;
+
+        if (i < playerImages.size()) {
+            playerPixmap.load(playerImages[i]);  
+        }
+        painter.drawPixmap(position.x() * 36, position.y() * 36, playerPixmap.scaled(36, 36));
     }
 
     pixmap = QPixmap("./base.jpg").scaled(36, 36);
@@ -200,53 +220,64 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
             {
             case 0:
                 pixmap = QPixmap("./enemy1.png").scaled(36, 36);
-                painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
                 break;
             case 1:
                 pixmap = QPixmap("./enemy2.png").scaled(36, 36);
-                painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
                 break;
             case 2:
                 pixmap = QPixmap("./enemy3.png").scaled(36, 36);
-                painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
                 break;
             case 3:
                 pixmap = QPixmap("./enemy4.png").scaled(36, 36);
-                painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
                 break;
             }
+            painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
+   
+            painter.setPen(Qt::black);
+            painter.setFont(QFont("Arial", 10, QFont::Bold));
+
+            int yOffsetText = (enemy.x == 0) ? 36 : -5;
+            painter.drawText(enemy.y * 36, enemy.x * 36 + yOffsetText, "Enemy");
+
+            painter.setPen(Qt::red);
+            painter.drawText(enemy.y * 36 + 1, enemy.x * 36 + yOffsetText + 1, "Enemy");
     }
 
     int scorePanelStartX = 36 * width;
     QRect scorePanelRect(scorePanelStartX, 0, 200, 36 * height);
 
+    painter.setPen(Qt::black);  
+    painter.setBrush(Qt::NoBrush);  
+    painter.drawRect(scorePanelRect);  
+
     QPixmap scorePanelBackground("./score_panel_bg.jpg");
     painter.drawPixmap(scorePanelRect, scorePanelBackground.scaled(scorePanelRect.size()));
 
-    painter.setPen(Qt::white);
     painter.setFont(QFont("Arial", 14, QFont::Bold));
     painter.drawText(scorePanelRect, Qt::AlignTop | Qt::AlignHCenter, "Player Scores");
 
     int totalHeight = scorePanelRect.height();
-    int sectionPadding = 10; 
-    int yOffset = sectionPadding; 
+    int sectionPadding = 10;
+    int yOffset = sectionPadding;
 
     int remainingHeight = totalHeight - (2 * sectionPadding);
-    int scoreSectionHeight = remainingHeight * 0.75; 
-    int controlsSectionHeight = remainingHeight * 0.25; 
+    int scoreSectionHeight = remainingHeight * 0.75;
+    int controlsSectionHeight = remainingHeight * 0.25;
 
     int scoreCount = playerScores.size();
     int scoreLineHeight = scoreCount > 0 ? scoreSectionHeight / scoreCount : scoreSectionHeight;
 
-    int controlCount = 5; 
+    int controlCount = 5;
     int controlLineHeight = controlsSectionHeight / controlCount;
 
     painter.setFont(QFont("Arial", 12, QFont::Bold));
     for (const auto& [name, score] : playerScores) {
         QString scoreText = name + "\nScor: " + QString::number(score);
         QRect textRect(scorePanelStartX, yOffset, 200, scoreLineHeight);
+
         painter.drawText(textRect, Qt::AlignCenter, scoreText);
-        yOffset += scoreLineHeight; 
+
+        yOffset += scoreLineHeight;
     }
 
     yOffset += sectionPadding;
@@ -254,6 +285,7 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
     painter.setFont(QFont("Arial", 10, QFont::Bold));
     painter.drawText(scorePanelStartX + 10, yOffset, "Controls:");
     yOffset += controlLineHeight;
+
     painter.drawText(scorePanelStartX + 10, yOffset, "Move Up: " + m_upKey + " / ↑");
     yOffset += controlLineHeight;
     painter.drawText(scorePanelStartX + 10, yOffset, "Move Down: " + m_downKey + " / ↓");
