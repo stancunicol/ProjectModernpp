@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <random>
 
-Enemy::Enemy(GameMap& map) //constructor
+Enemy::Enemy(GameMap& map) 
     : Character{ Point(0, 0), Point(0, 0) }
 {
     PlaceCharacter(map);
@@ -24,49 +24,64 @@ void Enemy::PlaceCharacter(GameMap& map)
     m_position = Point(startX, startY);
 }
 
-std::vector<std::pair<int8_t, int8_t>> lastMoves;
+std::unordered_map<size_t, std::deque<Point>> Enemy::enemyLastMoves;
 
-void Enemy::MoveRandom(GameMap& map)
+void Enemy::MoveRandom(GameMap& grid)
 {
-    std::vector<Point> directions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0} };
     std::vector<Point> validPositions;
 
-    for (const auto& direction : directions) {
-        Point newPos = m_position + Point(direction.GetX(), direction.GetY());
+    auto& lastMoves = enemyLastMoves[reinterpret_cast<size_t>(this)];
 
-        if (newPos.GetX() >= 0 && newPos.GetX() < map.GetHeight() &&
-            newPos.GetY() >= 0 && newPos.GetY() < map.GetWidth()) {
+    for (size_t i = 0; i < 4; ++i)
+    {
+        auto direction = randomMove.GenerateNextDirection();
+        Point newPos = m_position + Point(direction.first, direction.second);
 
-            CellType cellType = map.GetMap()[newPos.GetX()][newPos.GetY()];
-
-            if (cellType != CellType::BREAKABLE_WALL && cellType != CellType::UNBREAKABLE_WALL) {
-                if (cellType == CellType::EMPTY) {
-                    validPositions.push_back(newPos);
-                    std::cout << static_cast<int>(cellType) << " ";
-                }
+        // Verifică dacă poziția este validă pe hartă
+        if (newPos.GetX() >= 0 && newPos.GetX() < grid.GetHeight() &&
+            newPos.GetY() >= 0 && newPos.GetY() < grid.GetWidth() &&
+            grid.GetMap()[newPos.GetX()][newPos.GetY()] == CellType::EMPTY)
+        {
+            if (std::find(validPositions.begin(), validPositions.end(), newPos) == validPositions.end())
+            {
+                validPositions.push_back(newPos);
             }
         }
     }
 
     m_shootDirection = Point(0, 0);
 
-    if (!validPositions.empty()) {
+    if (!validPositions.empty())
+    {
+        if (lastMoves.size() >= 3) 
+        {
+            validPositions.erase(std::remove_if(validPositions.begin(), validPositions.end(), [&](const Point& pos) {
+                return pos == lastMoves[0] || pos == lastMoves[1] || pos == lastMoves[2];
+                }), validPositions.end());
+        }
+
+        if (validPositions.empty() && !lastMoves.empty()) 
+        {
+            validPositions.push_back(lastMoves.back());
+        }
+
         int randomIndex = rand() % validPositions.size();
         Point randomFreePos = validPositions[randomIndex];
         m_shootDirection = randomFreePos - m_position;
 
-        std::cout << "Enemy moving from (" << static_cast<int>(m_position.GetX()) << ", " << static_cast<int>(m_position.GetY()) << ") to ("
-            << static_cast<int>(randomFreePos.GetX()) << ", " << static_cast<int>(randomFreePos.GetY()) << '\n';
-
-        //map.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::EMPTY;
-        //if(map.GetMap()[randomFreePos.GetX()][randomFreePos.GetY()] == CellType::EMPTY)
+        grid.GetMap()[m_position.GetX()][m_position.GetY()] = CellType::EMPTY;
         m_position = randomFreePos;
+
+        lastMoves.push_back(randomFreePos);
+        if (lastMoves.size() > 3) 
+        {
+            lastMoves.pop_front(); 
+        }
     }
     else {
         std::cout << "No valid positions available for movement!\n";
     }
 }
-
 
 void Enemy::SetActive(const bool& active) //set the bullet active or desactivates it
 {

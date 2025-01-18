@@ -2,6 +2,8 @@
 #include "..\RandomMove\RandomMove.h"
 
 #include <cstdlib>
+#include <unordered_map>
+#include <deque>
 #include "Character.h"
 #include "GameMap.h"
 
@@ -12,6 +14,8 @@ private:
     Point m_shootDirection = Point(0, 0);
     RandomMove randomMove;
     float m_timeSinceLastMove;
+
+    static std::unordered_map<size_t, std::deque<Point>> enemyLastMoves;
 
 public:
     Enemy(GameMap& map);//"puts" the enemies in the game map
