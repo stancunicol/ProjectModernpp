@@ -31,9 +31,9 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     connect(baseCheckTimer, &QTimer::timeout, this, &GameMapInterface::CheckBaseState);
     baseCheckTimer->start(1000);
 
-    QTimer* bulletsUpdateTimer = new QTimer(this);
+    /*QTimer* bulletsUpdateTimer = new QTimer(this);
     connect(bulletsUpdateTimer, &QTimer::timeout, this, &GameMapInterface::UpdateEnemiesBullets);
-    bulletsUpdateTimer->start(5000);
+    bulletsUpdateTimer->start(5000);*/
 
     m_serverObject.GetMapFromServer();
     m_matrix = m_serverObject.GetMap();
