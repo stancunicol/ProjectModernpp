@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <iostream>
 #include <QSettings>
+#include <QMessageBox>
 #include "ServerUtils.h"
 
 struct Bullet {
@@ -30,6 +31,7 @@ public:
     void updateMap();
     void updateBullets();
     void updateBombs();
+    void checkBaseState();
 private:
     ServerUtils m_serverObject;
     std::pair<int, int> basePosition;
@@ -43,15 +45,11 @@ private:
     QString m_leftKey;
     QString m_rightKey;
     QString m_fireKey;
-
     QPoint player1Position;
-
     std::vector<std::pair<QPoint, QString>> otherPlayers;
     std::vector<std::pair<QString, int>> playerScores;
     QPoint m_currentDirection = QPoint(0, 0);
     QPoint m_shootDirection = QPoint(0, 0);
-
     std::vector<Bullet> activeBullets;
-    void checkBaseState();
-
+    bool baseInitialized = false;
 };

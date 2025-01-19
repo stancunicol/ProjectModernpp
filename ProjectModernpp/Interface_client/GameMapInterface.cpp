@@ -36,9 +36,9 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     connect(bombUpdateTimer, &QTimer::timeout, this, &GameMapInterface::updateBombs);
     bombUpdateTimer->start(1000);
 
-    /*QTimer* baseCheckTimer = new QTimer(this);
+    QTimer* baseCheckTimer = new QTimer(this);
     connect(baseCheckTimer, &QTimer::timeout, this, &GameMapInterface::checkBaseState);
-    baseCheckTimer->start(1000); */
+    baseCheckTimer->start(1000);
 
     m_serverObject.GetMapFromServer();
     matrix = m_serverObject.GetMap();
@@ -59,17 +59,18 @@ GameMapInterface::GameMapInterface(QWidget* parent)
 
     basePosition = m_serverObject.GetBaseFromServer();
     qDebug() << "Base Position - X:" << basePosition.second << " Y:" << basePosition.first;
+    baseInitialized = true;
 
     bombs = m_serverObject.GetBombsFromServer();
-    if (!bombs.empty()) 
+    if (!bombs.empty())
     {
         qDebug() << "Received " << bombs.size() << " bombs from server.";
-        for (const auto& bomb : bombs) 
+        for (const auto& bomb : bombs)
         {
             qDebug() << "Bomb ID: " << bomb.id << " Position: (" << bomb.y << ", " << bomb.x << ")";
         }
     }
-    else 
+    else
     {
         qDebug() << "No bomb data available.";
     }
@@ -78,9 +79,9 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     auto playerPositions = m_serverObject.GetPlayerPositions();
 
     bool playerFound = false;
-    for (const auto& position : playerPositions) 
+    for (const auto& position : playerPositions)
     {
-        if (std::stoi(position.second) == m_serverObject.GetUserId()) 
+        if (std::stoi(position.second) == m_serverObject.GetUserId())
         {
             player1Position = QPoint(position.first.m_y, position.first.m_x);
             qDebug() << "[INFO] Player initialized at position: (" << player1Position.y() << ", " << player1Position.x() << ")";
@@ -89,7 +90,7 @@ GameMapInterface::GameMapInterface(QWidget* parent)
         }
     }
 
-    if (!playerFound) 
+    if (!playerFound)
     {
         qWarning() << "[WARNING] Player position not found. Ensure server returned correct data.";
         player1Position = QPoint(-1, -1);
@@ -131,22 +132,22 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
 
     switch (event->key()) {
     case Qt::Key_Up:
-        direction = QPoint(0, -1); 
+        direction = QPoint(0, -1);
         dirString = "up";
         m_shootDirection = QPoint(-1, 0);
         break;
     case Qt::Key_Down:
-        direction = QPoint(0, 1);  
+        direction = QPoint(0, 1);
         dirString = "down";
         m_shootDirection = QPoint(1, 0);
         break;
     case Qt::Key_Left:
-        direction = QPoint(-1, 0); 
+        direction = QPoint(-1, 0);
         dirString = "left";
         m_shootDirection = QPoint(0, -1);
         break;
     case Qt::Key_Right:
-        direction = QPoint(1, 0);  
+        direction = QPoint(1, 0);
         dirString = "right";
         m_shootDirection = QPoint(0, 1);
         break;
@@ -157,29 +158,29 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
 
     if (event->key() == QKeySequence(m_upKey).toString().at(0).unicode())
     {
-        direction = QPoint(0, -1); 
+        direction = QPoint(0, -1);
         dirString = "up";
         m_shootDirection = QPoint(-1, 0);
     }
     else if (event->key() == QKeySequence(m_downKey).toString().at(0).unicode())
     {
-        direction = QPoint(0, 1);  
+        direction = QPoint(0, 1);
         dirString = "down";
         m_shootDirection = QPoint(1, 0);
     }
     else if (event->key() == QKeySequence(m_leftKey).toString().at(0).unicode())
     {
-        direction = QPoint(-1, 0); 
+        direction = QPoint(-1, 0);
         dirString = "left";
         m_shootDirection = QPoint(0, -1);
     }
     else if (event->key() == QKeySequence(m_rightKey).toString().at(0).unicode())
     {
-        direction = QPoint(1, 0);  
+        direction = QPoint(1, 0);
         dirString = "right";
         m_shootDirection = QPoint(0, 1);
     }
-    else if(event->key() == QKeySequence(m_fireKey).toString().at(0).unicode())
+    else if (event->key() == QKeySequence(m_fireKey).toString().at(0).unicode())
     {
         fireBullet();
         return;
@@ -191,7 +192,7 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
     m_currentDirection = direction;
     qDebug() << "[INFO] Firing bullet from position:" << player1Position << "in direction:" << m_currentDirection;
 
-    if (!dirString.isEmpty()) 
+    if (!dirString.isEmpty())
     {
         auto newPositionOpt = m_serverObject.SendMoveToServer(dirString.toStdString());
         if (newPositionOpt)
@@ -200,7 +201,7 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
 
             if (newPosition.m_x != player1Position.x() || newPosition.m_y != player1Position.y())
             {
-                player1Position = QPoint(newPosition.m_y, newPosition.m_x); 
+                player1Position = QPoint(newPosition.m_y, newPosition.m_x);
                 qDebug() << "[INFO] Player moved to new position: (X:" << player1Position.y() << ", Y:" << player1Position.x() << ")";
             }
             else
@@ -213,8 +214,8 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
             qWarning() << "[WARNING] Move validation failed. Check server connection.";
         }
     }
-        else {
-            qWarning() << "[WARNING] Move validation failed. Check server connection.";
+    else {
+        qWarning() << "[WARNING] Move validation failed. Check server connection.";
     }
     update();
 }
@@ -241,11 +242,11 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
             painter.drawPixmap(j * 36, i * 36, pixmap);
         }
 
-    if (player1Position.x() >= 0 && player1Position.y() >= 0) 
+    if (player1Position.x() >= 0 && player1Position.y() >= 0)
     {
         pixmap.load("./player1.png");
         painter.drawPixmap(player1Position.x() * 36, player1Position.y() * 36, pixmap.scaled(36, 36));
-        
+
         painter.setPen(Qt::black);
         painter.setFont(QFont("Arial", 10, QFont::Bold));
         int yOffsetText = (player1Position.y() == 0) ? 36 : -5;
@@ -258,18 +259,18 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
     std::vector<QString> playerImages = {
     "./player2.png",
     "./player3.png",
-    "./player4.png" 
+    "./player4.png"
     };
 
-    for (size_t i = 0; i < otherPlayers.size(); ++i) 
+    for (size_t i = 0; i < otherPlayers.size(); ++i)
     {
         const auto& [position, username] = otherPlayers[i];
 
         QPixmap playerPixmap;
 
-        if (i < playerImages.size()) 
+        if (i < playerImages.size())
         {
-            playerPixmap.load(playerImages[i]);  
+            playerPixmap.load(playerImages[i]);
         }
         painter.drawPixmap(position.x() * 36, position.y() * 36, playerPixmap.scaled(36, 36));
     }
@@ -279,39 +280,39 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
 
     for (const auto& enemy : m_enemies)
     {
-            switch (enemy.id)
-            {
-            case 0:
-                pixmap = QPixmap("./enemy1.png").scaled(36, 36);
-                break;
-            case 1:
-                pixmap = QPixmap("./enemy2.png").scaled(36, 36);
-                break;
-            case 2:
-                pixmap = QPixmap("./enemy3.png").scaled(36, 36);
-                break;
-            case 3:
-                pixmap = QPixmap("./enemy4.png").scaled(36, 36);
-                break;
-            }
-            painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
-   
-            painter.setPen(Qt::black);
-            painter.setFont(QFont("Arial", 10, QFont::Bold));
+        switch (enemy.id)
+        {
+        case 0:
+            pixmap = QPixmap("./enemy1.png").scaled(36, 36);
+            break;
+        case 1:
+            pixmap = QPixmap("./enemy2.png").scaled(36, 36);
+            break;
+        case 2:
+            pixmap = QPixmap("./enemy3.png").scaled(36, 36);
+            break;
+        case 3:
+            pixmap = QPixmap("./enemy4.png").scaled(36, 36);
+            break;
+        }
+        painter.drawPixmap(enemy.y * 36, enemy.x * 36, pixmap);
 
-            int yOffsetText = (enemy.x == 0) ? 36 : -5;
-            painter.drawText(enemy.y * 36, enemy.x * 36 + yOffsetText, "Enemy");
+        painter.setPen(Qt::black);
+        painter.setFont(QFont("Arial", 10, QFont::Bold));
 
-            painter.setPen(Qt::red);
-            painter.drawText(enemy.y * 36 + 1, enemy.x * 36 + yOffsetText + 1, "Enemy");
+        int yOffsetText = (enemy.x == 0) ? 36 : -5;
+        painter.drawText(enemy.y * 36, enemy.x * 36 + yOffsetText, "Enemy");
+
+        painter.setPen(Qt::red);
+        painter.drawText(enemy.y * 36 + 1, enemy.x * 36 + yOffsetText + 1, "Enemy");
     }
 
-    for (const auto& bullet : activeBullets) 
+    for (const auto& bullet : activeBullets)
     {
-        if (bullet.active) 
+        if (bullet.active)
         {
-            painter.setBrush(Qt::red);   
-            painter.setPen(Qt::NoPen);   
+            painter.setBrush(Qt::red);
+            painter.setPen(Qt::NoPen);
             painter.drawEllipse(bullet.position.m_y * 36 + 12, bullet.position.m_x * 36 + 12, 12, 12);
         }
     }
@@ -326,9 +327,9 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
     int scorePanelStartX = 36 * width;
     QRect scorePanelRect(scorePanelStartX, 0, 200, 36 * height);
 
-    painter.setPen(Qt::black);  
-    painter.setBrush(Qt::NoBrush);  
-    painter.drawRect(scorePanelRect);  
+    painter.setPen(Qt::black);
+    painter.setBrush(Qt::NoBrush);
+    painter.drawRect(scorePanelRect);
 
     QPixmap scorePanelBackground("./score_panel_bg.jpg");
     painter.drawPixmap(scorePanelRect, scorePanelBackground.scaled(scorePanelRect.size()));
@@ -378,7 +379,7 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
     painter.drawText(scorePanelStartX + 10, yOffset, "Fire: " + m_fireKey + " / Space");
 }
 
-void GameMapInterface::updateOtherPlayers() 
+void GameMapInterface::updateOtherPlayers()
 {
     m_serverObject.FetchPlayerStates();
 
@@ -389,7 +390,7 @@ void GameMapInterface::updateOtherPlayers()
     std::string url = "http://localhost:8080/playerState?playerId=" + std::to_string(currentUserId);
     std::string response = m_serverObject.GetServerData(url);
 
-    if (response.empty()) 
+    if (response.empty())
     {
         qWarning() << "Failed to fetch player states.";
         return;
@@ -397,7 +398,7 @@ void GameMapInterface::updateOtherPlayers()
 
     try {
         auto jsonResponse = nlohmann::json::parse(response);
-        if (jsonResponse.contains("players") && jsonResponse["players"].is_array()) 
+        if (jsonResponse.contains("players") && jsonResponse["players"].is_array())
         {
             for (const auto& player : jsonResponse["players"]) {
                 int x = player["position"]["x"];
@@ -415,14 +416,14 @@ void GameMapInterface::updateOtherPlayers()
     update();
 }
 
-void GameMapInterface::updateEnemies() 
+void GameMapInterface::updateEnemies()
 {
     std::vector<Enemy> fetchedEnemies;
     m_serverObject.FetchEnemyStates(fetchedEnemies);
 
-    for (const auto& enemy : fetchedEnemies) 
-    { 
-        qDebug() << "Enemy ID:" << enemy.id << " Position: (" << enemy.x << ", " << enemy.y << ")"; 
+    for (const auto& enemy : fetchedEnemies)
+    {
+        qDebug() << "Enemy ID:" << enemy.id << " Position: (" << enemy.x << ", " << enemy.y << ")";
         if (m_serverObject.GetMap()[enemy.x][enemy.y] == 1 || m_serverObject.GetMap()[enemy.x][enemy.y] == 2)
             qDebug() << "Invalid position.\n";
     }
@@ -435,11 +436,11 @@ void GameMapInterface::updatePlayerScores()
 {
     auto scores = m_serverObject.GetPlayerDataByIdFromServer();
     playerScores.clear();
-    for (const auto& [name, score] : scores) 
+    for (const auto& [name, score] : scores)
     {
         playerScores.emplace_back(QString::fromStdString(name), score);
     }
-    update(); 
+    update();
 }
 
 void GameMapInterface::fireBullet()
@@ -453,16 +454,14 @@ void GameMapInterface::fireBullet()
         qDebug() << "[INFO] Bullet fired!";
         Bullet newBullet = { bulletPosition, bulletDirection, true };
         activeBullets.push_back(newBullet);
-        if (result.collision) 
+        if (result.collision)
         {
             qDebug() << "[INFO] Bullet hit something!";
         }
-        else 
+        else
         {
             qDebug() << "[INFO] Bullet missed.";
         }
-
-        updateMap();
     }
     else {
         qWarning() << "[WARNING] Bullet firing failed.";
@@ -476,11 +475,11 @@ void GameMapInterface::updateMap()
     repaint();
 }
 
-void GameMapInterface::updateBullets() 
+void GameMapInterface::updateBullets()
 {
-    for (auto& bullet : activeBullets) 
+    for (auto& bullet : activeBullets)
     {
-        if (!bullet.active) 
+        if (!bullet.active)
         {
             continue;
         }
@@ -491,26 +490,26 @@ void GameMapInterface::updateBullets()
         if (matrix[bullet.position.m_x][bullet.position.m_y] == 2)
         {
             qDebug() << "[INFO] Bullet hit a wall!";
-            bullet.active = false;  
+            bullet.active = false;
         }
-        if (matrix[bullet.position.m_x][bullet.position.m_y] == 1) 
+        if (matrix[bullet.position.m_x][bullet.position.m_y] == 1)
         {
             qDebug() << "[INFO] Bullet hit a wall!";
-            bullet.active = false;  
+            bullet.active = false;
             updateMap();
         }
-        for (const auto& enemy : m_enemies) 
+        for (const auto& enemy : m_enemies)
         {
-            if (bullet.position.m_x == enemy.x && bullet.position.m_y == enemy.y) 
+            if (bullet.position.m_x == enemy.x && bullet.position.m_y == enemy.y)
             {
                 qDebug() << "[INFO] Bullet hit an enemy!";
-                bullet.active = false;  
+                bullet.active = false;
             }
         }
         if (bullet.position.m_x < 0 || bullet.position.m_x >= height ||
-            bullet.position.m_y < 0 || bullet.position.m_y >= width) 
+            bullet.position.m_y < 0 || bullet.position.m_y >= width)
         {
-            bullet.active = false; 
+            bullet.active = false;
         }
     }
 
@@ -519,7 +518,7 @@ void GameMapInterface::updateBullets()
         [](const Bullet& bullet) { return !bullet.active; }),
         activeBullets.end());
 
-    update(); 
+    update();
 }
 
 void GameMapInterface::updateBombs() {
@@ -537,4 +536,25 @@ void GameMapInterface::updateBombs() {
 
     bombs = std::move(updatedBombs);
     update();
+}
+
+void GameMapInterface::checkBaseState()
+{
+    if (!baseInitialized) {
+        qDebug() << "[INFO] Base not initialized yet.";
+        return;
+    }
+
+    bool baseExists = m_serverObject.GetBaseState();
+
+    if (!baseExists) {
+        qDebug() << "[ALERT] Base has been destroyed!";
+        basePosition.first = -1;
+        basePosition.second = -1;
+        QMessageBox::critical(this, "Game Over", "The base has been destroyed! Game Over.");
+        QCoreApplication::quit();
+    }
+    else {
+        qDebug() << "[INFO] Base is safe.";
+    }
 }
