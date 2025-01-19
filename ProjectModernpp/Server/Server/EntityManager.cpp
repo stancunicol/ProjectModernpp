@@ -262,9 +262,10 @@ void EntityManager::HandleCollisions(GameMap& map) {
                         m_enemies[enemyIndex].SetLives(m_enemies[enemyIndex].GetLives() - 1);
 
                         if (m_enemies[enemyIndex].GetLives() == 0) {
-                            RemoveEnemy(enemyIndex);
+                            //RemoveEnemy(enemyIndex);
+                            m_enemies[enemyIndex].ResetPosition();
                             m_players[playerId].SetPoints(100);
-                            m_players[playerId].SetScore();
+                            //m_players[playerId].SetScore();
                             m_database.UpdateGameData(m_players[playerId].GetName(), m_players[playerId].GetScore());
                         }
                         break;
@@ -279,10 +280,10 @@ void EntityManager::HandleCollisions(GameMap& map) {
                     if (m_base.GetLife() == 0) {
                         std::cout << "BAZA A FOST DISTRUSA\n\n";
 
-                        m_players[playerId].SetPoints(500);
-                        m_players[playerId].SetScore();
-                        m_database.UpdateGameData(m_players[playerId].GetName(), m_players[playerId].GetScore());
-                        m_winner = m_players[playerId].GetName();
+                        //m_players[playerId].SetPoints(500);
+                        //m_players[playerId].SetScore();
+                        //m_database.UpdateGameData(m_players[playerId].GetName(), m_players[playerId].GetScore());
+                        m_winner = "";
                     }
                     break;
                 }
@@ -340,6 +341,7 @@ void EntityManager::HandleCollisions(GameMap& map) {
                 if (bullet.GetPosition() == otherPlayer.GetPosition()) {
                     bullet.SetActive(false);
                     otherPlayer.SetLives(otherPlayer.GetLives() - 1);
+                    otherPlayer.ResetPosition();
 
                     if (otherPlayer.GetLives() <= 0) {
                         RemovePlayer(otherPlayerId);
@@ -362,6 +364,7 @@ void EntityManager::HandleCollisions(GameMap& map) {
             if (bullet.GetPosition() == player.GetPosition()) {
                 bullet.SetActive(false);
                 player.SetLives(player.GetLives() - 1);
+                player.ResetPosition();
 
                 if (player.GetLives() <= 0) {
                     RemovePlayer(playerId);

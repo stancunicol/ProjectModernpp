@@ -40,7 +40,7 @@ public:
 
     void SetShootDirection(const Point& direction);
     void SetPoints(uint16_t points);
-    void SetScore();
+    void SetScore(int8_t points);
 
     void SetMoveDirection(const Point& direction) {
         m_moveDirection = direction;

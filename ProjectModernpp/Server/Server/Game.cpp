@@ -210,7 +210,6 @@ Room* Game::GetRoom(const std::string& code)
 
 bool Game::CheckBulletCollision(const Bullet& bullet, Point& hitObjectPos, bool& isPlayerHit, bool& isEnemyHit) {
     Point bulletPos = bullet.GetPosition();
-    int shooterId = bullet.GetOwnerId();
 
     Point direction = bullet.GetDirection();
 
@@ -223,15 +222,11 @@ bool Game::CheckBulletCollision(const Bullet& bullet, Point& hitObjectPos, bool&
                 CellType cellType = m_map.GetMap()[x][y];
 
                 if (cellType == CellType::BREAKABLE_WALL) {
-                    m_map.GetMap()[x][y] = CellType::EMPTY;
-                    hitObjectPos = Point(x, y);
                     return true;
                 }
                 else if (cellType == CellType::UNBREAKABLE_WALL) {
-                    hitObjectPos = Point(x, y);
                     return true;
                 }
-
                 x += direction.GetX();
             }
         }
@@ -240,15 +235,11 @@ bool Game::CheckBulletCollision(const Bullet& bullet, Point& hitObjectPos, bool&
                 CellType cellType = m_map.GetMap()[x][y];
 
                 if (cellType == CellType::BREAKABLE_WALL) {
-                    m_map.GetMap()[x][y] = CellType::EMPTY;
-                    hitObjectPos = Point(x, y);
                     return true;
                 }
                 else if (cellType == CellType::UNBREAKABLE_WALL) {
-                    hitObjectPos = Point(x, y);
                     return true;
                 }
-
                 y += direction.GetY();
             }
         }
@@ -260,16 +251,12 @@ bool Game::CheckBulletCollision(const Bullet& bullet, Point& hitObjectPos, bool&
 
     for (const auto& player : GetEntityManager().GetPlayers()) {
         if (player.second.GetPosition() == Point(x, y)) {
-            isPlayerHit = true;
-            hitObjectPos = bulletPos;
             return true;
         }
     }
 
     for (const auto& enemyPair : GetEntityManager().GetEnemies()) {
         if (enemyPair.second.GetPosition() == Point(x, y)) {
-            isEnemyHit = true;
-            hitObjectPos = bulletPos;
             return true;
         }
     }

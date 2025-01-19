@@ -8,6 +8,7 @@ protected:
     Point m_position;
     Point m_direction;
     uint8_t m_lives;
+    Point m_initialPosition;
 public:
     Character(const Point& direction = Point(0, 0), const Point& position = Point(0, 0)); //constructor
 
@@ -25,4 +26,6 @@ public:
     void DecreaseLives(uint8_t amount);
 
     bool IsDead() const;
+
+    void ResetPosition();
 };

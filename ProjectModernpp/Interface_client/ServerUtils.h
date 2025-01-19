@@ -42,6 +42,7 @@ private:
     std::vector<std::vector<int>> m_matrix;
     std::vector<std::pair<Point, std::string>> m_playerPositions;
     //std::vector<Enemy>& m_enemies;
+    static std::string m_baseURL;
 
 public:
     ServerUtils();
@@ -92,5 +93,7 @@ public:
 
     std::string GetServerBulletData(const std::string& url, const std::string& postData);
     bool GetBaseState();
+
+    void InitializeBaseURL(const std::string& fullURL);
 };
 

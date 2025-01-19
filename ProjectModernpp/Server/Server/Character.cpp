@@ -44,3 +44,7 @@ void Character::DecreaseLives(uint8_t amount) {
 bool Character::IsDead() const {
 	return m_lives == 0;
 }
+
+void Character::ResetPosition() {
+	m_position = m_initialPosition;
+}

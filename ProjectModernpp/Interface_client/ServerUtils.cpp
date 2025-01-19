@@ -2,6 +2,8 @@
 
 int ServerUtils::userId = -1;
 
+std::string ServerUtils::m_baseURL = "";
+
 using json = nlohmann::json;
 
 void ServerUtils::SetUserId(int userId) {
@@ -851,3 +853,12 @@ bool ServerUtils::GetBaseState() {
     return false; // Default to destroyed in case of error
 }
 
+void ServerUtils::InitializeBaseURL(const std::string& fullURL) {
+    size_t pos = fullURL.find('/');
+    if (pos != std::string::npos) {
+        m_baseURL = fullURL.substr(0, pos);
+    }
+    else {
+        m_baseURL = fullURL;
+    }
+}

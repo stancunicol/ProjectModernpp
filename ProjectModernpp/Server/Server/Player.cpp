@@ -98,7 +98,7 @@ void Player::SetPoints(uint16_t points)
     m_points += points;
 }
 
-void Player::SetScore()
+void Player::SetScore(int8_t points)
 {
-    m_score += m_points;
+    m_score += points;
 }
