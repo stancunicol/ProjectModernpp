@@ -356,19 +356,19 @@ void StartServer(Game& game) {
 
     CROW_ROUTE(serverApp, "/getBombs").methods(crow::HTTPMethod::GET)([&game]() {
         try {
-            auto& bombs = game.GetEntityManager().GetBombs();
+            std::vector<Point> updatedBombPositions = game.GetUpdatedBombs();
 
             crow::json::wvalue response;
-            response["bombCount"] = bombs.size();
+            response["bombCount"] = updatedBombPositions.size();
 
             crow::json::wvalue::list bombList;
-            for (size_t i = 0; i < bombs.size(); ++i) {
-                const auto& bomb = bombs[i];
+            for (size_t i = 0; i < updatedBombPositions.size(); ++i) {
+                const auto& bombPosition = updatedBombPositions[i];
 
                 crow::json::wvalue bombData;
                 bombData["id"] = static_cast<int>(i);
-                bombData["x"] = bomb.GetPosition().GetX();
-                bombData["y"] = bomb.GetPosition().GetY();
+                bombData["x"] = bombPosition.GetX();
+                bombData["y"] = bombPosition.GetY();
 
                 bombList.push_back(bombData);
             }

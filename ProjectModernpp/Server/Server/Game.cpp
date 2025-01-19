@@ -45,14 +45,14 @@ void Game::InitializeGame() {
         id++;
     }
 
+    m_entityManager.ResetBombs();
     int bombsToPlace = m_map.GetLevel();
 
     while (bombsToPlace > 0) {
         Point randomPos(rand() % m_map.GetHeight(), rand() % m_map.GetWidth());
 
-        if (m_map.GetMap()[randomPos.GetX()][randomPos.GetY()] == CellType::UNBREAKABLE_WALL) {
-            float randomActivationTime = static_cast<float>(rand() % 10 + 5); // 10-15 s
-            m_entityManager.AddBomb(Bomb(randomPos, randomActivationTime));
+        if (m_map.GetMap()[randomPos.GetX()][randomPos.GetY()] == CellType::BREAKABLE_WALL) {
+            m_entityManager.AddBomb(Bomb(randomPos));
             bombsToPlace--;
         }
     }
@@ -279,4 +279,31 @@ bool Game::CheckBulletCollision(const Bullet& bullet, Point& hitObjectPos, bool&
 
 void Game::DestroyWall(const Point& hitPosition) {
     m_map.GetMap()[hitPosition.GetX()][hitPosition.GetY()] = CellType::EMPTY;
+}
+
+std::vector<Point> Game::GetUpdatedBombs()
+{
+    std::vector<Point> updatedBombPositions;
+
+    auto& bombs = m_entityManager.GetBombs();
+    auto& map = m_map.GetMap();
+    size_t i = 0;
+    for (auto& bomb : bombs)
+    {
+        Point bombPosition = bomb.GetPosition();
+
+        if (map[bombPosition.GetX()][bombPosition.GetY()] == CellType::BREAKABLE_WALL)
+        {
+            updatedBombPositions.push_back(bombPosition);
+        }
+        else if (map[bombPosition.GetX()][bombPosition.GetY()] == CellType::EMPTY)
+        {
+            updatedBombPositions.push_back(Point(-1, -1));
+            m_entityManager.ExplodeBomb(bomb, m_map);
+            m_entityManager.RemoveBomb(i);
+        }
+        ++i;
+    }
+
+    return updatedBombPositions;
 }

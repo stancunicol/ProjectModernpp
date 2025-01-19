@@ -29,6 +29,7 @@ public:
     void fireBullet();
     void updateMap();
     void updateBullets();
+    void updateBombs();
 private:
     ServerUtils m_serverObject;
     std::pair<int, int> basePosition;

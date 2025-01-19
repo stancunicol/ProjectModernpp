@@ -125,7 +125,7 @@ void EntityManager::PlayerShoot(GameMap& map, int playerId) {
 
 void EntityManager::ExplodeBomb(const Bomb& bomb, GameMap& map) {
     Point center = bomb.GetPosition();
-    const int radius = 3;
+    const int radius = 5;
 
     for (int dx = -radius; dx <= radius; ++dx) {
         for (int dy = -radius; dy <= radius; ++dy) {
@@ -203,16 +203,6 @@ void EntityManager::UpdateEntities(GameMap& map, float deltaTime)
     for (size_t i = 0; i < m_bullets.size(); ++i)
     {
         m_bullets[i].Move(map);
-    }
-
-    for (size_t i = 0; i < m_bombs.size(); ++i) {
-        m_bombs[i].Update(deltaTime);
-        if (m_bombs[i].IsActive()) {
-            ExplodeBomb(m_bombs[i], map);
-            std::cout << "!!! BOOM !!! Bomb Exploded!\n";
-            std::this_thread::sleep_for(std::chrono::milliseconds(1500));
-            RemoveBomb(i);
-        }
     }
 
     HandleCollisions(map);
@@ -431,6 +421,10 @@ void EntityManager::ResetPlayers(GameMap& map)
         player.ResetPositions(map);
         player.PlaceCharacter();
     }
+}
+
+void EntityManager::ResetBombs()
+{
 }
 
 void EntityManager::CloseRoom(const std::string& roomCode) {

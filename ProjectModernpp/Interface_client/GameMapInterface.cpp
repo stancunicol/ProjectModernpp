@@ -27,6 +27,14 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     QTimer* bulletUpdateTimer = new QTimer(this);
     connect(bulletUpdateTimer, &QTimer::timeout, this, &GameMapInterface::updateBullets);
     bulletUpdateTimer->start(100);
+    /*
+    QTimer* mapUpdateTimer = new QTimer(this);
+    connect(mapUpdateTimer, &QTimer::timeout, this, &GameMapInterface::updateMap);
+    mapUpdateTimer->start(1000);
+    */
+    QTimer* bombUpdateTimer = new QTimer(this);
+    connect(bombUpdateTimer, &QTimer::timeout, this, &GameMapInterface::updateBombs);
+    bombUpdateTimer->start(1000);
 
 
     m_serverObject.GetMapFromServer();
@@ -288,6 +296,13 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
         }
     }
 
+    for (const auto& bomb : bombs) {
+        if (bomb.x == -1 && bomb.y == -1) {
+            pixmap.load("./bomb.png");
+            painter.drawPixmap(bomb.x * 36, bomb.y * 36, pixmap.scaled(36, 36));
+        }
+    }
+
     int scorePanelStartX = 36 * width;
     QRect scorePanelRect(scorePanelStartX, 0, 200, 36 * height);
 
@@ -485,4 +500,21 @@ void GameMapInterface::updateBullets()
         activeBullets.end());
 
     update(); 
+}
+
+void GameMapInterface::updateBombs() {
+    auto updatedBombs = m_serverObject.GetBombsFromServer();
+
+    for (const auto& bomb : updatedBombs) {
+        if (bomb.x == -1 && bomb.y == -1) {
+
+            qDebug() << "[INFO] Bomb with ID:" << bomb.id << "has exploded!";
+        }
+        else {
+            qDebug() << "[INFO] Bomb ID:" << bomb.id << " Position: (" << bomb.y << ", " << bomb.x << ")";
+        }
+    }
+
+    bombs = std::move(updatedBombs);
+    update();
 }

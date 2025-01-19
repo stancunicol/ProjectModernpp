@@ -77,4 +77,6 @@ public:
     bool CheckBulletCollision(const Bullet& bullet, Point& hitObjectPos, bool& isPlayerHit, bool& isEnemyHit);
 
     void DestroyWall(const Point& hitPosition);
+
+    std::vector<Point> GetUpdatedBombs();
 };

@@ -27,7 +27,6 @@ private:
 
     DataBase m_database;
 
-    void HandleCollisions(GameMap& map);
 public:
     EntityManager(GameMap& gameMap);
 
@@ -49,6 +48,7 @@ public:
 
     void ExplodeBomb(const Bomb& bomb, GameMap& map);
 
+    void HandleCollisions(GameMap& map);
     void UpdateEntities(GameMap& map, float deltaTime);   // Updates the positions and states of all entities
 
     const std::unordered_map<uint8_t, Player>& GetPlayers() const;
@@ -71,6 +71,7 @@ public:
     std::vector<std::tuple<Point, std::string>> GetAllPlayerPositions() const;
 
     void ResetPlayers(GameMap& map);
+    void ResetBombs();
 
     void CloseRoom(const std::string& roomCode);
 
