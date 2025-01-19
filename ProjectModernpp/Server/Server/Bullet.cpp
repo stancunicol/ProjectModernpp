@@ -1,8 +1,7 @@
 #include "Bullet.h"
 
 Bullet::Bullet(const Point& position, const Point& direction)
-    : m_active{ true }, m_speed{ 0.25f }, m_direction{ direction }, m_position{ position }, m_progress{ 0.0f }, m_interpolationProgress{ 0.0f } {
-}
+    : m_active{ true }, m_direction{ direction }, m_position{ position } {}
 
 bool Bullet::IsActive() const
 {
@@ -29,26 +28,30 @@ void Bullet::SetPosition(const Point& position)
     m_position = position;
 }
 
-void Bullet::Move(GameMap& map) {
+void Bullet::Move(GameMap& map) 
+{
     if (!IsActive()) return;
 
     Point newPos = m_position + m_direction;
 
     if (newPos.GetX() < 0 || newPos.GetX() >= map.GetHeight() ||
-        newPos.GetY() < 0 || newPos.GetY() >= map.GetWidth()) {
+        newPos.GetY() < 0 || newPos.GetY() >= map.GetWidth()) 
+    {
         SetActive(false);
         return;
     }
 
     CellType newCellType = map.GetMap()[newPos.GetX()][newPos.GetY()];
 
-    if (newCellType == CellType::BREAKABLE_WALL) {
+    if (newCellType == CellType::BREAKABLE_WALL) 
+    {
         map.GetMap()[newPos.GetX()][newPos.GetY()] = CellType::EMPTY;
         SetActive(false);
         return;
     }
 
-    if (newCellType == CellType::UNBREAKABLE_WALL) {
+    if (newCellType == CellType::UNBREAKABLE_WALL) 
+    {
         SetActive(false);
         return;
     }
@@ -62,18 +65,17 @@ bool Bullet::operator==(const Bullet& other) const
     return (m_position == other.m_position && m_active == other.m_active);
 }
 
-void Bullet::SetSpeed(float speed) {
-    m_speed = speed;
-}
-
-bool Bullet::HasHit() const {
+bool Bullet::HasHit() const 
+{
     return m_hit;
 }
 
-Point Bullet::GetHitPosition() const {
+Point Bullet::GetHitPosition() const 
+{
     return m_hitPosition;
 }
 
-int Bullet::GetOwnerId() const {
+int Bullet::GetOwnerId() const 
+{
     return m_ownerId;
 }

@@ -17,19 +17,22 @@ import Base;
 #include "Room.h"
 #include "RoomManager.h"
 
-class  Game {
+class  Game 
+{
 private:
     GameMap m_map;
+
     EntityManager m_entityManager;
+
     DataBase m_database;
 
+    RoomManager m_roomManager;
+    
     std::unordered_map<std::string, Room> m_rooms;
 
     std::mutex m_roomMutex;
 
     std::mutex m_gameMutex;
-
-    RoomManager m_roomManager;
 
 public:
 
@@ -37,22 +40,25 @@ public:
 
     ~Game();
 
-    void InitializeGame(); //the game is initialed
-
-    void Run(); //runs the game  
+    void InitializeGame();
 
     void EndGame(const std::string& winner);
 
     void SetLevel(int level);
 
 
-    GameMap& GetMap() { return m_map; };
-    DataBase& GetDatabase() { return m_database; };
-    EntityManager& GetEntityManager() { return m_entityManager; };
+    bool CheckBulletCollision(const Bullet& bullet, Point& hitObjectPos, bool& isPlayerHit, bool& isEnemyHit);
+    
+    void DestroyWall(const Point& hitPosition);
+    
+    void UpdatePlayerMovements();
+    
+    std::vector<Point> GetUpdatedBombs();
 
-    crow::json::wvalue TranformInJson();
+    std::vector<Enemy> GetUpdateEnemies();
 
-    crow::json::wvalue GetGameStateAsJson();
+
+    std::string GenerateRoomCode();
 
     std::string CreateRoom();
 
@@ -60,24 +66,23 @@ public:
 
     bool LeaveRoom(const std::string& code, const int& playerId);
 
-    Room* GetRoom(const std::string& code);
-
-    void UpdatePlayerMovements();
-
-    std::mutex& GetGameMutex();
-
-    std::string GenerateRoomCode();
+    void CloseRoom(const std::string& code);
 
     RoomManager GetRoomManager();
 
-    void CloseRoom(const std::string& code);
 
-    void UpdateEnemyPositions();
+    Room* GetRoom(const std::string& code);
+    
+    GameMap& GetMap();
+    
+    DataBase& GetDatabase();
+    
+    EntityManager& GetEntityManager();
 
-    bool CheckBulletCollision(const Bullet& bullet, Point& hitObjectPos, bool& isPlayerHit, bool& isEnemyHit);
 
-    void DestroyWall(const Point& hitPosition);
+    crow::json::wvalue TranformInJson();
+    
+    crow::json::wvalue GetGameStateAsJson();
 
-    std::vector<Point> GetUpdatedBombs();
-    std::vector<Enemy> UpdateEnemies();
+    std::mutex& GetGameMutex();
 };

@@ -1,22 +1,25 @@
 #include "Character.h"
 
 Character::Character(const Point& direction, const Point& position)
-	: m_position{ position }, m_direction{ direction }, m_lives{ 3 } {
-}
+	: m_position{ position }, m_direction{ direction }, m_lives{ 3 } {}
 
-void Character::MoveCharacter(const Point& direction) {
+void Character::MoveCharacter(const Point& direction) 
+{
 	m_position = m_position + direction;
 }
 
-Point Character::GetPosition() const {
+Point Character::GetPosition() const 
+{
 	return m_position;
 }
 
-Point Character::GetDirection() const {
+Point Character::GetDirection() const 
+{
 	return m_direction;
 }
 
-void Character::SetPosition(const Point& point) {
+void Character::SetPosition(const Point& point) 
+{
 	m_position = point;
 }
 
@@ -35,16 +38,14 @@ void Character::SetLives(uint8_t lives)
 	m_lives = lives;
 }
 
-void Character::DecreaseLives(uint8_t amount) {
+void Character::DecreaseLives(uint8_t amount) 
+{
 	if (m_lives > amount)
 		m_lives -= amount;
 	else m_lives = 0;
 }
 
-bool Character::IsDead() const {
-	return m_lives == 0;
-}
-
-void Character::ResetPosition() {
+void Character::ResetPosition() 
+{
 	m_position = m_initialPosition;
 }

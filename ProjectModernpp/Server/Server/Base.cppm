@@ -5,7 +5,8 @@ import <cstdint>;
 #include "CellType.h"
 
 export
-class Base {
+class Base 
+{
 private:
     bool m_destroyed;
     uint8_t m_life;
@@ -15,8 +16,6 @@ public:
     Base(const Point& position, uint8_t initialLife = 10);
 
     void Destroyed();
-
-    bool IsDestroyed() const;
 
     void TakeHit();
 

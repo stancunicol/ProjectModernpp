@@ -5,21 +5,20 @@
 
 std::shared_ptr<std::array<std::pair<Point, bool>, 4>> Player::m_positions = nullptr;
 
-Player::Player() : m_name("DefaultPlayer"), m_points(0), m_score(0), m_moveDirection(0, 0), m_shootDirection(0, 0), m_isActive(true) { }
+Player::Player() : m_name("DefaultPlayer"), m_points{0}, m_score{0}, m_moveDirection{0, 0}, m_isActive(true) { }
 
 Player::Player(const std::string& name, const GameMap& grid)
-    : m_name{ name }, m_points{ 0 }, m_score{ 0 }, m_shootDirection(0, 0), m_moveDirection(0, 0)
+    : m_name{ name }, m_points{ 0 }, m_score{ 0 }, m_moveDirection(0, 0)
 {
-    if (!m_positions) {
+    if (!m_positions) 
+    {
         ResetPositions(grid);
     }
     PlaceCharacter();
-    std::cout << "[INFO] Player created: " << name << " at position ("
-        << m_position.GetX() << ", " << m_position.GetY() << ").\n";
 }
 
-
-void Player::PlaceCharacter() {
+void Player::PlaceCharacter() 
+{
     static std::random_device rd;
     static std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0, m_positions->size() - 1);
@@ -29,15 +28,14 @@ void Player::PlaceCharacter() {
     do {
         size_t randomIndex = dis(gen);
 
-        if (!(*m_positions)[randomIndex].second) {
+        if (!(*m_positions)[randomIndex].second) 
+        {
             m_position = (*m_positions)[randomIndex].first;
             (*m_positions)[randomIndex].second = true;
             found = true;
-            //std::cout << "[DEBUG] Player placed at position: (" << std::to_string(m_position.GetX()) << ", " << std::to_string(m_position.GetY()) << ").\n";
         }
     } while (!found);
 }
-
 
 void Player::MoveCharacter(const Point& direction, GameMap& grid) {
     Point newPos = m_position + direction;
@@ -47,19 +45,10 @@ void Player::MoveCharacter(const Point& direction, GameMap& grid) {
         grid.GetMap()[newPos.GetX()][newPos.GetY()] == CellType::EMPTY) {
 
         m_position = newPos;
-        //std::cout << "[DEBUG] Player moved to position: (" << std::to_string(newPos.GetX()) << ", " << std::to_string(newPos.GetY()) << ").\n";
-    }
-
-    if (direction != Point(0, 0)) {
-        m_shootDirection = direction;
     }
     m_direction = Point(0, 0);
 }
 
-const Point& Player::GetShootDirection() const {
-
-    return m_shootDirection;
-}
 
 void Player::ResetPositions(const GameMap& grid)
 {
@@ -71,6 +60,16 @@ void Player::ResetPositions(const GameMap& grid)
     (*m_positions)[1] = { Point(0, grid.GetWidth() - 1), false };
     (*m_positions)[2] = { Point(grid.GetHeight() - 1, 0), false };
     (*m_positions)[3] = { Point(grid.GetHeight() - 1, grid.GetWidth() - 1), false };
+}
+
+void Player::Deactivate()
+{
+    m_isActive = false;
+}
+
+void Player::Activate()
+{
+    m_isActive = true;
 }
 
 std::string Player::GetName() const
@@ -86,11 +85,6 @@ uint16_t Player::GetPoints() const
 uint16_t Player::GetScore() const
 {
     return m_score;
-}
-
-void Player::SetShootDirection(const Point& direction)
-{
-    m_shootDirection = direction;
 }
 
 void Player::SetPoints(uint16_t points)

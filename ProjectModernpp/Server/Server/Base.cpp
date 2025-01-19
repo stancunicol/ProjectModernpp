@@ -9,11 +9,6 @@ void Base::Destroyed()
     m_destroyed = true;
 }
 
-bool Base::IsDestroyed() const
-{
-    return m_destroyed;
-}
-
 void Base::TakeHit()
 {
     if (m_life > 0) {

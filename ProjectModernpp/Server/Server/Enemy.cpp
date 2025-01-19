@@ -8,10 +8,7 @@ Enemy::Enemy(GameMap& map)
     PlaceCharacter(map);
 }
 
-Enemy::Enemy()
-{
-}
-
+Enemy::Enemy() {}
 
 void Enemy::PlaceCharacter(GameMap& map)
 {
@@ -37,7 +34,6 @@ void Enemy::MoveRandom(GameMap& grid)
         auto direction = randomMove.GenerateNextDirection();
         Point newPos = m_position + Point(direction.first, direction.second);
 
-        // Verifică dacă poziția este validă pe hartă
         if (newPos.GetX() >= 0 && newPos.GetX() < grid.GetHeight() &&
             newPos.GetY() >= 0 && newPos.GetY() < grid.GetWidth() &&
             grid.GetMap()[newPos.GetX()][newPos.GetY()] == CellType::EMPTY)
@@ -83,11 +79,6 @@ void Enemy::MoveRandom(GameMap& grid)
     }
 }
 
-void Enemy::SetActive(const bool& active) //set the bullet active or desactivates it
-{
-    m_active = active;
-}
-
 const Point& Enemy::GetPosition() const
 {
     return m_position;
@@ -97,11 +88,3 @@ const Point& Enemy::GetShootDirection() const
 {
     return m_shootDirection;
 }
-
-/*void Enemy::Update(float deltaTime) {
-    m_timeSinceLastMove += deltaTime;
-    if (m_timeSinceLastMove >= 1000) {
-        MoveRandom(map);
-
-    }
-}*/

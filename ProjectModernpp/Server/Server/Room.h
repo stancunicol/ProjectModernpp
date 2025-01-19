@@ -5,17 +5,23 @@
 #include <iostream>
 #include "GameMap.h"
 
-class Room {
+class Room 
+{
 private:
 	std::string m_code;
+
 	static const uint8_t m_capacity = 4;
+	
 	std::unordered_set<int> m_players;
+	
 	std::unique_ptr<GameMap> m_map;
 
 	enum class RoomState { WAITING_FOR_PLAYERS, IN_PROGRESS, FINISHED, INACTIVE };
+	
 	RoomState m_state;
 
 	std::chrono::steady_clock::time_point m_lastActivityTime;
+	
 	static constexpr double ROOM_TIMEOUT = 600.0;
 
 public:

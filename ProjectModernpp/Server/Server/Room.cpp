@@ -4,8 +4,7 @@ Room::Room(const std::string& code, std::unique_ptr<GameMap> map)
 	: m_code{ code },
 	m_map{ std::move(map) },
 	m_state{ RoomState::WAITING_FOR_PLAYERS },
-	m_lastActivityTime{ std::chrono::steady_clock::now() } {
-}
+	m_lastActivityTime{ std::chrono::steady_clock::now() } {}
 
 bool Room::IsFull() const
 {
@@ -17,9 +16,12 @@ bool Room::AddPlayer(const int& playerId)
 	if (IsFull() || m_players.count(playerId))
 		return false;
 	m_players.insert(playerId);
-	if (m_players.size() == m_capacity) {
+
+	if (m_players.size() == m_capacity) 
+	{
 		m_state = RoomState::IN_PROGRESS;
 	}
+
 	UpdateActivityTime();
 	return true;
 }
@@ -27,10 +29,12 @@ bool Room::AddPlayer(const int& playerId)
 bool Room::RemovePlayer(const int& playerId)
 {
 	bool removed = m_players.erase(playerId) > 0;
-	if (removed) {
+	if (removed) 
+	{
 		UpdateActivityTime();
 	}
-	if (m_players.empty()) {
+	if (m_players.empty()) 
+	{
 		m_state = RoomState::INACTIVE;
 	}
 	return removed;
@@ -56,29 +60,35 @@ const uint8_t Room::GetCapacity() const
 	return m_capacity;
 }
 
-void Room::ClearPlayers() {
+void Room::ClearPlayers() 
+{
 	m_players.clear();
 	m_state = RoomState::INACTIVE;
 	UpdateActivityTime();
 }
 
-void Room::SetState(RoomState state) {
+void Room::SetState(RoomState state) 
+{
 	m_state = state;
 }
 
-Room::RoomState Room::GetState() const {
+Room::RoomState Room::GetState() const 
+{
 	return m_state;
 }
 
-bool Room::IsInactive() const {
+bool Room::IsInactive() const 
+{
 	return m_state == RoomState::INACTIVE;
 }
 
-void Room::UpdateActivityTime() {
+void Room::UpdateActivityTime() 
+{
 	m_lastActivityTime = std::chrono::steady_clock::now();
 }
 
-bool Room::HasTimedOut() const {
+bool Room::HasTimedOut() const 
+{
 	auto now = std::chrono::steady_clock::now();
 	std::chrono::duration<double> diff = now - m_lastActivityTime;
 

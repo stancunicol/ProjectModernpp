@@ -43,21 +43,9 @@ void DataBase::Initialize()
             lastConnected DATETIME DEFAULT NULL
         );
     )";
+
     executeQuery("PRAGMA foreign_keys = ON;");
     executeQuery(createTableQuery);
-}
-
-void DataBase::InsertGameData(const std::string& playerName, uint16_t score, uint8_t level)
-{
-    const std::string insertQuery =
-        "INSERT INTO GameData (playerName, score, level, roomCode) "
-        "VALUES ('" + playerName + "', " + std::to_string(score) + ", " + std::to_string(level) + ", NULL ) "
-        "ON CONFLICT(playerName) DO UPDATE SET "
-        "score = " + std::to_string(score) + ", "
-        "level = " + std::to_string(level) + "";
-
-    executeQuery(insertQuery);
-    UpdateLastConnected(playerName);
 }
 
 void DataBase::UpdateGameData(const std::string& playerName, uint16_t score)
@@ -382,11 +370,6 @@ void DataBase::UpdateLastConnected(const std::string& playerName)
     executeQuery(updateQuery);
 }
 
-sqlite3* DataBase::GetDatabaseConnection() const
-{
-    return m_db;
-}
-
 std::vector<std::string> DataBase::GetPlayersFromRoom(const std::string& roomCode)
 {
     std::vector<std::string> players;
@@ -525,33 +508,6 @@ void DataBase::executeQuery(const std::string& query)
         std::cerr << "Error executing query: " << errMsg << std::endl;
         sqlite3_free(errMsg);
     }
-}
-
-std::ostream& operator<<(std::ostream& out, const DataBase& db)
-{
-    auto data = db.GetGameData();
-
-    if (data.empty())
-    {
-        out << "Database is empty.\n";
-        return out;
-    }
-
-    out << "Player Name\tScore\tLevel\tRoom Code\n";
-    out << "------------------------------------------\n";
-
-    for (const auto& row : data)
-    {
-        const std::string& playerName = std::get<0>(row);
-        uint16_t score = std::get<1>(row);
-        uint8_t level = std::get<2>(row);
-
-        const std::string& roomCode = std::get<3>(row);
-
-        out << playerName << "\t\t" << score << "\t" << level << "\t" << roomCode << "\n";
-    }
-
-    return out;
 }
 
 void DataBase::DeleteRoom(const std::string& roomCode)

@@ -3,29 +3,34 @@ import Point;
 #include <cstdint>
 
 
-class Character {
+class Character 
+{
 protected:
     Point m_position;
+
     Point m_direction;
+
     uint8_t m_lives;
+
     Point m_initialPosition;
 public:
-    Character(const Point& direction = Point(0, 0), const Point& position = Point(0, 0)); //constructor
+    Character(const Point& direction = Point(0, 0), const Point& position = Point(0, 0)); 
 
-    virtual void MoveCharacter(const Point& direction); //moves the character in the mentioned direction
-
-    Point GetPosition() const;
-    Point GetDirection() const;
-
-    void SetPosition(const Point& point);
-    void SetDirection(const Point& point);
+    virtual void MoveCharacter(const Point& direction);
 
     uint8_t GetLives() const;
+    
+    Point GetPosition() const;
+    
+    Point GetDirection() const;
+
     void SetLives(uint8_t lives);
+    
+    void SetPosition(const Point& point);
+    
+    void SetDirection(const Point& point);
 
     void DecreaseLives(uint8_t amount);
-
-    bool IsDead() const;
 
     void ResetPosition();
 };

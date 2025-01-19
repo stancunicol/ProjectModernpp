@@ -2,11 +2,12 @@ export module Point;
 
 import <cstdint>;
 
-
 export
-class Point {
+class Point 
+{
 private:
     int8_t m_x, m_y;
+
     int8_t* m_data;
 
 public:
@@ -20,6 +21,7 @@ public:
 
     ~Point();
 
+
     Point& operator=(const Point& position);
 
     Point operator+(const Point& position) const;
@@ -32,9 +34,12 @@ public:
 
     bool operator!=(const Point& other) const;
 
+
     void SetPosition(const Point& position);
+
     Point GetPosition() const;
 
     int8_t GetX() const;
+
     int8_t GetY() const;
 };

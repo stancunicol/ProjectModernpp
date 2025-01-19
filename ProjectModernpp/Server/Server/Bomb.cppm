@@ -3,9 +3,11 @@ export module Bomb;
 import Point;
 
 export
-class Bomb {
+class Bomb 
+{
 private:
     Point m_position;
+
     bool m_active;
 
 public:

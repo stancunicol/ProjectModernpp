@@ -10,15 +10,16 @@
 class Enemy : virtual public Character
 {
 private:
-    bool m_active = false;
-    Point m_shootDirection = Point(0, 0);
     RandomMove randomMove;
-    float m_timeSinceLastMove;
+    
+    bool m_active = false;
+
+    Point m_shootDirection = Point(0, 0);
 
     static std::unordered_map<size_t, std::deque<Point>> enemyLastMoves;
 
 public:
-    Enemy(GameMap& map);//"puts" the enemies in the game map
+    Enemy(GameMap& map);
 
     Enemy();
 
@@ -26,10 +27,8 @@ public:
 
     void MoveRandom(GameMap& grid);
 
-    void SetActive(const bool& active);  //sets an enemy active
-
     const Point& GetPosition() const;
+
     const Point& GetShootDirection() const;
 
-    void Update(float deltaTime);
 };

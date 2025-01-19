@@ -8,13 +8,15 @@
 #include <thread>
 #include <chrono>
 
-std::ostream& operator<<(std::ostream& os, const crow::json::wvalue& value) {
+std::ostream& operator<<(std::ostream& os, const crow::json::wvalue& value) 
+{
     os << value.dump();
     return os;
 }
 
 template <typename Func>
-crow::response handleRequest(Func&& func) {
+crow::response handleRequest(Func&& func) 
+{
     try {
         return std::forward<Func>(func)();
     }
@@ -23,22 +25,23 @@ crow::response handleRequest(Func&& func) {
     }
 }
 
-void UpdateEnemyPositionsPeriodically(Game& game) {
-    while (true) {
+void UpdateEnemyPositionsPeriodically(Game& game) 
+{
+    while (true) 
+    {
         game.GetEntityManager().UpdateEnemyPositions(game.GetMap());
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 }
 
-void StartServer(Game& game) {
+void StartServer(Game& game) 
+{
     crow::SimpleApp serverApp;
 
-    // GET game state
     CROW_ROUTE(serverApp, "/game")([&game]() {
         return game.GetGameStateAsJson();
         });
 
-    // POST submitLevel
     CROW_ROUTE(serverApp, "/submitLevel").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
         try {
             auto jsonBody = crow::json::load(req.body);
@@ -60,7 +63,6 @@ void StartServer(Game& game) {
             auto recentPlayer = db.GetRecentPlayer();
 
             if (recentPlayer) {
-                std::cout << "Updating level for player: " << *recentPlayer << std::endl;
                 db.UpdateLevel(*recentPlayer, level);
             }
             return crow::response(200, "Level updated successfully.");
@@ -71,9 +73,9 @@ void StartServer(Game& game) {
         }
         });
 
-    // POST user
     CROW_ROUTE(serverApp, "/user").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
         return handleRequest([&game, &req]() {
+
             auto jsonBody = crow::json::load(req.body);
             if (!jsonBody || !jsonBody.has("username"))
                 return crow::response(400, "Invalid JSON payload. Expected a 'username' field.");
@@ -85,18 +87,15 @@ void StartServer(Game& game) {
 
             auto& db = game.GetDatabase();
             uint8_t userId;
-            if (db.UserExists(username)) {
+            if (db.UserExists(username))
+            {
                 userId = db.GetUserId(username);
-
-                /*if (!game.GetEntityManager().PlayerExists(userId)) {
-                    game.GetEntityManager().AddPlayer(userId, username, game.GetMap());
-                }*/
 
                 crow::json::wvalue jsonResponse;
                 jsonResponse["status"] = "login";
                 jsonResponse["userId"] = userId;
                 game.GetEntityManager().AddPlayer(userId, username, game.GetMap());
-                //std::cout << "Player " << username << " (ID: " << std::to_string(userId) << ") added to the game.\n";
+
                 return crow::response(200, jsonResponse);
             }
             else {
@@ -106,20 +105,20 @@ void StartServer(Game& game) {
                 jsonResponse["status"] = "register";
                 jsonResponse["userId"] = userId;
                 game.GetEntityManager().AddPlayer(userId, username, game.GetMap());
+
                 return crow::response(200, jsonResponse);
             }
             });
         });
 
-
-    // GET registerRoom
     CROW_ROUTE(serverApp, "/registerRoom").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
         return handleRequest([&game, &req]() {
             std::string code = game.GenerateRoomCode();
 
             auto map = std::make_unique<GameMap>();
 
-            if (!game.GetRoomManager().CreateRoom(code, std::move(map))) {
+            if (!game.GetRoomManager().CreateRoom(code, std::move(map))) 
+            {
                 return crow::response(500, "Error creating room.");
             }
 
@@ -140,14 +139,12 @@ void StartServer(Game& game) {
             });
         });
 
-
-    // POST joinRoom
     CROW_ROUTE(serverApp, "/joinRoom").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
         try {
             auto jsonBody = crow::json::load(req.body);
-            std::cout << "Received payload: " << req.body << std::endl;
 
-            if (!jsonBody.has("code") || !jsonBody.has("playerId")) {
+            if (!jsonBody.has("code") || !jsonBody.has("playerId")) 
+            {
                 std::cerr << "Invalid JSON payload: Missing 'code' or 'playerId'." << std::endl;
                 return crow::response(400, "Invalid JSON payload. Expected 'code' and 'playerId'.");
             }
@@ -157,8 +154,8 @@ void StartServer(Game& game) {
 
             auto result = game.JoinRoom(code, playerId);
 
-            if (!result.has_value()) {
-
+            if (!result.has_value()) 
+            {
                 game.GetDatabase().UpdateDataByRoomCode(playerId, code);
 
                 crow::json::wvalue response;
@@ -176,9 +173,9 @@ void StartServer(Game& game) {
         }
         });
 
-    // POST leaveRoom
     CROW_ROUTE(serverApp, "/leaveRoom").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
         return handleRequest([&game, &req]() {
+
             auto jsonBody = crow::json::load(req.body);
             if (!jsonBody || !jsonBody.has("code") || !jsonBody.has("playerName"))
                 return crow::response(400, "Invalid JSON payload. Expected 'code' and 'playerName' fields.");
@@ -195,16 +192,18 @@ void StartServer(Game& game) {
             });
         });
 
-    // GET roomStatus
     CROW_ROUTE(serverApp, "/roomStatus").methods(crow::HTTPMethod::GET)([&game](const crow::request& req) {
         return handleRequest([&game, &req]() {
+
             auto params = req.url_params;
             if (!params.get("code"))
                 return crow::response(400, "Missing 'code' parameter.");
 
             std::string roomCode = params.get("code");
             auto room = game.GetRoom(roomCode);
-            if (room) {
+
+            if (room) 
+            {
                 crow::json::wvalue response;
                 response["roomCode"] = room->GetCode();
                 response["capacity"] = room->GetCapacity();
@@ -216,11 +215,11 @@ void StartServer(Game& game) {
             });
         });
 
-    // POST move
     CROW_ROUTE(serverApp, "/move").methods(crow::HTTPMethod::POST)([&game](const crow::request& req) {
         try {
             auto jsonBody = crow::json::load(req.body);
-            if (!jsonBody || !jsonBody.has("playerId") || !jsonBody.has("direction")) {
+            if (!jsonBody || !jsonBody.has("playerId") || !jsonBody.has("direction")) 
+            {
                 return crow::response(400, "Invalid JSON payload. Expected 'playerId' and 'direction'.");
             }
 
@@ -237,7 +236,8 @@ void StartServer(Game& game) {
             auto& players = game.GetEntityManager().GetPlayersMutable();
             auto it = players.find(playerId);
 
-            if (it == players.end()) {
+            if (it == players.end()) 
+            {
                 return crow::response(404, "Player not found.");
             }
 
@@ -245,11 +245,7 @@ void StartServer(Game& game) {
 
             it->second.MoveCharacter(moveDirection, game.GetMap());
             Point newPosition = it->second.GetPosition();
-            /*
-            std::cout << "Player " << std::to_string(playerId) << " moved from ("
-                << std::to_string(currentPosition.GetX()) << ", " << std::to_string(currentPosition.GetY()) << ") to ("
-                << std::to_string(newPosition.GetX()) << ", " << std::to_string(newPosition.GetY()) << ")" << std::endl;
-            */
+            
             crow::json::wvalue response;
             response["status"] = "success";
             response["currentPosition"] = { {"x", currentPosition.GetX()}, {"y", currentPosition.GetY()} };
@@ -265,7 +261,8 @@ void StartServer(Game& game) {
     CROW_ROUTE(serverApp, "/getPlayerScore").methods(crow::HTTPMethod::GET)([&game](const crow::request& req) {
         try {
             auto params = req.url_params;
-            if (!params.get("playerId")) {
+            if (!params.get("playerId")) 
+            {
                 return crow::response(400, "Missing 'playerId' parameter.");
             }
 
@@ -274,7 +271,8 @@ void StartServer(Game& game) {
             auto& db = game.GetDatabase();
             auto playerData = db.GetPlayerDataById(playerId);
 
-            if (!playerData) {
+            if (!playerData) 
+            {
                 return crow::response(404, "Player not found.");
             }
 
@@ -324,8 +322,7 @@ void StartServer(Game& game) {
                 enemyData["id"] = enemyPair.first;
                 enemyData["x"] = enemyPair.second.GetPosition().GetX();
                 enemyData["y"] = enemyPair.second.GetPosition().GetY();
-                //std::cout << "\nData sent to client: " << enemyPair.first << " " << static_cast<int>(enemyPair.second.GetPosition().GetX()) << " "<< static_cast<int>(enemyPair.second.GetPosition().GetY()) << '\n';
-
+                
                 enemyList.push_back(enemyData);
             }
 
@@ -362,7 +359,8 @@ void StartServer(Game& game) {
             response["bombCount"] = updatedBombPositions.size();
 
             crow::json::wvalue::list bombList;
-            for (size_t i = 0; i < updatedBombPositions.size(); ++i) {
+            for (size_t i = 0; i < updatedBombPositions.size(); ++i) 
+            {
                 const auto& bombPosition = updatedBombPositions[i];
 
                 crow::json::wvalue bombData;
@@ -389,10 +387,11 @@ void StartServer(Game& game) {
             auto positions = game.GetEntityManager().GetAllPlayerPositions();
             crow::json::wvalue::list positionList;
 
-            for (const auto& [position, name] : positions) {
+            for (const auto& [position, name] : positions) 
+            {
                 uint8_t playerId = game.GetDatabase().GetUserId(name);
                 crow::json::wvalue playerJson;
-                playerJson["id"] = playerId; // Folosește ID-ul
+                playerJson["id"] = playerId; 
                 playerJson["position"] = { {"x", position.GetX()}, {"y", position.GetY()} };
                 positionList.push_back(playerJson);
             }
@@ -411,7 +410,8 @@ void StartServer(Game& game) {
             try {
                 auto queryParams = crow::query_string(req.url_params);
                 const char* playerIdParam = queryParams.get("playerId");
-                if (!playerIdParam) {
+                if (!playerIdParam) 
+                {
                     return crow::response(400, "Missing 'playerId' query parameter.");
                 }
 
@@ -428,9 +428,11 @@ void StartServer(Game& game) {
                 response["status"] = "success";
                 crow::json::wvalue::list playerStates;
 
-                for (uint8_t id : playersFromDB) {
+                for (uint8_t id : playersFromDB) 
+                {
                     auto it = players.find(id);
-                    if (it != players.end()) {
+                    if (it != players.end()) 
+                    {
                         const Player& player = it->second;
                         playerStates.push_back({
                             {"id", id},
@@ -462,7 +464,6 @@ void StartServer(Game& game) {
                         {"id", enemyPair.first},
                         {"position", {{"x", enemyPair.second.GetPosition().GetX()}, {"y", enemyPair.second.GetPosition().GetY()}}}
                         });
-                    std::cout << "\nData sent to client: " << enemyPair.first << " " << static_cast<int>(enemyPair.second.GetPosition().GetX()) << " " << static_cast<int>(enemyPair.second.GetPosition().GetY()) << '\n';
                 }
 
                 response["enemies"] = std::move(enemyStates);
@@ -478,7 +479,8 @@ void StartServer(Game& game) {
             try {
                 // Parse JSON body
                 auto jsonBody = crow::json::load(req.body);
-                if (!jsonBody || !jsonBody.has("playerId") || !jsonBody.has("position") || !jsonBody.has("direction")) {
+                if (!jsonBody || !jsonBody.has("playerId") || !jsonBody.has("position") || !jsonBody.has("direction")) 
+                {
                     return crow::response(400, "Invalid JSON payload. Expected 'playerId', 'position', and 'direction'.");
                 }
 
@@ -488,44 +490,44 @@ void StartServer(Game& game) {
 
                 Bullet bullet(bulletPos, bulletDir);
 
-                // Check for initial collision
                 Point hitPos;
                 bool isPlayerHit = false;
                 bool isEnemyHit = false;
                 bool collision = game.CheckBulletCollision(bullet, hitPos, isPlayerHit, isEnemyHit);
 
-                // Integrate with EntityManager's HandleCollisions
                 game.GetEntityManager().AddPlayerBullet(bullet, playerId);
-                //std::cout << "Calling HandleCollisions...\n";
 
-                // Call HandleCollisions to process the collision and update the game state
                 game.GetEntityManager().HandleCollisions(game.GetMap());
 
-                // Build response
                 crow::json::wvalue response;
                 response["status"] = "success";
                 response["collision"] = collision;
                 response["hitPosition"] = { {"x", hitPos.GetX()}, {"y", hitPos.GetY()} };
 
-                if (collision) {
-                    if (isPlayerHit) {
+                if (collision) 
+                {
+                    if (isPlayerHit) 
+                    {
                         response["hitObject"] = "player";
                     }
-                    else if (isEnemyHit) {
+                    else if (isEnemyHit) 
+                    {
                         response["hitObject"] = "enemy";
                     }
                     else {
-                        // Determine if the hit was a wall
                         CellType cellType = game.GetMap().GetMap()[hitPos.GetX()][hitPos.GetY()];
-                        if (cellType == CellType::BREAKABLE_WALL || cellType == CellType::UNBREAKABLE_WALL) {
+                        if (cellType == CellType::BREAKABLE_WALL || cellType == CellType::UNBREAKABLE_WALL) 
+                        {
                             response["hitObject"] = "wall";
                         }
-                        else {
+                        else 
+                        {
                             response["hitObject"] = "unknown";
                         }
                     }
                 }
-                else {
+                else 
+                {
                     response["hitObject"] = "none";
                 }
 
@@ -555,7 +557,8 @@ void StartServer(Game& game) {
     CROW_ROUTE(serverApp, "/getBullets").methods(crow::HTTPMethod::GET)(
         [&game](const crow::request& req) {
             try {
-                if (!req.url_params.get("playerId")) {
+                if (!req.url_params.get("playerId")) 
+                {
                     return crow::response(400, "Missing 'playerId' parameter.");
                 }
 
@@ -594,9 +597,6 @@ void StartServer(Game& game) {
                 return crow::response(500, std::string("Server error: ") + e.what());
             }
         });
-
-
-
 
     serverApp.port(8080).multithreaded().run();
 }

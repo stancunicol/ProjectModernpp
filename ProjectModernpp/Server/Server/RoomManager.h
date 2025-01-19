@@ -5,7 +5,8 @@
 #include "Room.h"
 #include "GameMap.h"
 
-class RoomManager {
+class RoomManager 
+{
 private:
 	std::unordered_map <std::string, Room*> m_rooms;
 

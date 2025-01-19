@@ -1,8 +1,7 @@
 import Bomb;
 
 Bomb::Bomb(const Point& position)
-    : m_position{ position }, m_active{ false } {
-}
+    : m_position{ position }, m_active{ false } {}
 
 bool Bomb::IsActive() const
 {
