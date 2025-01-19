@@ -14,6 +14,13 @@ struct Bullet {
     Point position;  // Current position of the bullet
     Point direction; // Direction of movement
     bool active;     // Whether the bullet is still active or has been deactivated (e.g., due to a collision)
+
+    Bullet(const Point& pos, const Point& dir, bool isActive)
+        : position(pos), direction(dir), active(isActive) {}
+
+    bool operator==(const Bullet& other) const {
+        return position == other.position && direction == other.direction && active == other.active;
+    }
 };
 
 class GameMapInterface : public QMainWindow
@@ -32,6 +39,7 @@ public:
     void updateBullets();
     void updateBombs();
     void checkBaseState();
+    void updateEnemiesBullets();
 private:
     ServerUtils m_serverObject;
     std::pair<int, int> basePosition;

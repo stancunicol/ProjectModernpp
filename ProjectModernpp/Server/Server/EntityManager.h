@@ -51,6 +51,7 @@ public:
     void HandleCollisions(GameMap& map);
     void UpdateEntities(GameMap& map, float deltaTime);   // Updates the positions and states of all entities
 
+    std::unordered_map<uint8_t, std::vector<Bullet>>& GetPlayersBullets() { return m_playersBullets; }
     const std::unordered_map<uint8_t, Player>& GetPlayers() const;
     const std::unordered_map<int, Enemy>& GetEnemies() const;
     const std::vector<Bullet>& GetBullets() const;
@@ -72,6 +73,7 @@ public:
 
     void ResetPlayers(GameMap& map);
     void ResetBombs();
+    void ResetBullets();
 
     void CloseRoom(const std::string& roomCode);
 

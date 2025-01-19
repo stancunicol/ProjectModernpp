@@ -24,6 +24,9 @@ struct Point {
     int m_x, m_y;
 
     Point(int x, int y) : m_x(x), m_y(y) {}
+    bool operator==(const Point& other) const {
+        return m_x == other.m_x && m_y == other.m_y;
+    }
 };
 
 struct BulletResponse {

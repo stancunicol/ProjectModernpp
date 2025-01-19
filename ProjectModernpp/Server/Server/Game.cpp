@@ -37,6 +37,7 @@ void Game::InitializeGame() {
     int enemiesToPlace = 1 + m_map.GetLevel();
     int id = 1;
 
+    m_entityManager.ResetBullets();
     while (enemiesToPlace > 0) {
         Enemy enemy(m_map);
         enemy.PlaceCharacter(m_map);

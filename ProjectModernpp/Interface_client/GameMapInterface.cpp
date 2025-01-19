@@ -1,5 +1,6 @@
 ﻿#include "GameMapInterface.h"
 #include "ServerUtils.h"
+#include <unordered_set>
 
 struct Enemy;
 struct Point;
@@ -21,7 +22,7 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     connect(fetchTimerEnemy, &QTimer::timeout, this, &GameMapInterface::updateEnemies);
     connect(scoreUpdateTimer, &QTimer::timeout, this, &GameMapInterface::updatePlayerScores);
     //fetchTimerPlayer->start(1000);
-    fetchTimerEnemy->start(1000);
+    fetchTimerEnemy->start(4000);
     scoreUpdateTimer->start(1000);
 
     QTimer* bulletUpdateTimer = new QTimer(this);
@@ -39,6 +40,10 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     QTimer* baseCheckTimer = new QTimer(this);
     connect(baseCheckTimer, &QTimer::timeout, this, &GameMapInterface::checkBaseState);
     baseCheckTimer->start(1000);
+
+    QTimer* bulletsUpdateTimer = new QTimer(this);
+    connect(bulletsUpdateTimer, &QTimer::timeout, this, &GameMapInterface::updateEnemiesBullets);
+    bulletsUpdateTimer->start(5000);
 
     m_serverObject.GetMapFromServer();
     matrix = m_serverObject.GetMap();
@@ -557,4 +562,69 @@ void GameMapInterface::checkBaseState()
     else {
         qDebug() << "[INFO] Base is safe.";
     }
+}
+
+void GameMapInterface::updateEnemiesBullets() {
+    std::string url = "http://localhost:8080/getBullets?playerId=" + std::to_string(m_serverObject.GetUserId());
+    std::string response = m_serverObject.GetServerData(url);
+
+    if (response.empty()) {
+        qWarning() << "[ERROR] Failed to fetch bullets. Server returned an empty response.";
+        return;
+    }
+
+    try {
+        auto jsonResponse = nlohmann::json::parse(response);
+
+        if (jsonResponse.contains("bullets") && jsonResponse["bullets"].is_array()) {
+            std::unordered_set<std::string> uniqueBulletIds;
+            std::vector<Bullet> newBullets;
+
+            for (const auto& bullet : jsonResponse["bullets"]) {
+                if (!bullet.contains("position") || !bullet.contains("direction")) {
+                    qWarning() << "[WARNING] Invalid bullet structure received. Skipping.";
+                    continue;
+                }
+
+                int x = bullet["position"]["x"];
+                int y = bullet["position"]["y"];
+                int dx = bullet["direction"]["x"];
+                int dy = bullet["direction"]["y"];
+
+                if (y >= 0 && y < width && x >= 0 && x < height && (dx != 0 || dy != 0)) {
+                    Bullet newBullet(Point(x, y), Point(dx, dy), true);
+
+                    // Check for duplicates
+                    std::string bulletKey = std::to_string(x) + "_" + std::to_string(y) + "_" + std::to_string(dx) + "_" + std::to_string(dy);
+                    if (uniqueBulletIds.find(bulletKey) == uniqueBulletIds.end()) {
+                        uniqueBulletIds.insert(bulletKey);
+                        newBullets.emplace_back(newBullet);
+                    }
+                }
+                else {
+                    qWarning() << "[WARNING] Bullet out of bounds or invalid direction at position (" << x << ", " << y << "). Ignored.";
+                }
+            }
+
+            if (newBullets != activeBullets) {
+                activeBullets = std::move(newBullets);
+                qDebug() << "[INFO] Bullets updated. Total active bullets: " << activeBullets.size();
+            }
+        }
+        else {
+            qWarning() << "[ERROR] Invalid bullets data received. 'bullets' field missing or not an array.";
+        }
+    }
+    catch (const std::exception& e) {
+        qWarning() << "[ERROR] Exception while parsing bullets data: " << e.what();
+    }
+
+    activeBullets.erase(std::remove_if(activeBullets.begin(), activeBullets.end(),
+        [this](const Bullet& bullet) {
+            return !bullet.active || bullet.position.m_x < 0 || bullet.position.m_x >= height ||
+                bullet.position.m_y < 0 || bullet.position.m_y >= width;
+        }),
+        activeBullets.end());
+
+    update();
 }

@@ -474,6 +474,11 @@ void EntityManager::ResetBombs()
     m_bombs.clear();
 }
 
+void EntityManager::ResetBullets()
+{
+    m_bullets.clear();
+}
+
 void EntityManager::CloseRoom(const std::string& roomCode) {
     for (auto& [playerId, player] : m_players) {
         player.Deactivate();
@@ -489,5 +494,14 @@ void EntityManager::CloseRoom(const std::string& roomCode) {
 void EntityManager::UpdateEnemyPositions(GameMap& map) {
     for (auto& enemy : m_enemies) {
         enemy.second.MoveRandom(map);
+        enemy.second.MoveRandom(map);
+        if (rand() % 5 == 0) {
+            Point shootDirection = enemy.second.GetShootDirection();
+            if (shootDirection != Point(0, 0)) {
+                Bullet newBullet(enemy.second.GetPosition(), shootDirection);
+                newBullet.SetActive(true);
+                AddBullet(newBullet);
+            }
+        }
     }
 }

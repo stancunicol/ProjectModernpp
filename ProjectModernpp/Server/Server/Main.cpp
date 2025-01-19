@@ -552,6 +552,50 @@ void StartServer(Game& game) {
             }
         });
 
+    CROW_ROUTE(serverApp, "/getBullets").methods(crow::HTTPMethod::GET)(
+        [&game](const crow::request& req) {
+            try {
+                if (!req.url_params.get("playerId")) {
+                    return crow::response(400, "Missing 'playerId' parameter.");
+                }
+
+                int excludePlayerId = std::stoi(req.url_params.get("playerId"));
+
+                auto& entityManager = game.GetEntityManager();
+                auto& enemyBullets = entityManager.GetBullets();
+                auto& playerBulletsMap = entityManager.GetPlayersBullets();
+
+                crow::json::wvalue response;
+                response["status"] = "success";
+                crow::json::wvalue::list bulletList;
+
+                for (const Bullet& bullet : enemyBullets) {
+                    bulletList.push_back({
+                        {"position", {{"x", bullet.GetPosition().GetX()}, {"y", bullet.GetPosition().GetY()}}},
+                        {"direction", {{"x", bullet.GetDirection().GetX()}, {"y", bullet.GetDirection().GetY()}}}
+                        });
+                }
+
+                for (const auto& [playerId, bullets] : playerBulletsMap) {
+                    if (playerId == excludePlayerId) continue;
+
+                    for (const Bullet& bullet : bullets) {
+                        bulletList.push_back({
+                            {"position", {{"x", bullet.GetPosition().GetX()}, {"y", bullet.GetPosition().GetY()}}},
+                            {"direction", {{"x", bullet.GetDirection().GetX()}, {"y", bullet.GetDirection().GetY()}}}
+                            });
+                    }
+                }
+
+                response["bullets"] = std::move(bulletList);
+                return crow::response(200, response);
+            }
+            catch (const std::exception& e) {
+                return crow::response(500, std::string("Server error: ") + e.what());
+            }
+        });
+
+
 
 
     serverApp.port(8080).multithreaded().run();
