@@ -94,6 +94,15 @@ GameMapInterface::GameMapInterface(QWidget* parent)
         qWarning() << "[WARNING] Player position not found. Ensure server returned correct data.";
         player1Position = QPoint(-1, -1);
     }
+
+    bool baseState = m_serverObject.GetBaseState();
+    if (baseState) {
+        qDebug() << "[INFO] Base is intact.";
+    }
+    else {
+        qDebug() << "[INFO] Base is destroyed.";
+    }
+
     loadControls();
     update();
 }

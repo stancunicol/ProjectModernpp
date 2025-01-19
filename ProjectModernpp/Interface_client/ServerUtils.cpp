@@ -823,19 +823,25 @@ bool ServerUtils::GetBaseState() {
 
     if (response.empty()) {
         qDebug() << "No data received for base state.";
-        return false; // Default to destroyed if no response
+        return false; 
     }
 
     try {
         auto jsonResponse = nlohmann::json::parse(response);
 
         if (jsonResponse.contains("status") && jsonResponse["status"] == "success") {
-            bool baseExists = jsonResponse["baseExists"].get<bool>();
-            qDebug() << "Base state fetched successfully. Exists:" << baseExists;
-            return baseExists;
+            if (jsonResponse.contains("baseState")) {
+                std::string baseState = jsonResponse["baseState"].get<std::string>();
+                bool isIntact = (baseState == "intact");
+                qDebug() << "Base state fetched successfully. Intact:" << isIntact;
+                return isIntact;
+            }
+            else {
+                qDebug() << "JSON response missing 'baseState' field.";
+            }
         }
         else {
-            qDebug() << "Invalid JSON structure or missing 'baseExists' field.";
+            qDebug() << "Invalid JSON structure or status.";
         }
     }
     catch (const std::exception& e) {
@@ -844,3 +850,4 @@ bool ServerUtils::GetBaseState() {
 
     return false; // Default to destroyed in case of error
 }
+

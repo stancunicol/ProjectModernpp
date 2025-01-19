@@ -539,16 +539,11 @@ void StartServer(Game& game) {
     CROW_ROUTE(serverApp, "/getBaseState").methods(crow::HTTPMethod::GET)(
         [&game](const crow::request& req) {
             try {
-                // Get the base information from the game
                 const auto& base = game.GetEntityManager().GetBase();
 
                 crow::json::wvalue response;
                 response["status"] = "success";
-                response["base"] = {
-                    {"life", base.GetLife()},
-                    {"position", {{"x", base.GetPosition().GetX()}, {"y", base.GetPosition().GetY()}}},
-                    {"state", base.GetLife() > 0 ? "active" : "destroyed"}
-                };
+                response["baseState"] = base.GetLife() > 0 ? "intact" : "destroyed";
 
                 return crow::response(200, response);
             }
