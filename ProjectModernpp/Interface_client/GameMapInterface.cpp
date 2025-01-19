@@ -36,6 +36,9 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     connect(bombUpdateTimer, &QTimer::timeout, this, &GameMapInterface::updateBombs);
     bombUpdateTimer->start(1000);
 
+    /*QTimer* baseCheckTimer = new QTimer(this);
+    connect(baseCheckTimer, &QTimer::timeout, this, &GameMapInterface::checkBaseState);
+    baseCheckTimer->start(1000); */
 
     m_serverObject.GetMapFromServer();
     matrix = m_serverObject.GetMap();
@@ -121,18 +124,22 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
     case Qt::Key_Up:
         direction = QPoint(0, -1); 
         dirString = "up";
+        m_shootDirection = QPoint(-1, 0);
         break;
     case Qt::Key_Down:
         direction = QPoint(0, 1);  
         dirString = "down";
+        m_shootDirection = QPoint(1, 0);
         break;
     case Qt::Key_Left:
         direction = QPoint(-1, 0); 
         dirString = "left";
+        m_shootDirection = QPoint(0, -1);
         break;
     case Qt::Key_Right:
         direction = QPoint(1, 0);  
         dirString = "right";
+        m_shootDirection = QPoint(0, 1);
         break;
     case Qt::Key_Space:
         fireBullet();
@@ -143,21 +150,25 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
     {
         direction = QPoint(0, -1); 
         dirString = "up";
+        m_shootDirection = QPoint(-1, 0);
     }
     else if (event->key() == QKeySequence(m_downKey).toString().at(0).unicode())
     {
         direction = QPoint(0, 1);  
         dirString = "down";
+        m_shootDirection = QPoint(1, 0);
     }
     else if (event->key() == QKeySequence(m_leftKey).toString().at(0).unicode())
     {
         direction = QPoint(-1, 0); 
         dirString = "left";
+        m_shootDirection = QPoint(0, -1);
     }
     else if (event->key() == QKeySequence(m_rightKey).toString().at(0).unicode())
     {
         direction = QPoint(1, 0);  
         dirString = "right";
+        m_shootDirection = QPoint(0, 1);
     }
     else if(event->key() == QKeySequence(m_fireKey).toString().at(0).unicode())
     {
@@ -427,7 +438,7 @@ void GameMapInterface::fireBullet()
     Point bulletPosition(player1Position.y(), player1Position.x());
     Point bulletDirection(m_currentDirection.y(), m_currentDirection.x());
 
-    auto result = m_serverObject.FireBullet({ player1Position.y(), player1Position.x() }, { m_currentDirection.x(), m_currentDirection.y() });
+    auto result = m_serverObject.FireBullet({ player1Position.y(), player1Position.x() }, { m_shootDirection.x(), m_shootDirection.y() });
     if (result.success)
     {
         qDebug() << "[INFO] Bullet fired!";

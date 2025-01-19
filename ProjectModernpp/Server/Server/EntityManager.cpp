@@ -161,16 +161,13 @@ void EntityManager::ExplodeBomb(const Bomb& bomb, GameMap& map) {
 
 void EntityManager::UpdateEntities(GameMap& map, float deltaTime)
 {
-    map.ClearDynamicEntities();
-
-    for (auto& [playerId, player] : m_players) {
+    /*for (auto& [playerId, player] : m_players) {
         if (player.IsActive()) {
             player.MoveCharacter(player.GetDirection(), map);
         }
     }
-
     for (auto& [id, enemy] : m_enemies) {
-        enemy.MoveRandom(map);
+        //enemy.MoveRandom(map);
 
         if (id < m_enemyShootTimers.size()) {
             m_enemyShootTimers[id] += deltaTime;
@@ -192,7 +189,7 @@ void EntityManager::UpdateEntities(GameMap& map, float deltaTime)
             m_enemyShootTimers[id] = 0.0f;
         }
     }
-
+    */
     // Actualizăm gloanțele fiecărui jucător
     for (auto& [playerId, bullets] : m_playersBullets) {
         for (Bullet& bullet : bullets) {
@@ -218,50 +215,100 @@ void EntityManager::UpdateEntities(GameMap& map, float deltaTime)
     }
 }
 
-void EntityManager::HandleCollisions(GameMap& map)
-{
-    // Coliziuni gloanțe player - inamici
+void EntityManager::HandleCollisions(GameMap& map) {
     for (auto& [playerId, bullets] : m_playersBullets) {
-        for (size_t bulletIndex = 0; bulletIndex < bullets.size(); ++bulletIndex) {
+        for (size_t bulletIndex = 0; bulletIndex < bullets.size();) {
             Bullet& bullet = bullets[bulletIndex];
-            if (!bullet.IsActive()) continue;
 
-            // Coliziuni cu inamici
-            for (size_t enemyIndex = 0; enemyIndex < m_enemies.size(); ++enemyIndex) {
-                if (bullet.GetPosition() == m_enemies[enemyIndex].GetPosition()) {
+            if (!bullet.IsActive()) {
+                ++bulletIndex;
+                continue;
+            }
+
+            Point currentPosition = bullet.GetPosition();
+            Point direction = bullet.GetDirection();
+
+            // Traverse the bullet's path
+            while (true) {
+                currentPosition = currentPosition + direction;
+
+                // Check if out of bounds
+                if (currentPosition.GetX() < 0 || currentPosition.GetX() >= map.GetHeight() ||
+                    currentPosition.GetY() < 0 || currentPosition.GetY() >= map.GetWidth()) {
                     bullet.SetActive(false);
-                    m_enemies[enemyIndex].SetLives(m_enemies[enemyIndex].GetLives() - 1);
+                    break;
+                }
 
-                    if (m_enemies[enemyIndex].GetLives() == 0) {
-                        RemoveEnemy(enemyIndex);
-                        m_players[playerId].SetPoints(100);
+                // Get cell type at current position
+                CellType cell = map.GetMap()[currentPosition.GetX()][currentPosition.GetY()];
+
+                // Handle breakable wall collision
+                if (cell == CellType::BREAKABLE_WALL) {
+                    bullet.SetActive(false);
+                    map.SetStaticCell(currentPosition.GetX(), currentPosition.GetY(), CellType::EMPTY);
+                    break;
+                }
+
+                // Handle unbreakable wall collision
+                if (cell == CellType::UNBREAKABLE_WALL) {
+                    bullet.SetActive(false);
+                    break;
+                }
+
+                // Handle collisions with enemies
+                for (size_t enemyIndex = 0; enemyIndex < m_enemies.size(); ++enemyIndex) {
+                    if (currentPosition == m_enemies[enemyIndex].GetPosition()) {
+                        bullet.SetActive(false);
+                        m_enemies[enemyIndex].SetLives(m_enemies[enemyIndex].GetLives() - 1);
+
+                        if (m_enemies[enemyIndex].GetLives() == 0) {
+                            RemoveEnemy(enemyIndex);
+                            m_players[playerId].SetPoints(100);
+                            m_players[playerId].SetScore();
+                            m_database.UpdateGameData(m_players[playerId].GetName(), m_players[playerId].GetScore());
+                        }
+                        break;
+                    }
+                }
+
+                // Handle collisions with the base
+                if (currentPosition == m_base.GetPosition()) {
+                    bullet.SetActive(false);
+                    m_base.TakeHit();
+
+                    if (m_base.GetLife() == 0) {
+                        std::cout << "BAZA A FOST DISTRUSA\n\n";
+
+                        m_players[playerId].SetPoints(500);
                         m_players[playerId].SetScore();
                         m_database.UpdateGameData(m_players[playerId].GetName(), m_players[playerId].GetScore());
+                        m_winner = m_players[playerId].GetName();
                     }
                     break;
                 }
+
+                // If no collision occurred, update the bullet's position
+                bullet.SetPosition(currentPosition);
             }
 
-            // Coliziuni cu baza
-            if ((bullet.GetPosition() + bullet.GetDirection()) == m_base.GetPosition()) {
-                bullet.SetActive(false);
-                m_base.TakeHit();
-                if (m_base.GetLife() == 0) {
-                    m_players[playerId].SetPoints(500);
-                    m_players[playerId].SetScore();
-                    m_database.UpdateGameData(m_players[playerId].GetName(), m_players[playerId].GetScore());
-                    m_winner = m_players[playerId].GetName();
-                }
-                break;
+            // If the bullet is inactive, remove it
+            if (!bullet.IsActive()) {
+                bullets.erase(bullets.begin() + bulletIndex);
+            }
+            else {
+                ++bulletIndex;
             }
         }
     }
 
-    // Coliziuni gloanțe player - gloanțe inamici
+    // Handle player bullets vs enemy bullets
     for (auto& [playerId, playerBullets] : m_playersBullets) {
-        for (size_t i = 0; i < playerBullets.size(); ++i) {
+        for (size_t i = 0; i < playerBullets.size();) {
             Bullet& playerBullet = playerBullets[i];
-            if (!playerBullet.IsActive()) continue;
+            if (!playerBullet.IsActive()) {
+                ++i;
+                continue;
+            }
 
             for (Bullet& enemyBullet : m_bullets) {
                 if (!enemyBullet.IsActive()) continue;
@@ -272,10 +319,17 @@ void EntityManager::HandleCollisions(GameMap& map)
                     break;
                 }
             }
+
+            if (!playerBullet.IsActive()) {
+                playerBullets.erase(playerBullets.begin() + i);
+            }
+            else {
+                ++i;
+            }
         }
     }
 
-    // Coliziuni gloanțe player - alt player
+    // Handle player bullets vs other players
     for (auto& [playerId, bullets] : m_playersBullets) {
         for (Bullet& bullet : bullets) {
             if (!bullet.IsActive()) continue;
@@ -286,6 +340,7 @@ void EntityManager::HandleCollisions(GameMap& map)
                 if (bullet.GetPosition() == otherPlayer.GetPosition()) {
                     bullet.SetActive(false);
                     otherPlayer.SetLives(otherPlayer.GetLives() - 1);
+
                     if (otherPlayer.GetLives() <= 0) {
                         RemovePlayer(otherPlayerId);
                     }
@@ -295,43 +350,31 @@ void EntityManager::HandleCollisions(GameMap& map)
         }
     }
 
-    // Coliziuni gloanțe inamici - jucători
-    for (size_t bulletIndex = 0; bulletIndex < m_bullets.size(); ++bulletIndex) {
+    // Handle enemy bullets vs players
+    for (size_t bulletIndex = 0; bulletIndex < m_bullets.size();) {
         Bullet& bullet = m_bullets[bulletIndex];
-        if (!bullet.IsActive()) continue;
+        if (!bullet.IsActive()) {
+            ++bulletIndex;
+            continue;
+        }
 
-        // Coliziuni cu jucători
-        for (size_t playerIndex = 0; playerIndex < m_players.size(); ++playerIndex) {
-            if (bullet.GetPosition() == m_players[playerIndex].GetPosition()) {
+        for (auto& [playerId, player] : m_players) {
+            if (bullet.GetPosition() == player.GetPosition()) {
                 bullet.SetActive(false);
-                m_players[playerIndex].SetLives(m_players[playerIndex].GetLives() - 1);
+                player.SetLives(player.GetLives() - 1);
 
-                if (m_players[playerIndex].GetLives() == 0) {
-                    RemovePlayer(playerIndex);
+                if (player.GetLives() <= 0) {
+                    RemovePlayer(playerId);
                 }
                 break;
             }
         }
 
-        // Coliziuni cu baza
-        if ((bullet.GetPosition() + bullet.GetDirection()) == m_base.GetPosition()) {
-            bullet.SetActive(false);
-            m_base.TakeHit();
-            if (m_base.GetLife() == 0) {
-                m_winner = "Enemy";
-            }
-            break;
+        if (!bullet.IsActive()) {
+            m_bullets.erase(m_bullets.begin() + bulletIndex);
         }
-    }
-
-    // Coliziuni gloanțe - blocuri distrugibile
-    for (auto& bullet : m_bullets) {
-        if (!bullet.IsActive()) continue;
-
-        Point pos = bullet.GetPosition() + bullet.GetDirection();
-        if (map.GetMap()[pos.GetX()][pos.GetY()] == CellType::BREAKABLE_WALL) {
-            bullet.SetActive(false);
-            map.SetStaticCell(pos.GetX(), pos.GetY(), CellType::EMPTY);
+        else {
+            ++bulletIndex;
         }
     }
 }
@@ -425,6 +468,7 @@ void EntityManager::ResetPlayers(GameMap& map)
 
 void EntityManager::ResetBombs()
 {
+    m_bombs.clear();
 }
 
 void EntityManager::CloseRoom(const std::string& roomCode) {

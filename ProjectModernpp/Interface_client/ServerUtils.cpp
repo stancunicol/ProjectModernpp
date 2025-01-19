@@ -707,6 +707,8 @@ BulletResponse ServerUtils::FireBullet(const Point& bulletPosition, const Point&
 
     // Creăm obiectul JSON pentru trimiterea datelor
     nlohmann::json jsonRequest;
+
+    jsonRequest["playerId"] = GetUserId();
     jsonRequest["position"] = { {"x", bulletPosition.m_x}, {"y", bulletPosition.m_y} };
     jsonRequest["direction"] = { {"x", bulletDirection.m_x}, {"y", bulletDirection.m_y} };
 
@@ -812,4 +814,33 @@ std::string ServerUtils::GetServerBulletData(const std::string& url, const std::
 
     curl_global_cleanup();
     return response;
+}
+
+bool ServerUtils::GetBaseState() {
+    std::string url = "http://localhost:8080/getBaseState";
+
+    std::string response = GetServerData(url);
+
+    if (response.empty()) {
+        qDebug() << "No data received for base state.";
+        return false; // Default to destroyed if no response
+    }
+
+    try {
+        auto jsonResponse = nlohmann::json::parse(response);
+
+        if (jsonResponse.contains("status") && jsonResponse["status"] == "success") {
+            bool baseExists = jsonResponse["baseExists"].get<bool>();
+            qDebug() << "Base state fetched successfully. Exists:" << baseExists;
+            return baseExists;
+        }
+        else {
+            qDebug() << "Invalid JSON structure or missing 'baseExists' field.";
+        }
+    }
+    catch (const std::exception& e) {
+        qDebug() << "Error parsing base state data: " << e.what();
+    }
+
+    return false; // Default to destroyed in case of error
 }

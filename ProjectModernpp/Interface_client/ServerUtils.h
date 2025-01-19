@@ -91,5 +91,6 @@ public:
     BulletResponse FireBullet(const Point& bulletPosition, const Point& bulletDirection);
 
     std::string GetServerBulletData(const std::string& url, const std::string& postData);
+    bool GetBaseState();
 };
 

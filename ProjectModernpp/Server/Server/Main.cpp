@@ -476,25 +476,37 @@ void StartServer(Game& game) {
     CROW_ROUTE(serverApp, "/fireBullet").methods(crow::HTTPMethod::POST)(
         [&game](const crow::request& req) {
             try {
+                // Parse JSON body
                 auto jsonBody = crow::json::load(req.body);
-                //int shooterId = jsonBody["shooterId"].i();
+                if (!jsonBody || !jsonBody.has("playerId") || !jsonBody.has("position") || !jsonBody.has("direction")) {
+                    return crow::response(400, "Invalid JSON payload. Expected 'playerId', 'position', and 'direction'.");
+                }
+
+                uint8_t playerId = jsonBody["playerId"].i();
                 Point bulletPos(jsonBody["position"]["x"].i(), jsonBody["position"]["y"].i());
                 Point bulletDir(jsonBody["direction"]["x"].i(), jsonBody["direction"]["y"].i());
 
                 Bullet bullet(bulletPos, bulletDir);
 
-                // Verificăm coliziunile pentru glonț
+                // Check for initial collision
                 Point hitPos;
                 bool isPlayerHit = false;
                 bool isEnemyHit = false;
                 bool collision = game.CheckBulletCollision(bullet, hitPos, isPlayerHit, isEnemyHit);
 
+                // Integrate with EntityManager's HandleCollisions
+                game.GetEntityManager().AddPlayerBullet(bullet, playerId);
+                //std::cout << "Calling HandleCollisions...\n";
+
+                // Call HandleCollisions to process the collision and update the game state
+                game.GetEntityManager().HandleCollisions(game.GetMap());
+
+                // Build response
                 crow::json::wvalue response;
                 response["status"] = "success";
                 response["collision"] = collision;
                 response["hitPosition"] = { {"x", hitPos.GetX()}, {"y", hitPos.GetY()} };
 
-                // Determinăm ce a lovit glonțul
                 if (collision) {
                     if (isPlayerHit) {
                         response["hitObject"] = "player";
@@ -503,26 +515,48 @@ void StartServer(Game& game) {
                         response["hitObject"] = "enemy";
                     }
                     else {
-                        // Verificăm dacă a lovit un perete
-                        CellType cellType = game.GetMap()[hitPos.GetX()][hitPos.GetY()];
-                        if (cellType == CellType::BREAKABLE_WALL) {
-                            response["hitObject"] = "breakable_wall";
-                            game.DestroyWall(hitPos);  // Distruge peretele (modifică harta)
+                        // Determine if the hit was a wall
+                        CellType cellType = game.GetMap().GetMap()[hitPos.GetX()][hitPos.GetY()];
+                        if (cellType == CellType::BREAKABLE_WALL || cellType == CellType::UNBREAKABLE_WALL) {
+                            response["hitObject"] = "wall";
                         }
-                        else if (cellType == CellType::UNBREAKABLE_WALL) {
-                            response["hitObject"] = "unbreakable_wall";
+                        else {
+                            response["hitObject"] = "unknown";
                         }
-                        else response["hitObject"] = "";
                     }
                 }
+                else {
+                    response["hitObject"] = "none";
+                }
 
-                // Returnează răspunsul cu detaliile coliziunii și harta actualizată
+                return crow::response(200, response);
+            }
+            catch (const std::exception& e) {
+                return crow::response(500, std::string("Error processing request: ") + e.what());
+            }
+        });
+
+    CROW_ROUTE(serverApp, "/getBaseState").methods(crow::HTTPMethod::GET)(
+        [&game](const crow::request& req) {
+            try {
+                // Get the base information from the game
+                const auto& base = game.GetEntityManager().GetBase();
+
+                crow::json::wvalue response;
+                response["status"] = "success";
+                response["base"] = {
+                    {"life", base.GetLife()},
+                    {"position", {{"x", base.GetPosition().GetX()}, {"y", base.GetPosition().GetY()}}},
+                    {"state", base.GetLife() > 0 ? "active" : "destroyed"}
+                };
+
                 return crow::response(200, response);
             }
             catch (const std::exception& e) {
                 return crow::response(500, std::string("Server error: ") + e.what());
             }
         });
+
 
 
     serverApp.port(8080).multithreaded().run();

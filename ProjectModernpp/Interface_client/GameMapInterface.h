@@ -49,5 +49,9 @@ private:
     std::vector<std::pair<QPoint, QString>> otherPlayers;
     std::vector<std::pair<QString, int>> playerScores;
     QPoint m_currentDirection = QPoint(0, 0);
+    QPoint m_shootDirection = QPoint(0, 0);
+
     std::vector<Bullet> activeBullets;
+    void checkBaseState();
+
 };

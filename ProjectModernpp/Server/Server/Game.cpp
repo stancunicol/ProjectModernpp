@@ -307,3 +307,15 @@ std::vector<Point> Game::GetUpdatedBombs()
 
     return updatedBombPositions;
 }
+
+std::vector<Enemy> Game::UpdateEnemies() {
+    m_entityManager.UpdateEnemyPositions(m_map);
+    auto& enemies = m_entityManager.GetEnemiesMutable();
+
+    std::vector<Enemy> updatedEnemies;
+    for (const auto& pair : enemies) {
+        updatedEnemies.push_back(pair.second);
+    }
+
+    return updatedEnemies;
+}

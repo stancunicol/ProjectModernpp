@@ -79,4 +79,5 @@ public:
     void DestroyWall(const Point& hitPosition);
 
     std::vector<Point> GetUpdatedBombs();
+    std::vector<Enemy> UpdateEnemies();
 };
