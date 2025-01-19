@@ -32,7 +32,5 @@ private:
     QPushButton* m_hardLevelButton = nullptr;
     QLabel* m_messageLabel = nullptr;
     size_t m_level = 0;
-
-private:
     ServerUtils m_serverObject;
 };

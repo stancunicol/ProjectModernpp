@@ -1,19 +1,20 @@
 #pragma once
 
-#include <QMainWindow>//standard main window for GUI applications
-#include <QLabel>//to display images or text
-#include <QPushButton>//create buttons
-#include <QPixmap>//to manage and manipulate images
-#include <QDebug>//debug in console
-#include <QVBoxLayout>//for vertical layout
-#include <QMessageBox>//to create dialogs that can inform the user or reguest a decision
-#include <QFont>//font buttons
-#include <QHBoxLayout>//for horizontal layout
+#include <QMainWindow>
+#include <QLabel>
+#include <QPushButton>
+#include <QPixmap>
+#include <QDebug>
+#include <QVBoxLayout>
+#include <QMessageBox>
+#include <QFont>
+#include <QHBoxLayout>
 #include "LoginWindow.h"
 #include "PlayWindow.h"
 #include "ControlsWindow.h"
 #include "ConnectWindow.h"
 #include "LevelsWindow.h"
+#include "CustomToolBar.h"
 
 class Battle_city : public QMainWindow
 {
@@ -32,9 +33,9 @@ signals:
 	void aboutToClose();
 
 private:
-	QLabel* m_background = nullptr;//Background picture
-	QPushButton* m_playButton = nullptr;//Button for Play
-	QPushButton* m_connectButton = nullptr;//Button for Connect
-	QPushButton* m_controlsButton = nullptr;//Button for Controls
+	QLabel* m_background = nullptr;
+	QPushButton* m_playButton = nullptr;
+	QPushButton* m_connectButton = nullptr;
+	QPushButton* m_controlsButton = nullptr;
 	bool m_connectLogin = false;
 };

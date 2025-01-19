@@ -68,14 +68,14 @@ CustomTitleBar::CustomTitleBar(QWidget* parent)
 
     QHBoxLayout* centerLayout = new QHBoxLayout();
 
-    centerLayout->addStretch();  //spacer for moving the image to the center
+    centerLayout->addStretch();  
 
     m_imageLabel = new QLabel(this);
     centerLayout->setContentsMargins(0, 0, 0, 0);  
     m_imageLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter); 
     centerLayout->addWidget(m_imageLabel); 
 
-    centerLayout->addStretch();  // to maintain the picture in the center
+    centerLayout->addStretch(); 
   
     mainLayout->addLayout(leftLayout);  
     mainLayout->addSpacing(75);
@@ -93,7 +93,7 @@ CustomTitleBar::~CustomTitleBar()
 }
 
 
-void CustomTitleBar::setIcon(const QPixmap& pixmap1) 
+void CustomTitleBar::SetIcon(const QPixmap& pixmap1) 
 {
 
     if (pixmap1.isNull()) 
@@ -105,7 +105,7 @@ void CustomTitleBar::setIcon(const QPixmap& pixmap1)
     m_iconLabel->setPixmap(scaledPixmap);
 }
 
-void CustomTitleBar::setImage(const QString& imagePath) 
+void CustomTitleBar::SetImage(const QString& imagePath) 
 {
     QPixmap pixmap(imagePath);
     if (!pixmap.isNull()) 
@@ -145,13 +145,11 @@ void CustomTitleBar::mouseReleaseEvent(QMouseEvent* event)
 
 void CustomTitleBar::onCloseButtonClicked() 
 {
-    // close de window
     qApp->quit();
 }
 
 void CustomTitleBar::onMaximizeButtonClicked() 
 {
-    // Maximize the window
     if (parentWidget()->isMaximized()) 
     {
         parentWidget()->showNormal();
@@ -164,7 +162,6 @@ void CustomTitleBar::onMaximizeButtonClicked()
 
 void CustomTitleBar::onMinimizeButtonClicked() 
 {
-    // Minimize the window
     parentWidget()->showMinimized();
 }
 

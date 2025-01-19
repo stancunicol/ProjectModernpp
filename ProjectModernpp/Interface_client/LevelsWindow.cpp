@@ -16,7 +16,6 @@ LevelsWindow::LevelsWindow(QWidget* parent)
     QVBoxLayout* verticalLayout = new QVBoxLayout(this);
     verticalLayout->setSpacing(10);
 
-    //add text in the window
     QLabel* label = new QLabel("SELECT LEVEL", this);
     QFont font;
     font.setPointSize(16);
@@ -26,7 +25,6 @@ LevelsWindow::LevelsWindow(QWidget* parent)
     verticalLayout->addWidget(label);
     verticalLayout->setAlignment(Qt::AlignCenter);
 
-    //buttons for levels
     m_easyLevelButton = new QPushButton("EASY", this);
     m_mediumLevelButton = new QPushButton("MEDIUM", this);
     m_hardLevelButton = new QPushButton("HARD", this);
@@ -90,7 +88,6 @@ LevelsWindow::LevelsWindow(QWidget* parent)
         "color: rgba(255, 255, 255, 1);"
         "}");
 
-    //add buttons and text in Vertical Layout
     verticalLayout->addWidget(m_easyLevelButton, 0, Qt::AlignCenter);
     verticalLayout->addWidget(m_mediumLevelButton, 0, Qt::AlignCenter);
     verticalLayout->addWidget(m_hardLevelButton, 0, Qt::AlignCenter);

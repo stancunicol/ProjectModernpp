@@ -17,16 +17,12 @@ class ConnectWindow : public QDialog
 public:
     ConnectWindow(QWidget* parent = nullptr);
     ~ConnectWindow();
-
-private:
     void OnConnectClicked();
 
 private:
     QLineEdit* m_insertCode = nullptr;
     QPushButton* m_startButton = nullptr;
     QLabel* m_messageLabel = nullptr;
-
-private:
     ServerUtils m_serverObject;
 };
 

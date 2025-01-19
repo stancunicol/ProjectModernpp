@@ -1,17 +1,16 @@
 #include "Battle_city.h"
-#include "CustomToolBar.h"
 
 Battle_city::Battle_city(QWidget* parent)
 	: QMainWindow(parent)
 {
-	setWindowFlags(Qt::FramelessWindowHint);//hide the default tool bar
+	setWindowFlags(Qt::FramelessWindowHint);
 
 	CustomTitleBar* titleBar = new CustomTitleBar(this);
 	setMenuWidget(titleBar);  
 
 	QPixmap pixmap1("./logo_tank2.jpg");
-	titleBar->setIcon(pixmap1);  // set the icon
-	titleBar->setImage("./include_girls_logo.jpg");// set the logo image
+	titleBar->SetIcon(pixmap1);  
+	titleBar->SetImage("./include_girls_logo.jpg");
 
 	QWidget* centralWidget = new QWidget(this);
 	setCentralWidget(centralWidget);
@@ -23,10 +22,10 @@ Battle_city::Battle_city(QWidget* parent)
 	{
 		qDebug() << "The image couldn't be loaded!";
 	}
-	m_background->setPixmap(pixmap);//Set the image as a QPixmap for the QLabel
-	m_background->setScaledContents(true);//Scale the image to occupy the entire widget
-	m_background->setGeometry(this->rect());//Set the geometry of the QLabel to occupy the entire window
-	setCentralWidget(m_background);//Set the QLabel as the centre widget
+	m_background->setPixmap(pixmap);
+	m_background->setScaledContents(true);
+	m_background->setGeometry(this->rect());
+	setCentralWidget(m_background);
 
 	QVBoxLayout* layout = new QVBoxLayout(m_background);
 	QHBoxLayout* otherLayout = new QHBoxLayout;
@@ -54,11 +53,11 @@ Battle_city::Battle_city(QWidget* parent)
 		"}"
 		"QPushButton:hover {"
 		"background-color: rgba(30, 30, 30, 0.7);"
-		"color: rgba(255, 255, 0,0.7);"//yellow
+		"color: rgba(255, 255, 0,0.7);"
 		"}"
 		"QPushButton:pressed {"
 		"background-color: rgba(20, 20, 20, 0.7);"
-		"color: rgba(0, 0, 0,0.5);"//black
+		"color: rgba(0, 0, 0,0.5);"
 		"}");
 
 	m_connectButton->setStyleSheet(
@@ -70,11 +69,11 @@ Battle_city::Battle_city(QWidget* parent)
 		"}"
 		"QPushButton:hover {"
 		"background-color: rgba(30, 30, 30, 0.7);"
-		"color: rgba(255, 255, 0,0.7);"//yellow
+		"color: rgba(255, 255, 0,0.7);"
 		"}"
 		"QPushButton:pressed {"
 		"background-color: rgba(20, 20, 20, 0.7);"
-		"color: rgba(0, 0, 0,0.5);"//black
+		"color: rgba(0, 0, 0,0.5);"
 		"}");
 
 	m_controlsButton->setStyleSheet(
@@ -86,36 +85,26 @@ Battle_city::Battle_city(QWidget* parent)
 		"}"
 		"QPushButton:hover {"
 		"background-color: rgba(30, 30, 30, 0.7);"
-		"color: rgba(255, 255, 0,0.7);"//yellow
+		"color: rgba(255, 255, 0,0.7);"
 		"}"
 		"QPushButton:pressed {"
 		"background-color: rgba(20, 20, 20, 0.7);"
-		"color: rgba(0, 0, 0,0.5);"//black
+		"color: rgba(0, 0, 0,0.5);"
 		"}");
 
-	layout->addSpacerItem(new QSpacerItem(0, 200, QSizePolicy::Minimum, QSizePolicy::Fixed));//spacer
-	/*   2: The width of the spacer in pixels
-
-		 0: The height of the spacer in pixels
-
-		 QSizePolicy::Minimum : This is the size policy on the width direction. Minimum indicates that the spacer will not try to expand, but will only occupy the specified width (which is 0 in this case).
-
-		 QSizePolicy::Expanding: The vertical/horizontal size policy, which indicates that this spacer will occupy as much vertical space as possible.
-
-		 *QSizePolicy::Fixed : This is the size policy in the direction of height/width. Fixed indicates that the height of the spacer will remain constant (10 pixels) and will not adapt to the size of the layout
-	*/
-	layout->addWidget(m_playButton, 0, Qt::AlignCenter);//0-place at the beggining of the layout, aligned in the center of te page
+	layout->addSpacerItem(new QSpacerItem(0, 200, QSizePolicy::Minimum, QSizePolicy::Fixed));
+	layout->addWidget(m_playButton, 0, Qt::AlignCenter);
 
 	otherLayout->addWidget(m_connectButton);
-	otherLayout->addSpacerItem(new QSpacerItem(350, 0, QSizePolicy::Fixed, QSizePolicy::Minimum));//spacer
+	otherLayout->addSpacerItem(new QSpacerItem(350, 0, QSizePolicy::Fixed, QSizePolicy::Minimum));
 
 	otherLayout->addWidget(m_controlsButton);
 
-	otherLayout->setAlignment(Qt::AlignBottom | Qt::AlignCenter);// Center the buttons
+	otherLayout->setAlignment(Qt::AlignBottom | Qt::AlignCenter);
 
-	layout->addLayout(otherLayout);//combine the other layout in the main one
+	layout->addLayout(otherLayout);
 
-	connect(m_playButton, &QPushButton::clicked, this, &Battle_city::OnPlayButtonClicked);//connect the button to His use
+	connect(m_playButton, &QPushButton::clicked, this, &Battle_city::OnPlayButtonClicked);
 	connect(m_connectButton, &QPushButton::clicked, this, &Battle_city::OnConnectButtonClicked);
 	connect(m_controlsButton, &QPushButton::clicked, this, &Battle_city::OnControlsButtonClicked);
 }
@@ -129,8 +118,8 @@ void Battle_city::OnPlayButtonClicked()
 {
 	while (m_connectLogin == false)
 	{
-		LoginWindow* login = new LoginWindow(this);//associates the login window with the current window
-		size_t result = login->exec();//opens the login window as a modal dialog, meaning the user cannot interact with the parent window until the login window is closed
+		LoginWindow* login = new LoginWindow(this);
+		size_t result = login->exec();
 		if (result == QDialog::Accepted)
 		{
 			m_connectLogin = true;

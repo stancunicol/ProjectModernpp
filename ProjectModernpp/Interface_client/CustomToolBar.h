@@ -18,9 +18,8 @@ class CustomTitleBar : public QWidget
 public:
     explicit CustomTitleBar(QWidget* parent = nullptr);
     ~CustomTitleBar();
-
-    void setIcon(const QPixmap& pixmap1);
-    void setImage(const QString& imagePath);
+    void SetIcon(const QPixmap& pixmap1);
+    void SetImage(const QString& imagePath);
 
 protected:
     void mousePressEvent(QMouseEvent* event) override;
@@ -39,7 +38,6 @@ private:
     QPushButton* m_closeButton = nullptr;
     QPushButton* m_maximizeButton = nullptr;
     QPushButton* m_minimizeButton = nullptr;
-
     bool m_dragging;
     QPoint m_dragPosition;
 };

@@ -18,10 +18,10 @@ class ControlsWindow : public QDialog
 
 public:
     ControlsWindow(QWidget* parent = nullptr);
-    void saveSettings();
-    void loadSettings();
-    void resetToDefaults();
-    void setupKeyEdit(QLineEdit* keyEdit);
+    void SaveSettings();
+    void LoadSettings();
+    void ResetToDefaults();
+    void SetupKeyEdit(QLineEdit* keyEdit);
     bool eventFilter(QObject* watched, QEvent* event);
     ~ControlsWindow();
 

@@ -47,11 +47,11 @@ ControlsWindow::ControlsWindow(QWidget* parent)
     gameLegendLabel->setAlignment(Qt::AlignCenter);
     gameLegendLabel->setStyleSheet("color: white;");
 
-    setupKeyEdit(m_upKeyEdit);
-    setupKeyEdit(m_downKeyEdit);
-    setupKeyEdit(m_leftKeyEdit);
-    setupKeyEdit(m_rightKeyEdit);
-    setupKeyEdit(m_fireKeyEdit);
+    SetupKeyEdit(m_upKeyEdit);
+    SetupKeyEdit(m_downKeyEdit);
+    SetupKeyEdit(m_leftKeyEdit);
+    SetupKeyEdit(m_rightKeyEdit);
+    SetupKeyEdit(m_fireKeyEdit);
 
     QGridLayout* gridLayout = new QGridLayout;
     gridLayout->addWidget(new QLabel("Move Up:", this), 0, 0);
@@ -66,7 +66,7 @@ ControlsWindow::ControlsWindow(QWidget* parent)
     gridLayout->addWidget(m_fireKeyEdit, 4, 1);
 
     QPushButton* resetButton = new QPushButton("Reset to Defaults", this);
-    connect(resetButton, &QPushButton::clicked, this, &ControlsWindow::resetToDefaults);
+    connect(resetButton, &QPushButton::clicked, this, &ControlsWindow::ResetToDefaults);
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(instructionLabel);
@@ -74,8 +74,7 @@ ControlsWindow::ControlsWindow(QWidget* parent)
     mainLayout->addLayout(gridLayout);
     mainLayout->addWidget(resetButton);
 
-    ControlsWindow::loadSettings();
-    //Aply event filter for every QLineEdit to capture the event
+    ControlsWindow::LoadSettings();
     m_upKeyEdit->installEventFilter(this);
     m_downKeyEdit->installEventFilter(this);
     m_leftKeyEdit->installEventFilter(this);
@@ -83,7 +82,7 @@ ControlsWindow::ControlsWindow(QWidget* parent)
     m_fireKeyEdit->installEventFilter(this);
 }
 
-void ControlsWindow::saveSettings()
+void ControlsWindow::SaveSettings()
 {
     QSettings settings("MyCompany", "BattleCity");
     settings.setValue("UpKey", m_upKeyEdit->text());
@@ -93,7 +92,7 @@ void ControlsWindow::saveSettings()
     settings.setValue("FireKey", m_fireKeyEdit->text());
 }
 
-void ControlsWindow::loadSettings()
+void ControlsWindow::LoadSettings()
 {
     QSettings settings("MyCompany", "BattleCity");
     m_upKeyEdit->setText(settings.value("UpKey", "W").toString());
@@ -103,7 +102,7 @@ void ControlsWindow::loadSettings()
     m_fireKeyEdit->setText(settings.value("FireKey", "Space").toString());
 }
 
-void ControlsWindow::resetToDefaults()
+void ControlsWindow::ResetToDefaults()
 {
     m_upKeyEdit->setText("W");
     m_downKeyEdit->setText("S");
@@ -111,10 +110,10 @@ void ControlsWindow::resetToDefaults()
     m_rightKeyEdit->setText("D");
     m_fireKeyEdit->setText("Space");
 
-    saveSettings(); 
+    SaveSettings(); 
 }
 
-void ControlsWindow::setupKeyEdit(QLineEdit* keyEdit)
+void ControlsWindow::SetupKeyEdit(QLineEdit* keyEdit)
 {
     keyEdit->setAlignment(Qt::AlignCenter);
     keyEdit->setFocusPolicy(Qt::StrongFocus);
@@ -146,7 +145,7 @@ bool ControlsWindow::eventFilter(QObject* watched, QEvent* event)
                 pressedKey != m_fireKeyEdit->text()) 
             {
                 keyEdit->setText(pressedKey);
-                saveSettings(); 
+                SaveSettings(); 
             }
             else 
             {
@@ -156,11 +155,10 @@ bool ControlsWindow::eventFilter(QObject* watched, QEvent* event)
             return true;
         }
     }
-    //let the QWidget to proces the event
     return QDialog::eventFilter(watched, event);
 }
 
 ControlsWindow::~ControlsWindow()
 {
-    saveSettings();
+    SaveSettings();
 }

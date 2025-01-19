@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QPalette>
 #include <QColor>
+#include <QTimer>
 #include "ServerUtils.h"
 
 class PlayWindow : public QDialog
@@ -20,6 +21,7 @@ public:
 
 protected:
     void OnGenerateClicked();
+    void OnWaitTimeout();
     void OnForwardClicked();
 
 private:
@@ -27,7 +29,7 @@ private:
     QPushButton* m_generateButton = nullptr;
     QPushButton* m_forwardButton = nullptr;
     bool m_generate = false;
-
-private:
     ServerUtils m_serverObject;
+    QTimer* m_waitTimer;
+    QMessageBox* m_waitMessageBox = nullptr;
 };

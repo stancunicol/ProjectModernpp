@@ -3,7 +3,6 @@
 ConnectWindow::ConnectWindow(QWidget* parent)
     : QDialog(parent)
 {
-    // set size and title for window
     setWindowTitle("Join Room");
     setFixedSize(300, 200);
 
@@ -23,7 +22,6 @@ ConnectWindow::ConnectWindow(QWidget* parent)
     label->setFont(font);
     layout->addWidget(label, 0, Qt::AlignCenter);
 
-    //label for insert code
     m_insertCode = new QLineEdit(this);
     layout->addWidget(m_insertCode);
     m_insertCode->setAlignment(Qt::AlignCenter);
@@ -31,7 +29,6 @@ ConnectWindow::ConnectWindow(QWidget* parent)
     m_insertCode->setFixedSize(240, 50);
     layout->setAlignment(Qt::AlignCenter);
 
-    //button for start game
     m_startButton = new QPushButton("START GAME", this);
     m_startButton->setStyleSheet("QPushButton {"
         "background-color: rgba(158, 204, 158, 1);"
@@ -65,10 +62,12 @@ void ConnectWindow::OnConnectClicked()
 
     bool isCodeValid = m_serverObject.CheckServerCode(roomCode.toStdString(), m_serverObject.GetUserId());
 
-    if (isCodeValid) {
+    if (isCodeValid) 
+    {
         qDebug() << "Player successfully joined the room.";
     }
-    else {
+    else 
+    {
         qDebug() << "Failed to join the room.";
     }
     if (isCodeValid)

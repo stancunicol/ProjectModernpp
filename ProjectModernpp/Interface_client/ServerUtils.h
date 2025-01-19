@@ -8,23 +8,27 @@
 #include <iostream>
 #include <QTimer>
 
-struct Enemy {
+struct Enemy 
+{
     int id;
     int x;
     int y;
 };
 
-struct Bomb {
+struct Bomb 
+{
     int id;
     int x;
     int y;
 };
 
-struct Point {
+struct Point 
+{
     int m_x, m_y;
 
     Point(int x, int y) : m_x(x), m_y(y) {}
-    bool operator==(const Point& other) const {
+    bool operator==(const Point& other) const 
+    {
         return m_x == other.m_x && m_y == other.m_y;
     }
 };
@@ -38,13 +42,12 @@ struct BulletResponse {
 class ServerUtils {
 private:
 
-    std::string lastStatus;
-    static int userId;
-    std::string roomCode;
+    std::string m_lastStatus;
+    static int m_userId;
+    std::string m_roomCode;
     size_t m_level;
     std::vector<std::vector<int>> m_matrix;
     std::vector<std::pair<Point, std::string>> m_playerPositions;
-    //std::vector<Enemy>& m_enemies;
     static std::string m_baseURL;
 
 public:
@@ -72,13 +75,13 @@ public:
     std::vector<Bomb> GetBombsFromServer();
 
     void SetUserId(int id);
-    int GetUserId() const { return userId; }
+    int GetUserId() const { return m_userId; }
 
-    void SetRoomCode(std::string code) { this->roomCode = code; }
-    std::string GetRoomCode() const { return roomCode; }
+    void SetRoomCode(std::string code) { this->m_roomCode = code; }
+    std::string GetRoomCode() const { return m_roomCode; }
 
-    void SetStatus(const std::string& status) { lastStatus = status; }
-    std::string GetStatus() const { return lastStatus; }
+    void SetStatus(const std::string& status) { m_lastStatus = status; }
+    std::string GetStatus() const { return m_lastStatus; }
 
     size_t GetLevel() const;
     void SetLevel(const size_t level);

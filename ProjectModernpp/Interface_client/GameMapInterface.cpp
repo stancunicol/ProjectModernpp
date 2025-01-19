@@ -1,11 +1,8 @@
 ﻿#include "GameMapInterface.h"
-#include "ServerUtils.h"
-#include <unordered_set>
 
 struct Enemy;
 struct Point;
 struct BulletResponse;
-
 
 GameMapInterface::GameMapInterface(QWidget* parent)
     : QMainWindow(parent)
@@ -18,40 +15,33 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     QTimer* scoreUpdateTimer = new QTimer(this);
     QTimer* fetchTimerPlayer = new QTimer(this);
     QTimer* fetchTimerEnemy = new QTimer(this);
-    //connect(fetchTimerPlayer, &QTimer::timeout, this, &GameMapInterface::updateOtherPlayers);
-    connect(fetchTimerEnemy, &QTimer::timeout, this, &GameMapInterface::updateEnemies);
-    connect(scoreUpdateTimer, &QTimer::timeout, this, &GameMapInterface::updatePlayerScores);
-    //fetchTimerPlayer->start(1000);
+    connect(fetchTimerEnemy, &QTimer::timeout, this, &GameMapInterface::UpdateEnemies);
+    connect(scoreUpdateTimer, &QTimer::timeout, this, &GameMapInterface::UpdatePlayerScores);
     fetchTimerEnemy->start(4000);
     scoreUpdateTimer->start(1000);
 
     QTimer* bulletUpdateTimer = new QTimer(this);
-    connect(bulletUpdateTimer, &QTimer::timeout, this, &GameMapInterface::updateBullets);
+    connect(bulletUpdateTimer, &QTimer::timeout, this, &GameMapInterface::UpdateBullets);
     bulletUpdateTimer->start(100);
-    /*
-    QTimer* mapUpdateTimer = new QTimer(this);
-    connect(mapUpdateTimer, &QTimer::timeout, this, &GameMapInterface::updateMap);
-    mapUpdateTimer->start(1000);
-    */
     QTimer* bombUpdateTimer = new QTimer(this);
-    connect(bombUpdateTimer, &QTimer::timeout, this, &GameMapInterface::updateBombs);
+    connect(bombUpdateTimer, &QTimer::timeout, this, &GameMapInterface::UpdateBombs);
     bombUpdateTimer->start(1000);
 
     QTimer* baseCheckTimer = new QTimer(this);
-    connect(baseCheckTimer, &QTimer::timeout, this, &GameMapInterface::checkBaseState);
+    connect(baseCheckTimer, &QTimer::timeout, this, &GameMapInterface::CheckBaseState);
     baseCheckTimer->start(1000);
 
     QTimer* bulletsUpdateTimer = new QTimer(this);
-    connect(bulletsUpdateTimer, &QTimer::timeout, this, &GameMapInterface::updateEnemiesBullets);
+    connect(bulletsUpdateTimer, &QTimer::timeout, this, &GameMapInterface::UpdateEnemiesBullets);
     bulletsUpdateTimer->start(5000);
 
     m_serverObject.GetMapFromServer();
-    matrix = m_serverObject.GetMap();
-    height = matrix.size();
-    width = matrix[0].size();
+    m_matrix = m_serverObject.GetMap();
+    m_height = m_matrix.size();
+    m_width = m_matrix[0].size();
 
     std::cout << "Matrix:" << '\n';
-    for (const auto& row : matrix)
+    for (const auto& row : m_matrix)
     {
         for (const auto& cell : row)
         {
@@ -60,17 +50,17 @@ GameMapInterface::GameMapInterface(QWidget* parent)
         std::cout << std::endl;
     }
 
-    resize(36 * width + scorePanelWidth, 36 * height);
+    resize(36 * m_width + scorePanelWidth, 36 * m_height);
 
-    basePosition = m_serverObject.GetBaseFromServer();
-    qDebug() << "Base Position - X:" << basePosition.second << " Y:" << basePosition.first;
-    baseInitialized = true;
+    m_basePosition = m_serverObject.GetBaseFromServer();
+    qDebug() << "Base Position - X:" << m_basePosition.second << " Y:" << m_basePosition.first;
+    m_baseInitialized = true;
 
-    bombs = m_serverObject.GetBombsFromServer();
-    if (!bombs.empty())
+    m_bombs = m_serverObject.GetBombsFromServer();
+    if (!m_bombs.empty())
     {
-        qDebug() << "Received " << bombs.size() << " bombs from server.";
-        for (const auto& bomb : bombs)
+        qDebug() << "Received " << m_bombs.size() << " bombs from server.";
+        for (const auto& bomb : m_bombs)
         {
             qDebug() << "Bomb ID: " << bomb.id << " Position: (" << bomb.y << ", " << bomb.x << ")";
         }
@@ -88,8 +78,8 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     {
         if (std::stoi(position.second) == m_serverObject.GetUserId())
         {
-            player1Position = QPoint(position.first.m_y, position.first.m_x);
-            qDebug() << "[INFO] Player initialized at position: (" << player1Position.y() << ", " << player1Position.x() << ")";
+            m_player1Position = QPoint(position.first.m_y, position.first.m_x);
+            qDebug() << "[INFO] Player initialized at position: (" << m_player1Position.y() << ", " << m_player1Position.x() << ")";
             playerFound = true;
             break;
         }
@@ -98,7 +88,7 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     if (!playerFound)
     {
         qWarning() << "[WARNING] Player position not found. Ensure server returned correct data.";
-        player1Position = QPoint(-1, -1);
+        m_player1Position = QPoint(-1, -1);
     }
 
     bool baseState = m_serverObject.GetBaseState();
@@ -109,7 +99,7 @@ GameMapInterface::GameMapInterface(QWidget* parent)
         qDebug() << "[INFO] Base is destroyed.";
     }
 
-    loadControls();
+    LoadControls();
     update();
 }
 
@@ -118,7 +108,7 @@ GameMapInterface::~GameMapInterface()
 
 }
 
-void GameMapInterface::loadControls()
+void GameMapInterface::LoadControls()
 {
     QSettings settings("MyCompany", "BattleCity");
 
@@ -157,7 +147,7 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
         m_shootDirection = QPoint(0, 1);
         break;
     case Qt::Key_Space:
-        fireBullet();
+        FireBullet();
         return;
     }
 
@@ -187,7 +177,7 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
     }
     else if (event->key() == QKeySequence(m_fireKey).toString().at(0).unicode())
     {
-        fireBullet();
+        FireBullet();
         return;
     }
     else
@@ -195,7 +185,7 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
         QMainWindow::keyPressEvent(event);
     }
     m_currentDirection = direction;
-    qDebug() << "[INFO] Firing bullet from position:" << player1Position << "in direction:" << m_currentDirection;
+    qDebug() << "[INFO] Firing bullet from position:" << m_player1Position << "in direction:" << m_currentDirection;
 
     if (!dirString.isEmpty())
     {
@@ -204,10 +194,10 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
         {
             const Point& newPosition = *newPositionOpt;
 
-            if (newPosition.m_x != player1Position.x() || newPosition.m_y != player1Position.y())
+            if (newPosition.m_x != m_player1Position.x() || newPosition.m_y != m_player1Position.y())
             {
-                player1Position = QPoint(newPosition.m_y, newPosition.m_x);
-                qDebug() << "[INFO] Player moved to new position: (X:" << player1Position.y() << ", Y:" << player1Position.x() << ")";
+                m_player1Position = QPoint(newPosition.m_y, newPosition.m_x);
+                qDebug() << "[INFO] Player moved to new position: (X:" << m_player1Position.y() << ", Y:" << m_player1Position.x() << ")";
             }
             else
             {
@@ -229,10 +219,10 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
 {
     QPixmap pixmap;
     QPainter painter(this);
-    for (int i = 0; i < height; i++)
-        for (int j = 0; j < width; j++)
+    for (int i = 0; i < m_height; i++)
+        for (int j = 0; j < m_width; j++)
         {
-            switch (matrix[i][j])
+            switch (m_matrix[i][j])
             {
             case 0:
                 pixmap = QPixmap("./path.jpg").scaled(36, 36);
@@ -247,18 +237,18 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
             painter.drawPixmap(j * 36, i * 36, pixmap);
         }
 
-    if (player1Position.x() >= 0 && player1Position.y() >= 0)
+    if (m_player1Position.x() >= 0 && m_player1Position.y() >= 0)
     {
         pixmap.load("./player1.png");
-        painter.drawPixmap(player1Position.x() * 36, player1Position.y() * 36, pixmap.scaled(36, 36));
+        painter.drawPixmap(m_player1Position.x() * 36, m_player1Position.y() * 36, pixmap.scaled(36, 36));
 
         painter.setPen(Qt::black);
         painter.setFont(QFont("Arial", 10, QFont::Bold));
-        int yOffsetText = (player1Position.y() == 0) ? 36 : -5;
-        painter.drawText(player1Position.x() * 36, player1Position.y() * 36 + yOffsetText, "You");
+        int yOffsetText = (m_player1Position.y() == 0) ? 36 : -5;
+        painter.drawText(m_player1Position.x() * 36, m_player1Position.y() * 36 + yOffsetText, "You");
 
         painter.setPen(Qt::blue);
-        painter.drawText(player1Position.x() * 36 + 1, player1Position.y() * 36 + yOffsetText + 1, "You");
+        painter.drawText(m_player1Position.x() * 36 + 1, m_player1Position.y() * 36 + yOffsetText + 1, "You");
     }
 
     std::vector<QString> playerImages = {
@@ -267,9 +257,9 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
     "./player4.png"
     };
 
-    for (size_t i = 0; i < otherPlayers.size(); ++i)
+    for (size_t i = 0; i < m_otherPlayers.size(); ++i)
     {
-        const auto& [position, username] = otherPlayers[i];
+        const auto& [position, username] = m_otherPlayers[i];
 
         QPixmap playerPixmap;
 
@@ -281,7 +271,7 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
     }
 
     pixmap = QPixmap("./base.jpg").scaled(36, 36);
-    painter.drawPixmap(basePosition.second * 36, basePosition.first * 36, pixmap);
+    painter.drawPixmap(m_basePosition.second * 36, m_basePosition.first * 36, pixmap);
 
     for (const auto& enemy : m_enemies)
     {
@@ -312,7 +302,7 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
         painter.drawText(enemy.y * 36 + 1, enemy.x * 36 + yOffsetText + 1, "Enemy");
     }
 
-    for (const auto& bullet : activeBullets)
+    for (const auto& bullet : m_activeBullets)
     {
         if (bullet.active)
         {
@@ -322,15 +312,15 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
         }
     }
 
-    for (const auto& bomb : bombs) {
+    for (const auto& bomb : m_bombs) {
         if (bomb.x == -1 && bomb.y == -1) {
             pixmap.load("./bomb.png");
             painter.drawPixmap(bomb.x * 36, bomb.y * 36, pixmap.scaled(36, 36));
         }
     }
 
-    int scorePanelStartX = 36 * width;
-    QRect scorePanelRect(scorePanelStartX, 0, 200, 36 * height);
+    int scorePanelStartX = 36 * m_width;
+    QRect scorePanelRect(scorePanelStartX, 0, 200, 36 * m_height);
 
     painter.setPen(Qt::black);
     painter.setBrush(Qt::NoBrush);
@@ -350,14 +340,14 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
     int scoreSectionHeight = remainingHeight * 0.75;
     int controlsSectionHeight = remainingHeight * 0.25;
 
-    int scoreCount = playerScores.size();
+    int scoreCount = m_playerScores.size();
     int scoreLineHeight = scoreCount > 0 ? scoreSectionHeight / scoreCount : scoreSectionHeight;
 
     int controlCount = 5;
     int controlLineHeight = controlsSectionHeight / controlCount;
 
     painter.setFont(QFont("Arial", 12, QFont::Bold));
-    for (const auto& [name, score] : playerScores)
+    for (const auto& [name, score] : m_playerScores)
     {
         QString scoreText = name + "\nScor: " + QString::number(score);
         QRect textRect(scorePanelStartX, yOffset, 200, scoreLineHeight);
@@ -384,13 +374,12 @@ void GameMapInterface::paintEvent(QPaintEvent* event)
     painter.drawText(scorePanelStartX + 10, yOffset, "Fire: " + m_fireKey + " / Space");
 }
 
-void GameMapInterface::updateOtherPlayers()
+void GameMapInterface::UpdateOtherPlayers()
 {
     m_serverObject.FetchPlayerStates();
 
-    otherPlayers.clear(); // Clear existing data
+    m_otherPlayers.clear(); 
 
-    // Process the fetched data
     uint8_t currentUserId = m_serverObject.GetUserId();
     std::string url = "http://localhost:8080/playerState?playerId=" + std::to_string(currentUserId);
     std::string response = m_serverObject.GetServerData(url);
@@ -409,7 +398,7 @@ void GameMapInterface::updateOtherPlayers()
                 int x = player["position"]["x"];
                 int y = player["position"]["y"];
                 QString username = QString::fromStdString(player["username"]);
-                otherPlayers.emplace_back(QPoint(y, x), username);
+                m_otherPlayers.emplace_back(QPoint(y, x), username);
             }
         }
     }
@@ -421,7 +410,7 @@ void GameMapInterface::updateOtherPlayers()
     update();
 }
 
-void GameMapInterface::updateEnemies()
+void GameMapInterface::UpdateEnemies()
 {
     std::vector<Enemy> fetchedEnemies;
     m_serverObject.FetchEnemyStates(fetchedEnemies);
@@ -437,28 +426,27 @@ void GameMapInterface::updateEnemies()
     update();
 }
 
-void GameMapInterface::updatePlayerScores()
+void GameMapInterface::UpdatePlayerScores()
 {
     auto scores = m_serverObject.GetPlayerDataByIdFromServer();
-    playerScores.clear();
+    m_playerScores.clear();
     for (const auto& [name, score] : scores)
     {
-        playerScores.emplace_back(QString::fromStdString(name), score);
+        m_playerScores.emplace_back(QString::fromStdString(name), score);
     }
-    update();
 }
 
-void GameMapInterface::fireBullet()
+void GameMapInterface::FireBullet()
 {
-    Point bulletPosition(player1Position.y(), player1Position.x());
+    Point bulletPosition(m_player1Position.y(), m_player1Position.x());
     Point bulletDirection(m_currentDirection.y(), m_currentDirection.x());
 
-    auto result = m_serverObject.FireBullet({ player1Position.y(), player1Position.x() }, { m_shootDirection.x(), m_shootDirection.y() });
+    auto result = m_serverObject.FireBullet({ m_player1Position.y(), m_player1Position.x() }, { m_shootDirection.x(), m_shootDirection.y() });
     if (result.success)
     {
         qDebug() << "[INFO] Bullet fired!";
         Bullet newBullet = { bulletPosition, bulletDirection, true };
-        activeBullets.push_back(newBullet);
+        m_activeBullets.push_back(newBullet);
         if (result.collision)
         {
             qDebug() << "[INFO] Bullet hit something!";
@@ -473,16 +461,16 @@ void GameMapInterface::fireBullet()
     }
 }
 
-void GameMapInterface::updateMap()
+void GameMapInterface::UpdateMap()
 {
     m_serverObject.GetMapFromServer();
-    matrix = m_serverObject.GetMap();
+    m_matrix = m_serverObject.GetMap();
     repaint();
 }
 
-void GameMapInterface::updateBullets()
+void GameMapInterface::UpdateBullets()
 {
-    for (auto& bullet : activeBullets)
+    for (auto& bullet : m_activeBullets)
     {
         if (!bullet.active)
         {
@@ -492,16 +480,16 @@ void GameMapInterface::updateBullets()
         bullet.position.m_x += bullet.direction.m_x;
         bullet.position.m_y += bullet.direction.m_y;
 
-        if (matrix[bullet.position.m_x][bullet.position.m_y] == 2)
+        if (m_matrix[bullet.position.m_x][bullet.position.m_y] == 2)
         {
             qDebug() << "[INFO] Bullet hit a wall!";
             bullet.active = false;
         }
-        if (matrix[bullet.position.m_x][bullet.position.m_y] == 1)
+        if (m_matrix[bullet.position.m_x][bullet.position.m_y] == 1)
         {
             qDebug() << "[INFO] Bullet hit a wall!";
             bullet.active = false;
-            updateMap();
+            UpdateMap();
         }
         for (const auto& enemy : m_enemies)
         {
@@ -511,22 +499,21 @@ void GameMapInterface::updateBullets()
                 bullet.active = false;
             }
         }
-        if (bullet.position.m_x < 0 || bullet.position.m_x >= height ||
-            bullet.position.m_y < 0 || bullet.position.m_y >= width)
+        if (bullet.position.m_x < 0 || bullet.position.m_x >= m_height ||
+            bullet.position.m_y < 0 || bullet.position.m_y >= m_width)
         {
             bullet.active = false;
         }
     }
 
-    // Remove inactive bullets from the list
-    activeBullets.erase(std::remove_if(activeBullets.begin(), activeBullets.end(),
+    m_activeBullets.erase(std::remove_if(m_activeBullets.begin(), m_activeBullets.end(),
         [](const Bullet& bullet) { return !bullet.active; }),
-        activeBullets.end());
+        m_activeBullets.end());
 
     update();
 }
 
-void GameMapInterface::updateBombs() {
+void GameMapInterface::UpdateBombs() {
     auto updatedBombs = m_serverObject.GetBombsFromServer();
 
     for (const auto& bomb : updatedBombs) {
@@ -539,13 +526,13 @@ void GameMapInterface::updateBombs() {
         }
     }
 
-    bombs = std::move(updatedBombs);
+    m_bombs = std::move(updatedBombs);
     update();
 }
 
-void GameMapInterface::checkBaseState()
+void GameMapInterface::CheckBaseState()
 {
-    if (!baseInitialized) {
+    if (!m_baseInitialized) {
         qDebug() << "[INFO] Base not initialized yet.";
         return;
     }
@@ -554,9 +541,24 @@ void GameMapInterface::checkBaseState()
 
     if (!baseExists) {
         qDebug() << "[ALERT] Base has been destroyed!";
-        basePosition.first = -1;
-        basePosition.second = -1;
-        QMessageBox::critical(this, "Game Over", "The base has been destroyed! Game Over.");
+        m_basePosition.first = -1;
+        m_basePosition.second = -1;
+        QString winner;
+        int maxScore = -1;
+
+        for (const auto& [name, score] : m_playerScores)
+        {
+            if (score > maxScore)
+            {
+                maxScore = score;
+                winner = name;
+            }
+        }
+
+        if (!winner.isEmpty())
+        {
+            QMessageBox::information(this, "Game Over", "The winner is " + winner + " with " + QString::number(maxScore) + " points!");
+        }
         QCoreApplication::quit();
     }
     else {
@@ -564,7 +566,7 @@ void GameMapInterface::checkBaseState()
     }
 }
 
-void GameMapInterface::updateEnemiesBullets() {
+void GameMapInterface::UpdateEnemiesBullets() {
     std::string url = "http://localhost:8080/getBullets?playerId=" + std::to_string(m_serverObject.GetUserId());
     std::string response = m_serverObject.GetServerData(url);
 
@@ -591,10 +593,9 @@ void GameMapInterface::updateEnemiesBullets() {
                 int dx = bullet["direction"]["x"];
                 int dy = bullet["direction"]["y"];
 
-                if (y >= 0 && y < width && x >= 0 && x < height && (dx != 0 || dy != 0)) {
+                if (y >= 0 && y < m_width && x >= 0 && x < m_height && (dx != 0 || dy != 0)) {
                     Bullet newBullet(Point(x, y), Point(dx, dy), true);
 
-                    // Check for duplicates
                     std::string bulletKey = std::to_string(x) + "_" + std::to_string(y) + "_" + std::to_string(dx) + "_" + std::to_string(dy);
                     if (uniqueBulletIds.find(bulletKey) == uniqueBulletIds.end()) {
                         uniqueBulletIds.insert(bulletKey);
@@ -606,9 +607,9 @@ void GameMapInterface::updateEnemiesBullets() {
                 }
             }
 
-            if (newBullets != activeBullets) {
-                activeBullets = std::move(newBullets);
-                qDebug() << "[INFO] Bullets updated. Total active bullets: " << activeBullets.size();
+            if (newBullets != m_activeBullets) {
+                m_activeBullets = std::move(newBullets);
+                qDebug() << "[INFO] Bullets updated. Total active bullets: " << m_activeBullets.size();
             }
         }
         else {
@@ -619,12 +620,12 @@ void GameMapInterface::updateEnemiesBullets() {
         qWarning() << "[ERROR] Exception while parsing bullets data: " << e.what();
     }
 
-    activeBullets.erase(std::remove_if(activeBullets.begin(), activeBullets.end(),
+    m_activeBullets.erase(std::remove_if(m_activeBullets.begin(), m_activeBullets.end(),
         [this](const Bullet& bullet) {
-            return !bullet.active || bullet.position.m_x < 0 || bullet.position.m_x >= height ||
-                bullet.position.m_y < 0 || bullet.position.m_y >= width;
+            return !bullet.active || bullet.position.m_x < 0 || bullet.position.m_x >= m_height ||
+                bullet.position.m_y < 0 || bullet.position.m_y >= m_width;
         }),
-        activeBullets.end());
+        m_activeBullets.end());
 
     update();
 }

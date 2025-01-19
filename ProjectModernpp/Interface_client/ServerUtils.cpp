@@ -1,15 +1,16 @@
 ﻿#include "ServerUtils.h"
 
-int ServerUtils::userId = -1;
+int ServerUtils::m_userId = -1;
 
 std::string ServerUtils::m_baseURL = "";
 
 using json = nlohmann::json;
 
-void ServerUtils::SetUserId(int userId) {
+void ServerUtils::SetUserId(int userId) 
+{
     qDebug() << "About to set User ID to:" << userId;
-    this->userId = userId;
-    qDebug() << "User ID set to:" << this->userId;
+    this->m_userId = userId;
+    qDebug() << "User ID set to:" << this->m_userId;
 }
 
 ServerUtils::ServerUtils()
@@ -185,7 +186,7 @@ std::string ServerUtils::GetServerData(const std::string& url) {
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &ServerUtils::WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L); // Timeout de 10 secunde
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L); 
 
         long httpCode = 0;
         res = curl_easy_perform(curl);
@@ -593,7 +594,6 @@ void ServerUtils::GetMapFromServer()
                                 qDebug() << "Error: Cell is not an integer.";
                             }
                         }
-                        // Adăugăm rândul exact așa cum este primit de la server
                         m_matrix.push_back(rowVector);
                     }
 
@@ -707,7 +707,6 @@ void ServerUtils::FetchEnemyStates(std::vector<Enemy>& enemies) {
 BulletResponse ServerUtils::FireBullet(const Point& bulletPosition, const Point& bulletDirection) {
     std::string url = "http://localhost:8080/fireBullet";
 
-    // Creăm obiectul JSON pentru trimiterea datelor
     nlohmann::json jsonRequest;
 
     jsonRequest["playerId"] = GetUserId();
@@ -716,14 +715,13 @@ BulletResponse ServerUtils::FireBullet(const Point& bulletPosition, const Point&
 
     std::string postData = jsonRequest.dump();
 
-    // Trimitem cererea către server și primim răspunsul
     std::string response = GetServerBulletData(url, postData);
 
     BulletResponse bulletResponse;
 
     if (response.empty()) {
         qWarning() << "Failed to fetch bullet status.";
-        return bulletResponse;  // Returnăm un obiect gol sau cu valori implicite
+        return bulletResponse; 
     }
 
     try {
@@ -735,7 +733,6 @@ BulletResponse ServerUtils::FireBullet(const Point& bulletPosition, const Point&
             return bulletResponse;
         }
 
-        // Verificăm răspunsul de la server
         if (jsonResponse["status"] == "success") {
             bulletResponse.success = true;
 
@@ -783,15 +780,12 @@ std::string ServerUtils::GetServerBulletData(const std::string& url, const std::
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &ServerUtils::WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L); // Timeout de 10 secunde
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L); 
 
-        // Setăm metoda POST
         curl_easy_setopt(curl, CURLOPT_POST, 1L);
 
-        // Setăm datele pentru body-ul cererii
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData.c_str());
 
-        // Setăm header-ul pentru a trimite JSON
         struct curl_slist* headers = NULL;
         headers = curl_slist_append(headers, "Content-Type: application/json");
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
@@ -850,7 +844,7 @@ bool ServerUtils::GetBaseState() {
         qDebug() << "Error parsing base state data: " << e.what();
     }
 
-    return false; // Default to destroyed in case of error
+    return false; 
 }
 
 void ServerUtils::InitializeBaseURL(const std::string& fullURL) {
