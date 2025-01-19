@@ -245,7 +245,11 @@ void StartServer(Game& game) {
 
             it->second.MoveCharacter(moveDirection, game.GetMap());
             Point newPosition = it->second.GetPosition();
-
+            /*
+            std::cout << "Player " << std::to_string(playerId) << " moved from ("
+                << std::to_string(currentPosition.GetX()) << ", " << std::to_string(currentPosition.GetY()) << ") to ("
+                << std::to_string(newPosition.GetX()) << ", " << std::to_string(newPosition.GetY()) << ")" << std::endl;
+            */
             crow::json::wvalue response;
             response["status"] = "success";
             response["currentPosition"] = { {"x", currentPosition.GetX()}, {"y", currentPosition.GetY()} };

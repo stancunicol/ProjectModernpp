@@ -47,7 +47,7 @@ GameMapInterface::GameMapInterface(QWidget* parent)
     resize(36 * width + scorePanelWidth, 36 * height);
 
     basePosition = m_serverObject.GetBaseFromServer();
-    qDebug() << "Base Position - X:" << basePosition.first << " Y:" << basePosition.second;
+    qDebug() << "Base Position - X:" << basePosition.second << " Y:" << basePosition.first;
 
     bombs = m_serverObject.GetBombsFromServer();
     if (!bombs.empty()) 
@@ -55,7 +55,7 @@ GameMapInterface::GameMapInterface(QWidget* parent)
         qDebug() << "Received " << bombs.size() << " bombs from server.";
         for (const auto& bomb : bombs) 
         {
-            qDebug() << "Bomb ID: " << bomb.id << " Position: (" << bomb.x << ", " << bomb.y << ")";
+            qDebug() << "Bomb ID: " << bomb.id << " Position: (" << bomb.y << ", " << bomb.x << ")";
         }
     }
     else 
@@ -72,7 +72,7 @@ GameMapInterface::GameMapInterface(QWidget* parent)
         if (std::stoi(position.second) == m_serverObject.GetUserId()) 
         {
             player1Position = QPoint(position.first.m_y, position.first.m_x);
-            qDebug() << "[INFO] Player initialized at position: (" << player1Position.x() << ", " << player1Position.y() << ")";
+            qDebug() << "[INFO] Player initialized at position: (" << player1Position.y() << ", " << player1Position.x() << ")";
             playerFound = true;
             break;
         }
@@ -166,19 +166,23 @@ void GameMapInterface::keyPressEvent(QKeyEvent* event)
     if (!dirString.isEmpty()) 
     {
         auto newPositionOpt = m_serverObject.SendMoveToServer(dirString.toStdString());
-        if (newPositionOpt) 
+        if (newPositionOpt)
         {
             const Point& newPosition = *newPositionOpt;
 
             if (newPosition.m_x != player1Position.x() || newPosition.m_y != player1Position.y())
             {
-                player1Position = QPoint(newPosition.m_y, newPosition.m_x);
-                qDebug() << "[INFO] Player moved to new position: (" << player1Position.x() << ", " << player1Position.y() << ")";
+                player1Position = QPoint(newPosition.m_y, newPosition.m_x); 
+                qDebug() << "[INFO] Player moved to new position: (X:" << player1Position.y() << ", Y:" << player1Position.x() << ")";
             }
-            else 
+            else
             {
                 qDebug() << "[INFO] Server rejected move. Position unchanged.";
             }
+        }
+        else
+        {
+            qWarning() << "[WARNING] Move validation failed. Check server connection.";
         }
     }
         else {

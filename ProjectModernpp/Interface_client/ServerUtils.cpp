@@ -558,13 +558,10 @@ void ServerUtils::GetMapFromServer()
             {
                 json jsonResponse = json::parse(readBuffer);
 
-                //int level = jsonResponse.value("level", -1);
-                int rows = jsonResponse.value("rows", -1);
-                int columns = jsonResponse.value("columns", -1);
+                int columns = jsonResponse.value("rows", -1);
+                int rows = jsonResponse.value("columns", -1);
 
-                //qDebug() << "Level:" << level;
-                qDebug() << "Rows:" << rows;
-                qDebug() << "Columns:" << columns;
+                qDebug() << "Rows:" << rows << "Columns:" << columns;
 
                 if (jsonResponse.contains("matrix"))
                 {
@@ -576,28 +573,29 @@ void ServerUtils::GetMapFromServer()
                         return;
                     }
 
-                    for (const auto& row : jsonMatrix)
-                    {
-                        if (!row.is_array())
-                        {
+                    m_matrix.clear(); 
+
+                    for (size_t rowIndex = 0; rowIndex < jsonMatrix.size(); ++rowIndex) {
+                        const auto& row = jsonMatrix[rowIndex];
+                        if (!row.is_array()) {
                             qDebug() << "Error: Row in matrix is not an array.";
                             return;
                         }
 
                         std::vector<int> rowVector;
-                        for (const auto& cell : row)
-                        {
-                            if (cell.is_number_integer())
-                            {
+                        for (const auto& cell : row) {
+                            if (cell.is_number_integer()) {
                                 rowVector.push_back(cell.get<int>());
                             }
-                            else
-                            {
+                            else {
                                 qDebug() << "Error: Cell is not an integer.";
                             }
                         }
+                        // Adăugăm rândul exact așa cum este primit de la server
                         m_matrix.push_back(rowVector);
                     }
+
+                    qDebug() << "Matrix loaded successfully.";
                 }
                 else
                 {
