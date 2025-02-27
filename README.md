@@ -59,8 +59,24 @@ If using Visual Studio, open the .sln solution file and make sure all packages a
 
 Build and run:
 
-Run the server application and then launch the clients to start a match.
+Run the RundomMove, then launch the server application and run the clients to begin a match.
 Access the server:
-
+![image](https://github.com/user-attachments/assets/d113b509-ad48-47f4-86a1-f2636e17b219)
 The server will listen on a specific port (e.g., localhost:8080).
+
+![image](https://github.com/user-attachments/assets/b63cbd0f-748d-4595-9ed9-b721300edd8b)
+Here, we have the interface featuring buttons for "Play," which creates a room, and "Connect," which connects you to an existing room. Additionally, there is a section for controls, where you can customize your key bindings. At the top of the bar, there is a logo displaying the team's name.
+
+![image](https://github.com/user-attachments/assets/b4f6e35c-6675-4f53-9ab4-b76c70090c34)
+The "Controls" section allows users to customize their key bindings according to personal preferences. This feature provides flexibility by enabling players to assign specific actions to their preferred keys, ensuring a more comfortable and tailored gaming experience.
+
+![image](https://github.com/user-attachments/assets/fd1aa157-477c-47b5-b3b6-e4d4879c1b9f)
+The "Map" section displays the game map, which features a unique layout and various challenges. Each map is also associated with a point value, reflecting its difficulty or complexity. On the right side, the controls are displayed as a reminder, showing the default key bindings for gameplay. Additionally, the points for each player are shown, providing an overview of their current score or progress in the game.
+
+
+
+
+
+
+
 
