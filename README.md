@@ -34,7 +34,7 @@ The game arena is randomly generated and can contain destructible walls and inde
 The arena may also contain hidden bombs that are triggered when a wall is destroyed, potentially affecting players and surrounding walls.
 5. Scoring and Points System
 Points are awarded for each enemy eliminated, with each kill giving the player 100 points.
-Winning a match grants an additional 200 points.
+Winning a match grants an additional 500 points.
 The score accumulates as players participate in matches and perform well.
 6. Multigaming and Matchmaking
 The game supports multiple games running simultaneously, and players are grouped into matches of 4 based on their scores.
