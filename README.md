@@ -42,7 +42,9 @@ If a player has been waiting for more than 30 seconds without being matched, the
 7. Graphical User Interface (GUI)
 A custom graphical user interface (GUI) is implemented to improve the user experience, using QT.
 The GUI includes a 2D game map, player scores, options to select the difficulty level, and the ability to choose the type of game.
-8. Exception Handling and Testing
+8. Server Implementation
+The server is developed in C++ using the CROW framework to manage HTTP routes. It is responsible for handling the game state, processing user authentication, and managing matchmaking through SQLite as the primary database solution. Designed with a modular architecture, the server allows for easy extensions and future updates. It includes a set of API endpoints that facilitate account registration, user authentication, matchmaking processes, game state retrieval, and player statistics tracking. The SQLite database efficiently stores user data, including account details and scoreboards, ensuring smooth performance and reliable data management.
+9. Exception Handling and Testing
 The application includes exception handling to prevent errors or crashes during gameplay.
 Unit tests have been implemented to ensure the functionality of the application, with a coverage of at least 40%.
 
